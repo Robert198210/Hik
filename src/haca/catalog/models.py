@@ -30,7 +30,7 @@ class IsapiSource(BaseModel):
 
     kind: Literal["isapi"]
     endpoint_id: str
-    field: str
+    view_path: str
 
 
 class ManualSource(BaseModel):

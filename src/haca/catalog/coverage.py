@@ -7,7 +7,8 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict
 
 from haca.catalog.models import CatalogEntry, IsapiSource, ManualSource
-from haca.collect.models import CollectionResult, DeviceCollection, EndpointOutcome
+from haca.catalog.view_path import resolve_view_path
+from haca.collect.models import CollectionResult, EndpointOutcome
 from haca.requirements.models import RequirementsProfile
 
 CATALOG_VERSION = "1"
@@ -56,37 +57,6 @@ class CoverageSummary(BaseModel):
 
 def _tier(simulated: bool) -> Literal["isapi", "simulation"]:
     return "simulation" if simulated else "isapi"
-
-
-def _flatten_keys(device: DeviceCollection, endpoint_id: str) -> dict[str, str]:
-    prefix = f"{endpoint_id}:"
-    return {
-        key[len(prefix) :]: value
-        for key, value in device.flattened.items()
-        if key.startswith(prefix)
-    }
-
-
-def _field_present(flat: dict[str, str], field: str) -> bool:
-    if field in flat:
-        return True
-    normalized_field = field.replace("[", ".").replace("]", "")
-    segments = [segment for segment in normalized_field.split(".") if segment]
-    for key in flat:
-        if (key.endswith(f".{field}") or key == field.split(".")[-1]) and field in key:
-            return True
-        normalized = key.replace("[", ".").replace("]", "")
-        if all(segment in normalized for segment in segments):
-            return True
-    if field.startswith("AdminAccessProtocol."):
-        parts = field.split(".")
-        if len(parts) == 3:
-            protocol, leaf = parts[1], parts[2]
-            for key in flat:
-                if protocol in key and key.endswith(f".{leaf}"):
-                    return True
-    bracketed = field.replace("[", ".").replace("]", "")
-    return any(bracketed in key.replace("[", ".").replace("]", "") for key in flat)
 
 
 def _outcome_to_coverage(
@@ -179,9 +149,8 @@ def compute_coverage(
                     cov_status: CoverageStatus = "NOT_ATTEMPTED"
                     reason = "missing_evidence"
                 else:
-                    flat = _flatten_keys(device, source.endpoint_id)
-                    field_ok = _field_present(flat, source.field)
-                    cov_status, reason = _outcome_to_coverage(ev.outcome, field_ok=field_ok)
+                    present, _value = resolve_view_path(device.views, source.view_path)
+                    cov_status, reason = _outcome_to_coverage(ev.outcome, field_ok=present)
                 entries.append(
                     CoverageEntry(
                         device_id=device.device_id,
@@ -220,6 +189,4 @@ def coverage_summary(
 
 def observed_uncataloged_count(collection: CollectionResult) -> int:
     """Approximate uncataloged leaf count from flattened collector output."""
-    total_leaves = sum(len(d.flattened) for d in collection.devices)
-    extracted = sum(len(d.missing_fields) for d in collection.devices)
-    return max(0, total_leaves - extracted)
+    return sum(len(d.flattened) for d in collection.devices)

@@ -1,4 +1,4 @@
-# HACA Setting Catalog v1 (T2.01). Fields are extractor targets for T2.02.
+# HACA Setting Catalog v1 — view_path targets typed DeviceViews extractors.
 - id: identity.model
   category: identity
   title: Device model
@@ -6,7 +6,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: system.device_info, field: model}
+    - {kind: isapi, endpoint_id: system.device_info, view_path: identity_model}
 
 - id: identity.firmware
   category: identity
@@ -15,7 +15,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: system.device_info, field: firmwareVersion}
+    - {kind: isapi, endpoint_id: system.device_info, view_path: identity_firmware}
 
 - id: time.mode
   category: time
@@ -25,7 +25,7 @@
   verification: candidate_unverified
   orp_link: system.time_source
   sources:
-    - {kind: isapi, endpoint_id: system.time, field: timeMode}
+    - {kind: isapi, endpoint_id: system.time, view_path: time.time_mode}
 
 - id: time.ntp_server
   category: time
@@ -34,7 +34,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: system.time.ntp_servers, field: NTPServer.hostName}
+    - {kind: isapi, endpoint_id: system.time.ntp_servers, view_path: ntp.servers}
 
 - id: network.addressing_type
   category: network
@@ -43,7 +43,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: system.network.interfaces, field: IPAddress.addressingType}
+    - {kind: isapi, endpoint_id: system.network.interfaces, view_path: network.addressing_type}
 
 - id: security.http_enabled
   category: security
@@ -52,7 +52,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: security.admin_accesses, field: AdminAccessProtocol.HTTP.enabled}
+    - {kind: isapi, endpoint_id: security.admin_accesses, view_path: admin_access.protocols.HTTP.enabled}
 
 - id: security.https_enabled
   category: security
@@ -62,7 +62,7 @@
   verification: candidate_unverified
   orp_link: system.https_required
   sources:
-    - {kind: isapi, endpoint_id: security.admin_accesses, field: AdminAccessProtocol.HTTPS.enabled}
+    - {kind: isapi, endpoint_id: security.admin_accesses, view_path: admin_access.protocols.HTTPS.enabled}
 
 - id: security.rtsp_enabled
   category: security
@@ -71,7 +71,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: security.admin_accesses, field: AdminAccessProtocol.RTSP.enabled}
+    - {kind: isapi, endpoint_id: security.admin_accesses, view_path: admin_access.protocols.RTSP.enabled}
 
 - id: security.sdk_port
   category: security
@@ -80,7 +80,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: security.admin_accesses, field: AdminAccessProtocol.DEV_MANAGE.portNo}
+    - {kind: isapi, endpoint_id: security.admin_accesses, view_path: admin_access.protocols.DEV_MANAGE.port}
 
 - id: streaming.main.codec
   category: streaming
@@ -89,9 +89,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - kind: isapi
-      endpoint_id: streaming.channels
-      field: StreamingChannel[101].Video.videoCodecType
+    - {kind: isapi, endpoint_id: streaming.channels, view_path: "streams[101].codec"}
 
 - id: streaming.main.resolution
   category: streaming
@@ -100,9 +98,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - kind: isapi
-      endpoint_id: streaming.channels
-      field: StreamingChannel[101].Video.resolution
+    - {kind: isapi, endpoint_id: streaming.channels, view_path: "streams[101].resolution"}
 
 - id: streaming.main.frame_rate
   category: streaming
@@ -111,9 +107,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - kind: isapi
-      endpoint_id: streaming.channels
-      field: StreamingChannel[101].Video.maxFrameRate
+    - {kind: isapi, endpoint_id: streaming.channels, view_path: "streams[101].fps"}
 
 - id: streaming.main.bitrate_mode
   category: streaming
@@ -122,9 +116,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - kind: isapi
-      endpoint_id: streaming.channels
-      field: StreamingChannel[101].Video.videoQualityControlType
+    - {kind: isapi, endpoint_id: streaming.channels, view_path: "streams[101].bitrate_mode"}
 
 - id: streaming.main.bitrate
   category: streaming
@@ -133,9 +125,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - kind: isapi
-      endpoint_id: streaming.channels
-      field: StreamingChannel[101].Video.bitrate
+    - {kind: isapi, endpoint_id: streaming.channels, view_path: "streams[101].bitrate_kbps"}
 
 - id: streaming.main.smart_codec
   category: streaming
@@ -144,9 +134,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - kind: isapi
-      endpoint_id: streaming.channels
-      field: StreamingChannel[101].Video.SmartCodec.enabled
+    - {kind: isapi, endpoint_id: streaming.channels, view_path: "streams[101].smart_codec"}
 
 - id: recording.schedule_mode
   category: recording
@@ -156,7 +144,7 @@
   verification: candidate_unverified
   orp_link: system.recording_mode
   sources:
-    - {kind: isapi, endpoint_id: record.tracks, field: Track.DefaultRecordingMode}
+    - {kind: isapi, endpoint_id: record.tracks, view_path: "tracks[101].default_mode"}
 
 - id: recording.schedule_coverage
   category: recording
@@ -165,7 +153,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: record.tracks, field: TrackSchedule.coverage}
+    - {kind: isapi, endpoint_id: record.tracks, view_path: "tracks[101].schedule_coverage"}
 
 - id: recording.pre_post_record
   category: recording
@@ -174,7 +162,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: record.tracks, field: Track.pre_post_seconds}
+    - {kind: isapi, endpoint_id: record.tracks, view_path: "tracks[101].pre_post_seconds"}
 
 - id: recording.track_enable
   category: recording
@@ -183,7 +171,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: record.tracks, field: Track.Enable}
+    - {kind: isapi, endpoint_id: record.tracks, view_path: "tracks[101].enable"}
 
 - id: storage.hdd_status
   category: storage
@@ -192,7 +180,7 @@
   scope: item
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: storage.hdd, field: hdd.status}
+    - {kind: isapi, endpoint_id: storage.hdd, view_path: "hdds[1].status"}
 
 - id: storage.hdd_capacity
   category: storage
@@ -201,7 +189,7 @@
   scope: item
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: storage.hdd, field: hdd.capacity}
+    - {kind: isapi, endpoint_id: storage.hdd, view_path: "hdds[1].capacity_mb"}
 
 - id: storage.hdd_free_space
   category: storage
@@ -210,7 +198,7 @@
   scope: item
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: storage.hdd, field: hdd.freeSpace}
+    - {kind: isapi, endpoint_id: storage.hdd, view_path: "hdds[1].free_mb"}
 
 - id: analytics.line_engine_enabled
   category: analytics
@@ -219,7 +207,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: smart.line_detection, field: LineDetection.enabled}
+    - {kind: isapi, endpoint_id: smart.line_detection, view_path: line_detection.engine_enabled}
 
 - id: analytics.line_rules
   category: analytics
@@ -228,7 +216,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: smart.line_detection, field: LineItemList.items}
+    - {kind: isapi, endpoint_id: smart.line_detection, view_path: line_detection.items}
 
 - id: analytics.field_engine_enabled
   category: analytics
@@ -237,7 +225,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: smart.field_detection, field: FieldDetection.enabled}
+    - {kind: isapi, endpoint_id: smart.field_detection, view_path: field_detection.engine_enabled}
 
 - id: analytics.field_regions
   category: analytics
@@ -246,7 +234,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: smart.field_detection, field: FieldDetectionRegionList.items}
+    - {kind: isapi, endpoint_id: smart.field_detection, view_path: field_detection.items}
 
 - id: analytics.region_entrance
   category: analytics
@@ -255,7 +243,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: smart.region_entrance, field: RegionEntrance.enabled}
+    - {kind: isapi, endpoint_id: smart.region_entrance, view_path: region_entrance.engine_enabled}
 
 - id: analytics.detection_targets
   category: analytics
@@ -265,7 +253,7 @@
   verification: candidate_unverified
   orp_link: devices.required_event_targets
   sources:
-    - {kind: isapi, endpoint_id: smart.line_detection, field: LineItem.detectionTarget}
+    - {kind: isapi, endpoint_id: smart.line_detection, view_path: "line_detection.items[1].detection_target"}
 
 - id: linkage.linedetection_notifications
   category: linkage
@@ -274,7 +262,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: event.triggers, field: EventTrigger.linedetection.methods}
+    - {kind: isapi, endpoint_id: event.triggers, view_path: "triggers[linedetection].methods"}
 
 - id: ptz.park_action_enabled
   category: ptz
@@ -283,7 +271,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: ptz.park_action, field: ParkAction.enabled}
+    - {kind: isapi, endpoint_id: ptz.park_action, view_path: park_action.enabled}
 
 - id: ptz.park_action_type
   category: ptz
@@ -292,7 +280,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: ptz.park_action, field: ParkAction.Action.ActionType}
+    - {kind: isapi, endpoint_id: ptz.park_action, view_path: park_action.action_type}
 
 - id: ptz.patrols
   category: ptz
@@ -301,7 +289,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: ptz.patrols, field: PTZPatrolList.items}
+    - {kind: isapi, endpoint_id: ptz.patrols, view_path: patrols.items}
 
 - id: ptz.presets
   category: ptz
@@ -310,7 +298,7 @@
   scope: device
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: ptz.presets, field: PTZPresetList.items}
+    - {kind: isapi, endpoint_id: ptz.presets, view_path: presets.items}
 
 - id: platform.ezviz_enabled
   category: platform
@@ -320,7 +308,7 @@
   verification: candidate_unverified
   orp_link: system.hik_connect
   sources:
-    - {kind: isapi, endpoint_id: platform.ezviz, field: EZVIZ.enabled}
+    - {kind: isapi, endpoint_id: platform.ezviz, view_path: platform.ezviz_enabled}
 
 - id: input_proxy.protocol
   category: security
@@ -330,7 +318,7 @@
   verification: candidate_unverified
   orp_link: devices.camera_protocol
   sources:
-    - {kind: isapi, endpoint_id: input_proxy.channels, field: InputProxyChannel.proxyProtocol}
+    - {kind: isapi, endpoint_id: input_proxy.channels, view_path: "proxy_channels[1].protocol"}
 
 - id: input_proxy.online
   category: security
@@ -339,7 +327,7 @@
   scope: channel
   verification: candidate_unverified
   sources:
-    - {kind: isapi, endpoint_id: input_proxy.channels_status, field: InputProxyChannelStatus.online}
+    - {kind: isapi, endpoint_id: input_proxy.channels_status, view_path: "proxy_channels[1].online"}
 
 - id: manual.dual_vca
   category: analytics

@@ -108,6 +108,7 @@ class CollectionEngine:
         capabilities: dict[str, bool] = {}
         identity = None
         offline = False
+        auth_locked = False
 
         with IsapiClient(
             device,
@@ -128,6 +129,13 @@ class CollectionEngine:
                     evidence[request.endpoint_id] = ev
                     self._notify(on_progress, device.id, request.endpoint_id, ev.outcome)
                     continue
+                if auth_locked:
+                    ev = self._error_evidence(
+                        device, request, EndpointOutcome.AUTH_DENIED, 401, None
+                    )
+                    evidence[request.endpoint_id] = ev
+                    self._notify(on_progress, device.id, request.endpoint_id, ev.outcome)
+                    continue
 
                 entry = self._registry_by_id.get(request.endpoint_id)
 
@@ -138,7 +146,11 @@ class CollectionEngine:
                     if ev.outcome in (EndpointOutcome.CONNECTION_ERROR, EndpointOutcome.TIMEOUT):
                         offline = True
                     elif ev.outcome == EndpointOutcome.AUTH_DENIED:
-                        offline = False
+                        auth_locked = True
+                        _LOGGER.warning(
+                            "auth failed for %s; skipping remaining endpoints",
+                            device.id,
+                        )
                     elif ev.outcome == EndpointOutcome.COLLECTED and ev.body:
                         views = self._ingest(
                             request.endpoint_id, ev, views, missing_fields, flattened

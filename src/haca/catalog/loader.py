@@ -8,7 +8,8 @@ from typing import Any
 import yaml
 from pydantic import TypeAdapter, ValidationError
 
-from haca.catalog.models import CatalogEntry
+from haca.catalog.models import CatalogEntry, IsapiSource
+from haca.catalog.view_path import ViewPathSyntaxError, validate_view_path_syntax
 from haca.isapi.registry.loader import load_registry_entries
 
 _CATALOG_PACKAGE = "haca.catalog"
@@ -74,5 +75,11 @@ def load_catalog_entries(
             if source.kind == "manual" and not source.checklist_id.strip():
                 msg = f"{entry.id}: manual source requires checklist_id"
                 raise CatalogValidationError(msg)
+            if isinstance(source, IsapiSource):
+                try:
+                    validate_view_path_syntax(source.view_path)
+                except ViewPathSyntaxError as exc:
+                    msg = f"{entry.id}: invalid view_path {source.view_path!r}: {exc}"
+                    raise CatalogValidationError(msg) from exc
 
     return tuple(entries)

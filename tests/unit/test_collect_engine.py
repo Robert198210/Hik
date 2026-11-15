@@ -47,3 +47,31 @@ def test_scenario_unsupported_skips_region_entrance_request() -> None:
         path for _dev, _method, path in network.request_log if "regionEntrance" in path
     ]
     assert not region_paths
+
+
+def test_wrong_password_auth_lockout_limits_requests() -> None:
+    registry = load_registry_entries()
+    network = build_simulation_network_for_scenario("clean")
+    devices = list(default_resolved_devices())
+    good = Credential(username="synthetic", password=SecretStr("synthetic-pass"))
+    bad = Credential(username="synthetic", password=SecretStr("wrong-pass"))
+    store = DictCredentialStore(
+        {d.id: (bad if d.id == "nvr01" else good) for d in devices}
+    )
+    engine = CollectionEngine(
+        registry,
+        build_collection_policy(registry),
+        EgressPolicy({d.host for d in devices}),
+        store,
+        simulation_timeouts(),
+        lambda _d: network.transport(),
+    )
+    result = engine.collect(devices, simulated=True)
+    nvr = next(d for d in result.devices if d.device_id == "nvr01")
+    assert all(
+        ev.outcome.value == "AUTH_DENIED"
+        for eid, ev in nvr.evidence.items()
+        if eid != "system.device_info"
+    )
+    nvr_reqs = [entry for entry in network.request_log if entry[0] == "nvr01"]
+    assert len(nvr_reqs) <= 2

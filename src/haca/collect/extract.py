@@ -19,6 +19,7 @@ class StreamView(BaseModel):
     bitrate_kbps: int | None = None
     vbr_cap_kbps: int | None = None
     smart_codec: bool | None = None
+    resolution: str | None = None
 
 
 class TimeView(BaseModel):
@@ -43,10 +44,26 @@ class NetworkView(BaseModel):
     gateway: str | None = None
 
 
+class ProtocolAccessView(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    enabled: bool | None = None
+    port: int | None = None
+
+
 class AdminAccessView(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    protocols: dict[str, tuple[bool | None, int | None]] = Field(default_factory=dict)
+    protocols: dict[str, ProtocolAccessView] = Field(default_factory=dict)
+
+
+class VcaItemView(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    id: str | None = None
+    enabled: bool | None = None
+    detection_target: str | None = None
+    coordinate_count: int | None = None
 
 
 class VcaRuleView(BaseModel):
@@ -54,7 +71,7 @@ class VcaRuleView(BaseModel):
 
     kind: str | None = None
     engine_enabled: bool | None = None
-    items: tuple[dict[str, object], ...] = ()
+    items: tuple[VcaItemView, ...] = ()
 
 
 class TriggerView(BaseModel):
@@ -75,6 +92,8 @@ class TrackView(BaseModel):
     pre_s: int | None = None
     post_s: int | None = None
     schedule: tuple[tuple[str, str, str, str, str, bool], ...] = ()
+    schedule_coverage: str | None = None
+    pre_post_seconds: str | None = None
 
 
 class HddView(BaseModel):
@@ -194,24 +213,39 @@ def extract_views(
         )
 
     if endpoint_id.startswith("system.time.ntp"):
-        host = doc.text("hostName") or doc.text("NTPServer/hostName")
-        servers = (host,) if host else ()
+        servers: list[str] = []
+        for elem in doc._root.iter():  # noqa: SLF001
+            if elem.tag.split("}")[-1] != "NTPServer":
+                continue
+            host = None
+            for child in elem:
+                if child.tag.split("}")[-1] == "hostName" and child.text:
+                    host = child.text.strip()
+            if host:
+                servers.append(host)
         if not servers:
             missing.append("NTPServer.hostName")
-        return DeviceViews(ntp=NtpView(servers=servers))
+        return DeviceViews(ntp=NtpView(servers=tuple(servers)))
 
     if endpoint_id.startswith("system.network"):
-        net = NetworkView(
-            addressing_type=doc.text("addressingType"),
-            ip=doc.text("ipAddress"),
-            gateway=doc.text("DefaultGateway/ipAddress") or doc.text("ipAddress"),
-        )
+        addressing = ip = gateway = None
+        for elem in doc._root.iter():  # noqa: SLF001
+            local = elem.tag.split("}")[-1]
+            if local == "addressingType" and elem.text:
+                addressing = elem.text.strip()
+            elif local == "ipAddress" and elem.text and ip is None:
+                ip = elem.text.strip()
+            elif local == "DefaultGateway":
+                for child in elem:
+                    if child.tag.split("}")[-1] == "ipAddress" and child.text:
+                        gateway = child.text.strip()
+        net = NetworkView(addressing_type=addressing, ip=ip, gateway=gateway)
         if net.addressing_type is None:
             missing.append("IPAddress.addressingType")
         return DeviceViews(network=net)
 
     if endpoint_id.startswith("security.admin"):
-        protocols: dict[str, tuple[bool | None, int | None]] = {}
+        protocols: dict[str, ProtocolAccessView] = {}
         for elem in doc._root.iter():  # noqa: SLF001
             if elem.tag.split("}")[-1] != "AdminAccessProtocol":
                 continue
@@ -227,7 +261,7 @@ def extract_views(
                 elif tag == "portNo":
                     port = _as_int(child.text)
             if proto_name:
-                protocols[proto_name] = (enabled, port)
+                protocols[proto_name] = ProtocolAccessView(enabled=enabled, port=port)
         if not protocols:
             missing.append("AdminAccessProtocol")
         return DeviceViews(admin_access=AdminAccessView(protocols=protocols))
@@ -237,34 +271,41 @@ def extract_views(
         for ch in doc._root.iter():  # noqa: SLF001
             if ch.tag.split("}")[-1] != "StreamingChannel":
                 continue
-            ch_id = doc.text("id") if ch is doc._root else None
+            ch_id = None
+            video_elem = None
+            for child in ch:
+                tag = child.tag.split("}")[-1]
+                if tag == "id" and child.text:
+                    ch_id = child.text.strip()
+                elif tag == "Video":
+                    video_elem = child
             codec = None
             width = height = None
             fps = None
             mode = None
             bitrate = vbr = None
             smart = None
-            for child in ch.iter():
-                tag = child.tag.split("}")[-1]
-                if tag == "id" and child.text:
-                    ch_id = child.text.strip()
-                elif tag == "videoCodecType":
-                    codec = (child.text or "").strip() or None
-                elif tag == "videoResolutionWidth":
-                    width = _as_int(child.text)
-                elif tag == "videoResolutionHeight":
-                    height = _as_int(child.text)
-                elif tag == "maxFrameRate":
-                    raw = _as_int(child.text)
-                    fps = (raw / 100.0) if raw is not None else None
-                elif tag == "videoQualityControlType":
-                    mode = (child.text or "").strip() or None
-                elif tag in ("constantBitRate", "bitrate"):
-                    bitrate = _as_int(child.text)
-                elif tag == "vbrUpperCap":
-                    vbr = _as_int(child.text)
-                elif tag == "enabled" and smart is None:
-                    smart = _as_bool(child.text)
+            if video_elem is not None:
+                for child in video_elem.iter():
+                    tag = child.tag.split("}")[-1]
+                    if tag == "videoCodecType":
+                        codec = (child.text or "").strip() or None
+                    elif tag == "videoResolutionWidth":
+                        width = _as_int(child.text)
+                    elif tag == "videoResolutionHeight":
+                        height = _as_int(child.text)
+                    elif tag == "maxFrameRate":
+                        raw = _as_int(child.text)
+                        fps = (raw / 100.0) if raw is not None else None
+                    elif tag == "videoQualityControlType":
+                        mode = (child.text or "").strip() or None
+                    elif tag in ("constantBitRate", "bitrate"):
+                        bitrate = _as_int(child.text)
+                    elif tag == "vbrUpperCap":
+                        vbr = _as_int(child.text)
+                    elif tag == "enabled" and child is not video_elem:
+                        smart = _as_bool(child.text)
+            resolution = f"{width}x{height}" if width and height else None
             streams.append(
                 StreamView(
                     id=ch_id,
@@ -276,24 +317,27 @@ def extract_views(
                     bitrate_kbps=bitrate,
                     vbr_cap_kbps=vbr,
                     smart_codec=smart,
+                    resolution=resolution,
                 )
             )
-        return DeviceViews(streams=tuple(streams) if streams else None)
+        return DeviceViews(streams=tuple(streams) if streams else ())
 
     if endpoint_id.startswith("smart.line"):
         enabled = _as_bool(doc.text("enabled"))
         if enabled is None:
             missing.append("LineDetection.enabled")
+        items = _parse_line_items(doc)
         return DeviceViews(
-            line_detection=VcaRuleView(kind="line", engine_enabled=enabled, items=())
+            line_detection=VcaRuleView(kind="line", engine_enabled=enabled, items=items)
         )
 
     if endpoint_id.startswith("smart.field"):
         enabled = _as_bool(doc.text("enabled"))
         if enabled is None:
             missing.append("FieldDetection.enabled")
+        items = _parse_field_items(doc)
         return DeviceViews(
-            field_detection=VcaRuleView(kind="field", engine_enabled=enabled, items=())
+            field_detection=VcaRuleView(kind="field", engine_enabled=enabled, items=items)
         )
 
     if endpoint_id.startswith("smart.region"):
@@ -327,7 +371,8 @@ def extract_views(
         return DeviceViews(triggers=tuple(triggers) if triggers else ())
 
     if endpoint_id.startswith("record.track"):
-        return DeviceViews(tracks=())
+        tracks = _parse_tracks(doc)
+        return DeviceViews(tracks=tracks)
 
     if endpoint_id.startswith("storage.hdd"):
         hdds: list[HddView] = []
@@ -348,30 +393,43 @@ def extract_views(
             hdds.append(HddView(id=hid, status=status, capacity_mb=cap, free_mb=free))
         return DeviceViews(hdds=tuple(hdds) if hdds else ())
 
-    if endpoint_id.startswith("input_proxy.channels"):
+    if endpoint_id.startswith("input_proxy.channels_status"):
         channels: list[ProxyChannelView] = []
+        for elem in doc._root.iter():  # noqa: SLF001
+            if elem.tag.split("}")[-1] != "InputProxyChannelStatus":
+                continue
+            cid = online = None
+            for child in elem:
+                tag = child.tag.split("}")[-1]
+                if tag == "id":
+                    cid = (child.text or "").strip()
+                elif tag == "online":
+                    online = _as_bool(child.text)
+            if cid:
+                channels.append(ProxyChannelView(id=cid, online=online))
+        return DeviceViews(proxy_channels=tuple(channels) if channels else ())
+
+    if endpoint_id.startswith("input_proxy.channels"):
+        channels = []
         for elem in doc._root.iter():  # noqa: SLF001
             if elem.tag.split("}")[-1] != "InputProxyChannel":
                 continue
             cid = proto = ip = None
             port = None
-            for child in elem:
+            for child in elem.iter():
                 tag = child.tag.split("}")[-1]
-                if tag == "id":
-                    cid = (child.text or "").strip()
-                elif tag == "proxyProtocol":
-                    proto = (child.text or "").strip()
-                elif tag == "ipAddress":
-                    ip = (child.text or "").strip()
-                elif tag == "portNo":
+                if tag == "id" and child.text and cid is None:
+                    cid = child.text.strip()
+                elif tag == "proxyProtocol" and child.text:
+                    proto = child.text.strip()
+                elif tag == "ipAddress" and child.text and ip is None:
+                    ip = child.text.strip()
+                elif tag == "managePortNo" or tag == "portNo" and port is None:
                     port = _as_int(child.text)
             channels.append(
                 ProxyChannelView(id=cid, protocol=proto, ip=ip, port=port, online=None)
             )
         return DeviceViews(proxy_channels=tuple(channels) if channels else ())
-
-    if endpoint_id.startswith("input_proxy.channels_status"):
-        return DeviceViews()
 
     if endpoint_id.startswith("ptz.park"):
         view = ParkActionView(
@@ -383,10 +441,12 @@ def extract_views(
         return DeviceViews(park_action=view)
 
     if endpoint_id.startswith("ptz.patrol"):
-        return DeviceViews(patrols=PatrolView(items=()))
+        patrol_items = _parse_named_items(doc, "PTZPatrol")
+        return DeviceViews(patrols=PatrolView(items=patrol_items))
 
     if endpoint_id.startswith("ptz.preset"):
-        return DeviceViews(presets=PresetView(items=()))
+        preset_items = _parse_named_items(doc, "PTZPreset")
+        return DeviceViews(presets=PresetView(items=preset_items))
 
     if endpoint_id.startswith("platform.ezviz"):
         enabled = _as_bool(doc.text("enabled"))
@@ -397,14 +457,183 @@ def extract_views(
     return DeviceViews()
 
 
+def _parse_line_items(doc: XmlDocument) -> tuple[VcaItemView, ...]:
+    items: list[VcaItemView] = []
+    for elem in doc._root.iter():  # noqa: SLF001
+        if elem.tag.split("}")[-1] != "LineItem":
+            continue
+        item_id = enabled = target = None
+        coord_count = 0
+        for child in elem.iter():
+            tag = child.tag.split("}")[-1]
+            if tag == "id" and child.text:
+                item_id = child.text.strip()
+            elif tag == "enabled":
+                enabled = _as_bool(child.text)
+            elif tag == "detectionTarget":
+                target = (child.text or "").strip() or None
+            elif tag == "Coordinates":
+                coord_count += 1
+        items.append(
+            VcaItemView(
+                id=item_id,
+                enabled=enabled,
+                detection_target=target,
+                coordinate_count=coord_count or None,
+            )
+        )
+    return tuple(items)
+
+
+def _parse_field_items(doc: XmlDocument) -> tuple[VcaItemView, ...]:
+    items: list[VcaItemView] = []
+    for elem in doc._root.iter():  # noqa: SLF001
+        if elem.tag.split("}")[-1] != "FieldDetectionRegion":
+            continue
+        item_id = enabled = target = None
+        for child in elem.iter():
+            tag = child.tag.split("}")[-1]
+            if tag == "id" and child.text:
+                item_id = child.text.strip()
+            elif tag == "enabled":
+                enabled = _as_bool(child.text)
+            elif tag == "detectionTarget":
+                target = (child.text or "").strip() or None
+        items.append(VcaItemView(id=item_id, enabled=enabled, detection_target=target))
+    return tuple(items)
+
+
+def _parse_tracks(doc: XmlDocument) -> tuple[TrackView, ...]:
+    tracks: list[TrackView] = []
+    for elem in doc._root.iter():  # noqa: SLF001
+        if elem.tag.split("}")[-1] != "Track":
+            continue
+        track_id = channel = default_mode = None
+        enable = pre = post = None
+        schedule: list[tuple[str, str, str, str, str, bool]] = []
+        for child in elem:
+            tag = child.tag.split("}")[-1]
+            if tag == "id" and child.text:
+                track_id = child.text.strip()
+            elif tag == "Channel" and child.text:
+                channel = _as_int(child.text)
+            elif tag == "Enable":
+                enable = _as_bool(child.text)
+            elif tag == "DefaultRecordingMode":
+                default_mode = (child.text or "").strip() or None
+            elif tag == "PreRecordTimeSeconds":
+                pre = _as_int(child.text)
+            elif tag == "PostRecordTimeSeconds":
+                post = _as_int(child.text)
+        for action in elem.iter():
+            if action.tag.split("}")[-1] != "ScheduleAction":
+                continue
+            start_day = end_day = start_time = end_time = mode = "CMR"
+            record = True
+            for child in action.iter():
+                tag = child.tag.split("}")[-1]
+                if tag == "DayOfWeek" and child.text:
+                    if start_day is None:
+                        start_day = child.text.strip()
+                    else:
+                        end_day = child.text.strip()
+                elif tag == "TimeOfDay" and child.text:
+                    if start_time is None:
+                        start_time = child.text.strip()
+                    else:
+                        end_time = child.text.strip()
+                elif tag == "ActionRecordingMode" and child.text:
+                    mode = child.text.strip()
+                elif tag == "Record":
+                    record = _as_bool(child.text) or False
+            if start_day and start_time and end_day and end_time:
+                schedule.append((start_day, start_time, end_day, end_time, mode, record))
+        coverage = "weekday+weekend" if len(schedule) >= 2 else ("configured" if schedule else None)
+        pre_post = f"{pre}/{post}" if pre is not None and post is not None else None
+        tracks.append(
+            TrackView(
+                track_id=track_id,
+                channel=channel,
+                enable=enable,
+                default_mode=default_mode,
+                pre_s=pre,
+                post_s=post,
+                schedule=tuple(schedule),
+                schedule_coverage=coverage,
+                pre_post_seconds=pre_post,
+            )
+        )
+    return tuple(tracks)
+
+
+def _parse_named_items(doc: XmlDocument, local_name: str) -> tuple[dict[str, object], ...]:
+    rows: list[dict[str, object]] = []
+    for elem in doc._root.iter():  # noqa: SLF001
+        if elem.tag.split("}")[-1] != local_name:
+            continue
+        row: dict[str, object] = {}
+        for child in elem:
+            tag = child.tag.split("}")[-1]
+            if child.text and child.text.strip():
+                row[tag] = child.text.strip()
+        if row:
+            rows.append(row)
+    return tuple(rows)
+
+
+def _merge_proxy_channels(
+    left: tuple[ProxyChannelView, ...] | None,
+    right: tuple[ProxyChannelView, ...] | None,
+) -> tuple[ProxyChannelView, ...]:
+    by_id: dict[str, ProxyChannelView] = {}
+    for item in left or ():
+        if item.id:
+            by_id[item.id] = item
+    for item in right or ():
+        if item.id is None:
+            continue
+        existing = by_id.get(item.id)
+        if existing is None:
+            by_id[item.id] = item
+            continue
+        by_id[item.id] = ProxyChannelView(
+            id=item.id,
+            protocol=item.protocol or existing.protocol,
+            ip=item.ip or existing.ip,
+            port=item.port if item.port is not None else existing.port,
+            online=item.online if item.online is not None else existing.online,
+        )
+    return tuple(by_id[k] for k in sorted(by_id))
+
+
+def _proxy_tuple(raw: object) -> tuple[ProxyChannelView, ...]:
+    if not raw:
+        return ()
+    items = list(raw) if isinstance(raw, (list, tuple)) else []
+    out: list[ProxyChannelView] = []
+    for item in items:
+        if isinstance(item, ProxyChannelView):
+            out.append(item)
+        else:
+            out.append(ProxyChannelView.model_validate(item))
+    return tuple(out)
+
+
 def merge_views(base: DeviceViews, patch: DeviceViews) -> DeviceViews:
     data = base.model_dump()
-    for key, value in patch.model_dump().items():
+    patch_data = patch.model_dump()
+    for key, value in patch_data.items():
         if value is None:
             continue
-        if isinstance(value, (list, tuple)) and len(value) == 0:
+        if key == "proxy_channels":
+            existing = _proxy_tuple(data.get("proxy_channels"))
+            incoming = _proxy_tuple(value)
+            data[key] = _merge_proxy_channels(existing, incoming)
             continue
-        if isinstance(value, dict) and not value:
+        if key == "admin_access" and data.get("admin_access") and value:
+            merged = dict(data["admin_access"]["protocols"])
+            merged.update(value["protocols"])
+            data[key] = {"protocols": merged}
             continue
         data[key] = value
     return DeviceViews.model_validate(data)
