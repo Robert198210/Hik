@@ -1,0 +1,23 @@
+profile_version: 1
+system:
+  recording_mode: continuous_24_7
+  min_retention_days: null
+  analytics_location: camera
+  timeline_markers_required: true
+  remote_access: lan_vpn_only
+  hik_connect: undecided
+  time_source: nvr_sync
+  https_required: unspecified
+devices:
+  ptz01:
+    camera_protocol: hikvision
+    ptz_mode: undecided
+    auto_tracking: forbidden
+    required_events:
+      - line_crossing
+    event_targets:
+      - human
+      - vehicle
+    notify_center_required: true
+  cam01:
+    camera_protocol: unspecified

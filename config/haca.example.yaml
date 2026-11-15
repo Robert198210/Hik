@@ -1,0 +1,7 @@
+network:
+  subnet: 192.168.250.0/24
+timeouts:
+  connect: 5.0
+  read: 20.0
+database_path: data/haca.db
+simulation: false

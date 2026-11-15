@@ -1,0 +1,22 @@
+devices:
+  - id: nvr01
+    role: nvr
+    expected_model: DS-7616NXI-K2(D)
+    host_suffix: 200
+    scheme: http
+    credential_ref: nvr01
+    enabled: true
+  - id: ptz01
+    role: ptz
+    expected_model: DS-2DE4425IWG1-E
+    host_suffix: 201
+    scheme: http
+    credential_ref: ptz01
+    enabled: true
+  - id: cam01
+    role: camera
+    expected_model: DS-2CD2087G3-LI2UY/SL
+    host_suffix: 202
+    scheme: http
+    credential_ref: cam01
+    enabled: true
