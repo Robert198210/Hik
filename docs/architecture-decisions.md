@@ -24,7 +24,7 @@ require a new ADR that supersedes it.
 
 ## ADR-004 Secrets in the OS keyring
 - **Status:** Accepted
-- **Decision:** `keyring` (Windows Credential Manager). Config files contain only `credential_ref`. Dev/test fallback: environment variables. `SecretRedactor` logging filter on all handlers.
+- **Decision:** `keyring` (Windows Credential Manager). Config files contain only `credential_ref`. Dev/test fallback: environment variables. `SecretRedactor` logging filter on all handlers. The only credential write path is the local CLI `haca credentials set <ref>` (prompt without echo → keyring); it never contacts devices.
 - **Consequences:** One extra dependency. No secrets in repo, logs, reports, or AI payloads.
 
 ## ADR-005 SQLite without migrations framework
@@ -34,7 +34,7 @@ require a new ADR that supersedes it.
 
 ## ADR-006 Dashboard stack
 - **Status:** Accepted (implementation in v0.3)
-- **Decision:** FastAPI + Uvicorn + Jinja2 + vendored htmx (no CDN, no Node). Bind `127.0.0.1` only. CSRF token for POST forms.
+- **Decision:** FastAPI + Uvicorn + Jinja2 + a small vanilla JS file (amended 2026-11-15: htmx dropped to avoid a vendored third-party asset; no CDN, no Node). Bind `127.0.0.1` only. Host-header check, CSRF token for POST forms, strict CSP.
 
 ## ADR-007 Fixture provenance
 - **Status:** Accepted, amended by ADR-017
@@ -42,7 +42,7 @@ require a new ADR that supersedes it.
 
 ## ADR-008 Explicit simulation mode
 - **Status:** Accepted
-- **Decision:** `--simulate` uses an in-process mock transport. Every simulated artefact carries `SIMULATED`. Simulation never counts as live coverage or device compatibility.
+- **Decision:** `--simulate` uses an in-process mock transport. Every simulated artefact carries `SIMULATED`. Simulation never counts as live coverage or device compatibility. Simulated evidence has tier `simulation`; a finding that would be `CONFIRMED_CONFLICT` on live evidence is reported as `POTENTIAL_CONFLICT` with `simulated_confirmed=true`. Simulated runs use a separate database (`data/haca-sim.db`).
 
 ## ADR-009 No PyInstaller in v1
 - **Status:** Accepted

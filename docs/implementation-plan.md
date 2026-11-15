@@ -55,34 +55,27 @@ Specs for Phase 1 are in [tasks/](tasks/README.md). Later phases get specs when 
 - T1.09 QA independent verification.
 - T1.10 Security gate S1.
 
-### Phase 2 — Collection and coverage
-- T2.01 Setting Catalog v1.
-- T2.02 Endpoint registry (all entries `candidate_unverified` or `documented` until live).
-- T2.03 Capability discovery.
-- T2.04 Collection planner + NVR channel expansion.
-- T2.05 Normalizer.
-- T2.06 Coverage engine.
-- T2.07 SQLite store + snapshot diff.
-- T2.08 QA.
+### Phase 2 — Collection and coverage (specs consolidated)
+- [T2.01](tasks/T2.01-catalog-registry-profiles.md) Endpoint registry (all `candidate_unverified`/`documented` until live), Setting Catalog v1, synthetic scenario profiles (`clean`, `conflicts`, `unsupported`).
+- [T2.02](tasks/T2.02-collection-coverage.md) Capability discovery, planner, collection engine, typed extractors, normalizer, coverage, `haca collect`.
+- [T2.03](tasks/T2.03-store-diff.md) SQLite store, snapshot diff, `haca runs`, `haca diff`.
 
-### Phase 3 — Deterministic audit
-- T3.01 Rule framework (`basis`, `requires`, `requires_orp`).
-- T3.02 Cross-device correlator.
-- T3.03 Initial rules (each rule tested with ORP set-consistent / set-contradicting / unset):
-  - `R-VCA-001..003` — VCA rule state, empty targets, missing geometry
-  - `R-LINK-001` — notify-center linkage
-  - `R-PROTO-001` — camera protocol
-  - `R-REC-001` — recording schedule vs ORP
-  - `R-TIME-001` — time synchronization
-  - `R-FW-001` — firmware consistency
-  - `R-STOR-001` — retention estimate
-  - `R-PTZ-001` — patrol/tracking vs VCA rules
-  - `R-SEC-001..002` — transport/platform services
-  - `R-FDET-001` — static-target re-alarm
-  - `R-HIKC-001` — Hik-Connect vs ORP
-- T3.04 Severity matrix + recommendation schema (`Current → Recommended`).
-- T3.05 JSON + Markdown reports.
-- T3.06 QA + gate S2.
+### Phase 3 — Deterministic audit (specs consolidated)
+- [T3.01](tasks/T3.01-rules-correlator.md) Rule framework, correlator, findings model, 17 initial rules:
+  - inventory/connectivity: `R-INV-001`, `R-CONN-001`
+  - storage: `R-STOR-001`, `R-STOR-002`
+  - recording: `R-REC-001`, `R-REC-002`
+  - protocol: `R-PROTO-001`
+  - VCA: `R-VCA-001..004`
+  - linkage: `R-LINK-001`
+  - time: `R-TIME-001`
+  - security: `R-SEC-001`
+  - platform: `R-HIKC-001`
+  - PTZ: `R-PTZ-001..002`
+  
+  Deferred until live data (ADR-017): `R-FDET-001` (static-target re-alarm), `R-FW-001` (firmware consistency).
+- [T3.02](tasks/T3.02-reports-audit-cli.md) Audit orchestrator, JSON + Markdown reports with masking, `haca audit`.
+- T3.03 QA Phase 2–3 + gate S2.
 
 ### Phase 3L — Live validation (private Windows 10 PC)
 - T3L.01 Minimal `install.ps1` / `start.ps1`.

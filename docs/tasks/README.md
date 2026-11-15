@@ -19,6 +19,20 @@ One file per work package. The developer reads `AGENTS.md` + the task file only.
 
 T1.06 may run in parallel with T1.02–T1.05: it only touches `src/haca/simulation/profiles/` and `tools/`.
 
+## Later phases
+
+| Task | Title | Release | Risk |
+|---|---|---|---|
+| [T2.01](T2.01-catalog-registry-profiles.md) | Endpoint registry, Setting Catalog, scenario profiles | MVP | Medium |
+| [T2.02](T2.02-collection-coverage.md) | Collection engine, extractors, coverage | MVP | Medium |
+| [T2.03](T2.03-store-diff.md) | SQLite store, diff | MVP | Medium (S2) |
+| [T3.01](T3.01-rules-correlator.md) | Rules, correlator, findings | MVP | High |
+| [T3.02](T3.02-reports-audit-cli.md) | Orchestrator, reports, `haca audit` | MVP | Medium |
+| [T4.01](T4.01-gemini.md) | Gemini analysis + HTML report | v0.2 | High (S3) |
+| [T5.01](T5.01-dashboard.md) | Local dashboard | v0.3 | Medium |
+| [T6.01](T6.01-browser.md) | Browser inspection framework | v0.4 | High (S4) |
+| [T7.01](T7.01-release-live-prep.md) | Windows scripts, live prep, packaging, E2E | MVP/v1.0 | Medium |
+
 ## Handoff prompt (developer chat, picker: Auto → Cost)
 
 ```

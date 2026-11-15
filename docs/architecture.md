@@ -135,7 +135,7 @@ Coverage is computed per `(device, setting)` against the HACA Setting Catalog, n
 | `VERIFIED_BROWSER` | Value read from the web UI (v0.4), screenshot as evidence. |
 | `VERIFIED_MANUAL` | User attestation (optional screenshot). |
 | `UNSUPPORTED_BY_DEVICE` | Positive evidence only: `subStatusCode=notSupport` or capability explicitly excludes the feature. |
-| `INACCESSIBLE` | With reason: `auth_denied`, `endpoint_not_found` (404 / `RequestUrlNotFound` — may be a firmware path variant, **not** "unsupported"), `timeout`, `connection_error`, `parse_error`, `blocked_by_policy`, `device_offline`. |
+| `INACCESSIBLE` | With reason: `auth_denied`, `endpoint_not_found` (404 / `RequestUrlNotFound` — may be a firmware path variant, **not** "unsupported"), `field_absent` (endpoint answered, element missing), `timeout`, `connection_error`, `parse_error`, `blocked_by_policy`, `device_offline`. |
 | `NOT_IMPLEMENTED_IN_HACA` | Known setting without a HACA collector. |
 | `NOT_APPLICABLE` | Excluded by device role or ORP. |
 | `NOT_ATTEMPTED` | Out of audit scope or audit aborted. |
