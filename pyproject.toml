@@ -49,6 +49,8 @@ select = ["E", "F", "I", "B", "UP", "S", "SIM"]
 "tests/**" = ["S101"]
 "tests/integration/test_simulator.py" = ["S106", "S107"]
 "src/haca/simulation/network.py" = ["S105"]
+"src/haca/simulation/defaults.py" = ["S105"]
+"tests/integration/test_cli_identify.py" = ["S603"]
 "src/haca/simulation/digest.py" = ["S324"]
 
 [tool.mypy]

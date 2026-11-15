@@ -1,0 +1,6 @@
+origin: synthetic
+author: haca-developer
+date: "2026-11-15"
+basis: "test-only profile for MODEL_MISMATCH in identify CLI"
+firmware_profile: synthetic
+real_device_validated: false
