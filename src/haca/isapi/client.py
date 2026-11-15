@@ -180,7 +180,7 @@ class IsapiClient:
                     response_status = status
                     if status.sub_status_code == "notSupport":
                         raise NotSupportedError(self._device.id, endpoint_id)
-                    if status.sub_status_code == "RequestUrlNotFound":
+                    if status.sub_status_code in ("RequestUrlNotFound", "urlNotFound"):
                         raise EndpointNotFound(self._device.id, endpoint_id)
                     if not status.is_success:
                         raise DeviceReportedError(
