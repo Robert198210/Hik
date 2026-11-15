@@ -1,0 +1,1 @@
+"""ISAPI endpoint registry package."""
