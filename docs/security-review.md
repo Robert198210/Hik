@@ -8,7 +8,7 @@ The Architect records verdicts here.
 | Gate | When | Scope | Status |
 |---|---|---|---|
 | S0 | Phase 0 | Data-handling exclusions (ADR-017) | **Applied 2026-11-15** (see T0.3) |
-| S1 | After Phase 1 | `haca.security`, `haca.isapi.client`, `haca.config`, fixtures | Not started |
+| S1 | After Phase 1 | `haca.security`, `haca.isapi.client`, `haca.config`, fixtures | **PASS WITH CONDITIONS (2026-11-15)** |
 | S2 | After Phase 3 | Persistence of raw responses, report masking | Not started |
 | L | Before the first live connection (P3L) | Live-device readiness | Not started |
 | S3 | v0.2 | Gemini data flow, redaction, validator, egress | Not started |
@@ -119,4 +119,38 @@ Example configs (`config/*.example.yaml`) are committed; real configs are not.
 
 | Date | Gate | Verdict | Reviewer | Notes |
 |---|---|---|---|---|
-| — | — | — | — | — |
+| 2026-11-15 | S1 | PASS WITH CONDITIONS | Architect (Claude Opus 5.5) | See S1 record below |
+
+### S1 record (commit `a8b35a9`)
+
+Checklist (T1.10):
+- [x] L1: the only request API is `IsapiClient.read()`; the only HTTP client in `src/` is `httpx.Client` in `isapi/client.py`.
+- [x] L2: denylist before allowlist on the decoded path. Hygiene rejects traversal, double encoding,
+  encoded separators and control characters. Methods must be exact `GET`/`POST`; POST requires `read_post`
+  plus a root-element check.
+- [x] L3: guard on every request, including Digest retries (tested). `follow_redirects=False`,
+  `trust_env=False`. Path and query are checked separately (architect fix `5ef47d2`).
+- [x] Network policy: RFC1918-only, exact host:port match, loopback only in simulation, duplicate
+  host:port rejected.
+- [x] Egress: Gemini host disabled by default (`allow_gemini=False`).
+- [x] Credentials:
+  - secret-like keys rejected in config/ORP files
+  - `Credential` repr masked
+  - `install_redaction()` called by the CLI
+  - redaction covers Digest values, JSON-style secrets, exception text, and handlers added later
+- [x] Fixtures: synthetic-only provenance; scanner green; no references to private paths.
+- [x] Dependencies: no non-Gemini AI package (`test_dependencies.py`).
+- [x] QA T1.09: 45/45 criteria. 16 defects found and fixed (`f21c9a0`). 998 tests pass.
+
+Architect review fixes applied during S1:
+- extended denylist (`shutdown`, `restore`, record control, IO output trigger, `/start` `/stop`, PTZ
+  zoom/focus/iris/position)
+- HTTP 401 always maps to `AuthError`
+
+Conditions and residual risks:
+1. The 5 MB response limit is enforced after the body is read (no streaming read). Risk: memory use if a
+   LAN device returns a huge body. Accepted for MVP; revisit before v1.0.
+2. All registry endpoints except `system.device_info` are still unverified against real firmware (ADR-017).
+   Live validation (Gate L) is required before any compatibility claim.
+3. The denylist is substring-based and intentionally broad. A future legitimate read path containing a
+   denylisted word (e.g. `format`) will be blocked and reported as `blocked_by_policy`. Accepted (fail-closed).
