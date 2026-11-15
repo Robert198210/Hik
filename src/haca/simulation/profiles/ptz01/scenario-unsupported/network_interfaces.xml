@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NetworkInterfaceList xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <NetworkInterface>
+    <id>1</id>
+    <IPAddress>
+      <ipVersion>v4</ipVersion>
+      <addressingType>static</addressingType>
+      <ipAddress>192.168.250.201</ipAddress>
+      <subnetMask>192.168.250.0</subnetMask>
+      <DefaultGateway>
+        <ipAddress>192.168.250.1</ipAddress>
+      </DefaultGateway>
+    </IPAddress>
+  </NetworkInterface>
+</NetworkInterfaceList>

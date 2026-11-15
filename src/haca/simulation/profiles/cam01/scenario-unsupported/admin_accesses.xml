@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdminAccessProtocolList xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <AdminAccessProtocol>
+    <id>80</id>
+    <enabled>true</enabled>
+    <protocol>HTTP</protocol>
+    <portNo>80</portNo>
+  </AdminAccessProtocol>
+  <AdminAccessProtocol>
+    <id>443</id>
+    <enabled>true</enabled>
+    <protocol>HTTPS</protocol>
+    <portNo>443</portNo>
+  </AdminAccessProtocol>
+  <AdminAccessProtocol>
+    <id>554</id>
+    <enabled>true</enabled>
+    <protocol>RTSP</protocol>
+    <portNo>554</portNo>
+  </AdminAccessProtocol>
+  <AdminAccessProtocol>
+    <id>8000</id>
+    <enabled>true</enabled>
+    <protocol>DEV_MANAGE</protocol>
+    <portNo>8000</portNo>
+  </AdminAccessProtocol>
+</AdminAccessProtocolList>

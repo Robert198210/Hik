@@ -1,0 +1,40 @@
+paths:
+  /ISAPI/System/deviceInfo:
+    file: device_info.xml
+    status: 200
+  /ISAPI/System/time:
+    file: time.xml
+    status: 200
+  /ISAPI/System/time/ntpServers:
+    file: ntp_servers.xml
+    status: 200
+  /ISAPI/System/Network/interfaces:
+    file: network_interfaces.xml
+    status: 200
+  /ISAPI/Security/adminAccesses:
+    file: admin_accesses.xml
+    status: 200
+  /ISAPI/Streaming/channels:
+    file: streaming_channels.xml
+    status: 200
+  /ISAPI/Smart/capabilities:
+    file: smart_capabilities.xml
+    status: 200
+  /ISAPI/Smart/LineDetection/1:
+    file: line_detection.xml
+    status: 200
+  /ISAPI/Smart/FieldDetection/1:
+    file: field_detection.xml
+    status: 200
+  /ISAPI/Smart/regionEntrance/1:
+    file: ../../shared/edge-cases/response_status_url_not_found.xml
+    status: 404
+  /ISAPI/Smart/RegionEntrance/1:
+    file: region_entrance.xml
+    status: 200
+  /ISAPI/Event/triggers:
+    file: event_triggers.xml
+    status: 200
+  /ISAPI/System/Network/EZVIZ:
+    file: platform_ezviz.xml
+    status: 200

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RegionEntrance xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <id>1</id>
+  <enabled>true</enabled>
+  <RegionEntranceRegionList>
+    <RegionEntranceRegion>
+      <id>1</id>
+      <enabled>true</enabled>
+      <sensitivityLevel>50</sensitivityLevel>
+      <detectionTarget>human,vehicle</detectionTarget>
+      <RegionCoordinatesList>
+        <RegionCoordinates><positionX>1</positionX><positionY>1</positionY></RegionCoordinates>
+      </RegionCoordinatesList>
+    </RegionEntranceRegion>
+  </RegionEntranceRegionList>
+</RegionEntrance>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StreamingChannelList xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <StreamingChannel>
+    <id>101</id>
+    <channelName>Main</channelName>
+    <enabled>true</enabled>
+    <Video>
+      <videoCodecType>H.265</videoCodecType>
+      <videoResolutionWidth>2560</videoResolutionWidth>
+      <videoResolutionHeight>1440</videoResolutionHeight>
+      <videoQualityControlType>CBR</videoQualityControlType>
+      <constantBitRate>4096</constantBitRate>
+      <maxFrameRate>2500</maxFrameRate>
+      <GovLength>50</GovLength>
+      <SmartCodec>
+        <enabled>true</enabled>
+      </SmartCodec>
+    </Video>
+  </StreamingChannel>
+</StreamingChannelList>

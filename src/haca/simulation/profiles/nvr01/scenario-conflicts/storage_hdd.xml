@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hddList xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <hdd>
+    <id>1</id>
+    <hddName>SYNTH-HDD1</hddName>
+    <hddType>SATA</hddType>
+    <status>error</status>
+    <capacity>8000000</capacity>
+    <freeSpace>4000000</freeSpace>
+    <property>RW</property>
+  </hdd>
+</hddList>

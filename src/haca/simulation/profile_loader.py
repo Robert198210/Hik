@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from importlib.resources import files
 from importlib.resources.abc import Traversable
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 import yaml
@@ -29,6 +29,32 @@ def _read_node_bytes(node: Traversable) -> bytes:
 
 def _read_node_text(node: Traversable) -> str:
     return node.read_text(encoding="utf-8")
+
+
+def _resolve_fixture_node(profile_dir: Traversable | Path, file_name: str) -> Traversable | Path:
+    """Resolve a fixture path, including ``..`` segments relative to the profile directory."""
+    rel = PurePosixPath(file_name)
+    if isinstance(profile_dir, Path):
+        return (profile_dir / rel).resolve()
+
+    node: Traversable | None = profile_dir
+    for part in rel.parts:
+        if node is None:
+            break
+        if part == "..":
+            parent = getattr(node, "parent", None)
+            if parent is None:
+                msg = f"cannot resolve parent for fixture {file_name!r}"
+                raise ValueError(msg)
+            node = parent
+            continue
+        if part == ".":
+            continue
+        node = node.joinpath(part)
+    if node is None:
+        msg = f"invalid fixture path {file_name!r}"
+        raise ValueError(msg)
+    return node
 
 
 def _load_index(index_source: Traversable | Path) -> dict[str, Any]:
@@ -64,10 +90,8 @@ def load_path_responses(profile_dir: Traversable | Path) -> dict[str, PathRespon
         status = int(entry.get("status", 200))
         if not isinstance(file_name, str):
             continue
-        if isinstance(profile_dir, Path):
-            body = (profile_dir / file_name).read_bytes()
-        else:
-            body = _read_node_bytes(profile_dir.joinpath(file_name))
+        target = _resolve_fixture_node(profile_dir, file_name)
+        body = target.read_bytes() if isinstance(target, Path) else _read_node_bytes(target)
         responses[str(path)] = PathResponse(status=status, body=body)
     return responses
 

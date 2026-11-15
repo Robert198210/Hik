@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DeviceInfo version="2.0" xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <deviceName>SYNTHETIC CAM01</deviceName>
+  <deviceID>00000000-0000-0000-0000-000000000002</deviceID>
+  <model>DS-2CD2087G3-LI2UY/SL</model>
+  <serialNumber>SYNTH-CAM01-0001</serialNumber>
+  <macAddress>00:00:5E:00:53:02</macAddress>
+  <firmwareVersion>V5.99.000</firmwareVersion>
+  <firmwareReleasedDate>build 991231</firmwareReleasedDate>
+  <deviceType>IPCamera</deviceType>
+  <manufacturer>hikvision</manufacturer>
+</DeviceInfo>

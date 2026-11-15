@@ -1,4 +1,4 @@
-"""Built-in Phase 1 ISAPI endpoint rules (until T2.02 registry YAML)."""
+"""Backward-compatible exports for the ISAPI endpoint registry (T2.01+)."""
 
 from __future__ import annotations
 
@@ -6,17 +6,20 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
-from haca.security.endpoint_policy import EndpointPolicy, EndpointRule
+from haca.isapi.registry.loader import RegistryEntry, build_policy, load_registry_entries
+from haca.security.endpoint_policy import EndpointPolicy
 
-_PHASE1_DEVICE_INFO = EndpointRule(
-    id="system.device_info",
-    path_template="/ISAPI/System/deviceInfo",
-    method="GET",
-    sensitivity="normal",
+__all__ = (
+    "PHASE1_ENDPOINTS",
+    "Phase1EndpointMeta",
+    "build_phase1_policy",
+    "build_policy",
 )
 
 
 class Phase1EndpointMeta(BaseModel):
+    """Legacy metadata tuple shape used in Phase-1 QA tests."""
+
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     id: str
@@ -27,17 +30,21 @@ class Phase1EndpointMeta(BaseModel):
     source: str
 
 
-PHASE1_ENDPOINTS: tuple[Phase1EndpointMeta, ...] = (
-    Phase1EndpointMeta(
-        id="system.device_info",
-        path="/ISAPI/System/deviceInfo",
-        method="GET",
-        device_roles=("nvr", "ptz", "camera"),
-        verification="documented",
-        source="Hikvision ISAPI general device information resource",
-    ),
+def _to_phase1_meta(entry: RegistryEntry) -> Phase1EndpointMeta:
+    return Phase1EndpointMeta(
+        id=entry.id,
+        path=entry.path,
+        method=entry.method,
+        device_roles=entry.device_roles,
+        verification=entry.verification,
+        source=entry.source,
+    )
+
+
+PHASE1_ENDPOINTS: tuple[Phase1EndpointMeta, ...] = tuple(
+    _to_phase1_meta(e) for e in load_registry_entries()
 )
 
 
 def build_phase1_policy() -> EndpointPolicy:
-    return EndpointPolicy([_PHASE1_DEVICE_INFO])
+    return build_policy()

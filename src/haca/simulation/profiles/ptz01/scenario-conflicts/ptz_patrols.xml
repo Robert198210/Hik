@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PTZPatrolList xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <PTZPatrol>
+    <id>1</id>
+    <enabled>true</enabled>
+    <patrolName>default-patrol</patrolName>
+  </PTZPatrol>
+</PTZPatrolList>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EventTriggerList xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <EventTrigger>
+    <id>1</id>
+    <eventType>linedetection</eventType>
+    <videoInputChannelID>1</videoInputChannelID>
+    <EventTriggerNotificationList>
+      <EventTriggerNotification>
+        <id>1</id>
+        <notificationMethod>record</notificationMethod>
+        <videoInputID>1</videoInputID>
+      </EventTriggerNotification>
+      <EventTriggerNotification>
+        <id>2</id>
+        <notificationMethod>center</notificationMethod>
+        <videoInputID>1</videoInputID>
+      </EventTriggerNotification>
+    </EventTriggerNotificationList>
+  </EventTrigger>
+</EventTriggerList>

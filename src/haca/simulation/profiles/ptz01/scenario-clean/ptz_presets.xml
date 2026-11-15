@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PTZPresetList xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <PTZPreset>
+    <id>1</id>
+    <enabled>true</enabled>
+    <presetName>home</presetName>
+  </PTZPreset>
+</PTZPresetList>

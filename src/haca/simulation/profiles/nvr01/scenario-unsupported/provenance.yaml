@@ -1,0 +1,4 @@
+origin: synthetic
+synthetic_profiles: true
+real_device_validated: false
+notes: T2.01 scenario fixture; ADR-017 synthetic values only.

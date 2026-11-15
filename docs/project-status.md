@@ -2,6 +2,12 @@
 
 Last updated: 2026-11-15
 
+## Phase 2 — Registry + catalog (MVP)
+
+| Task | Status | Notes |
+|---|---|---|
+| T2.01 Endpoint registry, Setting Catalog, scenario profiles | Done | `endpoints.yaml` (21), `settings.yaml` (41), scenarios `scenario-clean` / `scenario-conflicts` / `scenario-unsupported` for nvr01/ptz01/cam01 |
+
 ## Phase 0 — Setup
 
 | Task | Status | Role / routing | Notes |

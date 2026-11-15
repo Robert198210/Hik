@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SmartCap xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <isSupportLineDetection>true</isSupportLineDetection>
+  <isSupportFieldDetection>true</isSupportFieldDetection>
+  <isSupportRegionEntrance>false</isSupportRegionEntrance>
+</SmartCap>

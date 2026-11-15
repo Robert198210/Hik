@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrackList xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <Track>
+    <id>101</id>
+    <Channel>1</Channel>
+    <Enable>true</Enable>
+    <DefaultRecordingMode>CMR</DefaultRecordingMode>
+    <PreRecordTimeSeconds>5</PreRecordTimeSeconds>
+    <PostRecordTimeSeconds>5</PostRecordTimeSeconds>
+    <TrackSchedule>
+      <ScheduleBlockList>
+        <ScheduleBlock>
+          <id>1</id>
+          <ScheduleAction>
+            <id>1</id>
+            <ScheduleActionStartTime><DayOfWeek>Monday</DayOfWeek><TimeOfDay>00:00:00</TimeOfDay></ScheduleActionStartTime>
+            <ScheduleActionEndTime><DayOfWeek>Friday</DayOfWeek><TimeOfDay>23:59:59</TimeOfDay></ScheduleActionEndTime>
+            <Actions><Record>true</Record><ActionRecordingMode>CMR</ActionRecordingMode></Actions>
+          </ScheduleAction>
+          <ScheduleAction>
+            <id>2</id>
+            <ScheduleActionStartTime><DayOfWeek>Saturday</DayOfWeek><TimeOfDay>00:00:00</TimeOfDay></ScheduleActionStartTime>
+            <ScheduleActionEndTime><DayOfWeek>Sunday</DayOfWeek><TimeOfDay>23:59:59</TimeOfDay></ScheduleActionEndTime>
+            <Actions><Record>true</Record><ActionRecordingMode>MOTION</ActionRecordingMode></Actions>
+          </ScheduleAction>
+        </ScheduleBlock>
+      </ScheduleBlockList>
+    </TrackSchedule>
+  </Track>
+</TrackList>

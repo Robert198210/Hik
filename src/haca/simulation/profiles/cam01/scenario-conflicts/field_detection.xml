@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FieldDetection xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <id>1</id>
+  <enabled>true</enabled>
+  <FieldDetectionRegionList>
+    <FieldDetectionRegion>
+      <id>1</id>
+      <enabled>true</enabled>
+      <sensitivityLevel>50</sensitivityLevel>
+      <timeThreshold>5</timeThreshold>
+      <detectionTarget></detectionTarget>
+
+    </FieldDetectionRegion>
+  </FieldDetectionRegionList>
+</FieldDetection>

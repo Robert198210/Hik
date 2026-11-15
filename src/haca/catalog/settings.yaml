@@ -1,0 +1,388 @@
+# HACA Setting Catalog v1 (T2.01). Fields are extractor targets for T2.02.
+- id: identity.model
+  category: identity
+  title: Device model
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: system.device_info, field: model}
+
+- id: identity.firmware
+  category: identity
+  title: Firmware version
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: system.device_info, field: firmwareVersion}
+
+- id: time.mode
+  category: time
+  title: Time sync mode
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  orp_link: system.time_source
+  sources:
+    - {kind: isapi, endpoint_id: system.time, field: timeMode}
+
+- id: time.ntp_server
+  category: time
+  title: NTP server address
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: system.time.ntp_servers, field: NTPServer.hostName}
+
+- id: network.addressing_type
+  category: network
+  title: IPv4 addressing type
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: system.network.interfaces, field: IPAddress.addressingType}
+
+- id: security.http_enabled
+  category: security
+  title: HTTP admin access enabled
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: security.admin_accesses, field: AdminAccessProtocol.HTTP.enabled}
+
+- id: security.https_enabled
+  category: security
+  title: HTTPS admin access enabled
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  orp_link: system.https_required
+  sources:
+    - {kind: isapi, endpoint_id: security.admin_accesses, field: AdminAccessProtocol.HTTPS.enabled}
+
+- id: security.rtsp_enabled
+  category: security
+  title: RTSP streaming port enabled
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: security.admin_accesses, field: AdminAccessProtocol.RTSP.enabled}
+
+- id: security.sdk_port
+  category: security
+  title: Device management port
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: security.admin_accesses, field: AdminAccessProtocol.DEV_MANAGE.portNo}
+
+- id: streaming.main.codec
+  category: streaming
+  title: Main stream video codec
+  device_roles: [nvr, ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - kind: isapi
+      endpoint_id: streaming.channels
+      field: StreamingChannel[101].Video.videoCodecType
+
+- id: streaming.main.resolution
+  category: streaming
+  title: Main stream resolution
+  device_roles: [nvr, ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - kind: isapi
+      endpoint_id: streaming.channels
+      field: StreamingChannel[101].Video.resolution
+
+- id: streaming.main.frame_rate
+  category: streaming
+  title: Main stream frame rate
+  device_roles: [nvr, ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - kind: isapi
+      endpoint_id: streaming.channels
+      field: StreamingChannel[101].Video.maxFrameRate
+
+- id: streaming.main.bitrate_mode
+  category: streaming
+  title: Main stream bitrate control
+  device_roles: [nvr, ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - kind: isapi
+      endpoint_id: streaming.channels
+      field: StreamingChannel[101].Video.videoQualityControlType
+
+- id: streaming.main.bitrate
+  category: streaming
+  title: Main stream target bitrate
+  device_roles: [nvr, ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - kind: isapi
+      endpoint_id: streaming.channels
+      field: StreamingChannel[101].Video.bitrate
+
+- id: streaming.main.smart_codec
+  category: streaming
+  title: Main stream smart codec
+  device_roles: [nvr, ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - kind: isapi
+      endpoint_id: streaming.channels
+      field: StreamingChannel[101].Video.SmartCodec.enabled
+
+- id: recording.schedule_mode
+  category: recording
+  title: Default recording mode
+  device_roles: [nvr]
+  scope: device
+  verification: candidate_unverified
+  orp_link: system.recording_mode
+  sources:
+    - {kind: isapi, endpoint_id: record.tracks, field: Track.DefaultRecordingMode}
+
+- id: recording.schedule_coverage
+  category: recording
+  title: Recording schedule coverage
+  device_roles: [nvr]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: record.tracks, field: TrackSchedule.coverage}
+
+- id: recording.pre_post_record
+  category: recording
+  title: Pre/post record seconds
+  device_roles: [nvr]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: record.tracks, field: Track.pre_post_seconds}
+
+- id: recording.track_enable
+  category: recording
+  title: Main track recording enabled
+  device_roles: [nvr]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: record.tracks, field: Track.Enable}
+
+- id: storage.hdd_status
+  category: storage
+  title: HDD status
+  device_roles: [nvr]
+  scope: item
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: storage.hdd, field: hdd.status}
+
+- id: storage.hdd_capacity
+  category: storage
+  title: HDD capacity
+  device_roles: [nvr]
+  scope: item
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: storage.hdd, field: hdd.capacity}
+
+- id: storage.hdd_free_space
+  category: storage
+  title: HDD free space
+  device_roles: [nvr]
+  scope: item
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: storage.hdd, field: hdd.freeSpace}
+
+- id: analytics.line_engine_enabled
+  category: analytics
+  title: Line crossing engine enabled
+  device_roles: [ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: smart.line_detection, field: LineDetection.enabled}
+
+- id: analytics.line_rules
+  category: analytics
+  title: Line crossing rules configured
+  device_roles: [ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: smart.line_detection, field: LineItemList.items}
+
+- id: analytics.field_engine_enabled
+  category: analytics
+  title: Intrusion field engine enabled
+  device_roles: [ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: smart.field_detection, field: FieldDetection.enabled}
+
+- id: analytics.field_regions
+  category: analytics
+  title: Intrusion field regions
+  device_roles: [ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: smart.field_detection, field: FieldDetectionRegionList.items}
+
+- id: analytics.region_entrance
+  category: analytics
+  title: Region entrance detection
+  device_roles: [ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: smart.region_entrance, field: RegionEntrance.enabled}
+
+- id: analytics.detection_targets
+  category: analytics
+  title: VCA detection targets
+  device_roles: [ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  orp_link: devices.required_event_targets
+  sources:
+    - {kind: isapi, endpoint_id: smart.line_detection, field: LineItem.detectionTarget}
+
+- id: linkage.linedetection_notifications
+  category: linkage
+  title: Line crossing event notifications
+  device_roles: [nvr, ptz, camera]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: event.triggers, field: EventTrigger.linedetection.methods}
+
+- id: ptz.park_action_enabled
+  category: ptz
+  title: Park action enabled
+  device_roles: [ptz]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: ptz.park_action, field: ParkAction.enabled}
+
+- id: ptz.park_action_type
+  category: ptz
+  title: Park action type
+  device_roles: [ptz]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: ptz.park_action, field: ParkAction.Action.ActionType}
+
+- id: ptz.patrols
+  category: ptz
+  title: Configured patrols
+  device_roles: [ptz]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: ptz.patrols, field: PTZPatrolList.items}
+
+- id: ptz.presets
+  category: ptz
+  title: Configured presets
+  device_roles: [ptz]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: ptz.presets, field: PTZPresetList.items}
+
+- id: platform.ezviz_enabled
+  category: platform
+  title: EZVIZ / Hik-Connect enabled
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  orp_link: system.hik_connect
+  sources:
+    - {kind: isapi, endpoint_id: platform.ezviz, field: EZVIZ.enabled}
+
+- id: input_proxy.protocol
+  category: security
+  title: Input proxy protocol
+  device_roles: [nvr]
+  scope: channel
+  verification: candidate_unverified
+  orp_link: devices.camera_protocol
+  sources:
+    - {kind: isapi, endpoint_id: input_proxy.channels, field: InputProxyChannel.proxyProtocol}
+
+- id: input_proxy.online
+  category: security
+  title: Input proxy channel online
+  device_roles: [nvr]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: input_proxy.channels_status, field: InputProxyChannelStatus.online}
+
+- id: manual.dual_vca
+  category: analytics
+  title: Dual-VCA / display info on stream
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: manual, checklist_id: manual.dual_vca}
+
+- id: manual.nvr_save_vca_data
+  category: recording
+  title: NVR save camera VCA data
+  device_roles: [nvr]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: manual, checklist_id: manual.nvr_save_vca_data}
+
+- id: manual.nvr_local_smart_analysis
+  category: analytics
+  title: NVR channel local smart analysis
+  device_roles: [nvr]
+  scope: channel
+  verification: candidate_unverified
+  sources:
+    - {kind: manual, checklist_id: manual.nvr_local_smart_analysis}
+
+- id: manual.hdd_model_smr
+  category: storage
+  title: HDD model and SMR/CMR
+  device_roles: [nvr]
+  scope: item
+  verification: candidate_unverified
+  sources:
+    - {kind: manual, checklist_id: manual.hdd_model_smr}
+
+- id: manual.playback_markers
+  category: analytics
+  title: Playback human/vehicle markers
+  device_roles: [nvr]
+  scope: device
+  verification: candidate_unverified
+  orp_link: system.timeline_markers_required
+  sources:
+    - {kind: manual, checklist_id: manual.playback_markers}

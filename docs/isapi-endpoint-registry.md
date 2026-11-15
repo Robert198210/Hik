@@ -55,4 +55,33 @@ it is read from. Coverage statuses: see [architecture.md §7](architecture.md).
 
 ## Endpoint table
 
+
+<!-- registry:begin -->
+| id | path | roles | capability gate | verification | sensitivity |
+| --- | --- | --- | --- | --- | --- |
+| `system.device_info` | `/ISAPI/System/deviceInfo` | nvr, ptz, camera | — | documented | normal |
+| `system.time` | `/ISAPI/System/time` | nvr, ptz, camera | — | candidate_unverified | normal |
+| `system.time.ntp_servers` | `/ISAPI/System/time/ntpServers` | nvr, ptz, camera | — | candidate_unverified | normal |
+| `system.network.interfaces` | `/ISAPI/System/Network/interfaces` | nvr, ptz, camera | — | candidate_unverified | normal |
+| `security.admin_accesses` | `/ISAPI/Security/adminAccesses` | nvr, ptz, camera | — | candidate_unverified | normal |
+| `streaming.channels` | `/ISAPI/Streaming/channels` | nvr, ptz, camera | — | candidate_unverified | normal |
+| `smart.capabilities` | `/ISAPI/Smart/capabilities` | ptz, camera | — | candidate_unverified | normal |
+| `smart.line_detection` | `/ISAPI/Smart/LineDetection/{channel}` | ptz, camera | smart.isSupportLineDetection | candidate_unverified | normal |
+| `smart.field_detection` | `/ISAPI/Smart/FieldDetection/{channel}` | ptz, camera | smart.isSupportFieldDetection | candidate_unverified | normal |
+| `smart.region_entrance` | `/ISAPI/Smart/regionEntrance/{channel}` | ptz, camera | smart.isSupportRegionEntrance | candidate_unverified | normal |
+| `event.triggers` | `/ISAPI/Event/triggers` | nvr, ptz, camera | — | candidate_unverified | normal |
+| `ptz.park_action` | `/ISAPI/PTZCtrl/channels/{channel}/parkAction` | ptz | — | candidate_unverified | normal |
+| `ptz.patrols` | `/ISAPI/PTZCtrl/channels/{channel}/patrols` | ptz | — | candidate_unverified | normal |
+| `ptz.presets` | `/ISAPI/PTZCtrl/channels/{channel}/presets` | ptz | — | candidate_unverified | normal |
+| `record.tracks` | `/ISAPI/ContentMgmt/record/tracks` | nvr | — | candidate_unverified | normal |
+| `storage.hdd` | `/ISAPI/ContentMgmt/Storage/hdd` | nvr | — | candidate_unverified | normal |
+| `input_proxy.channels` | `/ISAPI/ContentMgmt/InputProxy/channels` | nvr | — | candidate_unverified | normal |
+| `input_proxy.channels_status` | `/ISAPI/ContentMgmt/InputProxy/channels/status` | nvr | — | candidate_unverified | normal |
+| `platform.ezviz` | `/ISAPI/System/Network/EZVIZ` | nvr, ptz, camera | — | candidate_unverified | normal |
+| `system.configuration_data` | `/ISAPI/System/configurationData` | nvr, ptz, camera | — | candidate_unverified | denied |
+| `streaming.picture` | `/ISAPI/Streaming/channels/{id}/picture` | nvr, ptz, camera | — | candidate_unverified | denied |
+
+_Total endpoints: 21._
+
+Variant paths: `/ISAPI/Smart/RegionEntrance/{channel}`; `/ISAPI/PTZCtrl/channels/{channel}/ParkAction`.<!-- registry:end -->
 _Generated from T2.02 on._

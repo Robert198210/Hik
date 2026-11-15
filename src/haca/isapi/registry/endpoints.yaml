@@ -1,0 +1,159 @@
+# HACA ISAPI endpoint registry v1 (T2.01). Machine-readable allowlist metadata.
+- id: system.device_info
+  path: /ISAPI/System/deviceInfo
+  method: GET
+  device_roles: [nvr, ptz, camera]
+  verification: documented
+  source: Hikvision ISAPI general device information resource
+  notes: Public ISAPI deviceInfo resource; model and firmware identity.
+
+- id: system.time
+  path: /ISAPI/System/time
+  method: GET
+  device_roles: [nvr, ptz, camera]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: system.time.ntp_servers
+  path: /ISAPI/System/time/ntpServers
+  method: GET
+  device_roles: [nvr, ptz, camera]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: system.network.interfaces
+  path: /ISAPI/System/Network/interfaces
+  method: GET
+  device_roles: [nvr, ptz, camera]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: security.admin_accesses
+  path: /ISAPI/Security/adminAccesses
+  method: GET
+  device_roles: [nvr, ptz, camera]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: streaming.channels
+  path: /ISAPI/Streaming/channels
+  method: GET
+  device_roles: [nvr, ptz, camera]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: smart.capabilities
+  path: /ISAPI/Smart/capabilities
+  method: GET
+  device_roles: [ptz, camera]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: smart.line_detection
+  path: /ISAPI/Smart/LineDetection/{channel}
+  method: GET
+  device_roles: [ptz, camera]
+  capability_gate: smart.isSupportLineDetection
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: smart.field_detection
+  path: /ISAPI/Smart/FieldDetection/{channel}
+  method: GET
+  device_roles: [ptz, camera]
+  capability_gate: smart.isSupportFieldDetection
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: smart.region_entrance
+  path: /ISAPI/Smart/regionEntrance/{channel}
+  method: GET
+  device_roles: [ptz, camera]
+  variants:
+    - /ISAPI/Smart/RegionEntrance/{channel}
+  capability_gate: smart.isSupportRegionEntrance
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: event.triggers
+  path: /ISAPI/Event/triggers
+  method: GET
+  device_roles: [nvr, ptz, camera]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: ptz.park_action
+  path: /ISAPI/PTZCtrl/channels/{channel}/parkAction
+  method: GET
+  device_roles: [ptz]
+  variants:
+    - /ISAPI/PTZCtrl/channels/{channel}/ParkAction
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: ptz.patrols
+  path: /ISAPI/PTZCtrl/channels/{channel}/patrols
+  method: GET
+  device_roles: [ptz]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: ptz.presets
+  path: /ISAPI/PTZCtrl/channels/{channel}/presets
+  method: GET
+  device_roles: [ptz]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: record.tracks
+  path: /ISAPI/ContentMgmt/record/tracks
+  method: GET
+  device_roles: [nvr]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: storage.hdd
+  path: /ISAPI/ContentMgmt/Storage/hdd
+  method: GET
+  device_roles: [nvr]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: input_proxy.channels
+  path: /ISAPI/ContentMgmt/InputProxy/channels
+  method: GET
+  device_roles: [nvr]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: input_proxy.channels_status
+  path: /ISAPI/ContentMgmt/InputProxy/channels/status
+  method: GET
+  device_roles: [nvr]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: platform.ezviz
+  path: /ISAPI/System/Network/EZVIZ
+  method: GET
+  device_roles: [nvr, ptz, camera]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+
+- id: system.configuration_data
+  path: /ISAPI/System/configurationData
+  method: GET
+  device_roles: [nvr, ptz, camera]
+  sensitivity: denied
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+  notes: Full configuration export; denied by policy.
+
+- id: streaming.picture
+  path: /ISAPI/Streaming/channels/{id}/picture
+  method: GET
+  device_roles: [nvr, ptz, camera]
+  sensitivity: denied
+  verification: candidate_unverified
+  source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
+  notes: Snapshot URI; denied by default for privacy.

@@ -1,0 +1,37 @@
+paths:
+  /ISAPI/System/deviceInfo:
+    file: device_info.xml
+    status: 200
+  /ISAPI/System/time:
+    file: time.xml
+    status: 200
+  /ISAPI/System/time/ntpServers:
+    file: ntp_servers.xml
+    status: 200
+  /ISAPI/System/Network/interfaces:
+    file: network_interfaces.xml
+    status: 200
+  /ISAPI/Security/adminAccesses:
+    file: admin_accesses.xml
+    status: 200
+  /ISAPI/Streaming/channels:
+    file: streaming_channels.xml
+    status: 200
+  /ISAPI/Event/triggers:
+    file: event_triggers.xml
+    status: 200
+  /ISAPI/ContentMgmt/record/tracks:
+    file: record_tracks.xml
+    status: 200
+  /ISAPI/ContentMgmt/Storage/hdd:
+    file: storage_hdd.xml
+    status: 200
+  /ISAPI/ContentMgmt/InputProxy/channels:
+    file: input_proxy_channels.xml
+    status: 200
+  /ISAPI/ContentMgmt/InputProxy/channels/status:
+    file: input_proxy_status.xml
+    status: 200
+  /ISAPI/System/Network/EZVIZ:
+    file: platform_ezviz.xml
+    status: 200

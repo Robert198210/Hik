@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ParkAction xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <enabled>true</enabled>
+  <Parktime>300</Parktime>
+  <Action>
+    <ActionType>preset</ActionType>
+    <ActionNum>1</ActionNum>
+  </Action>
+</ParkAction>

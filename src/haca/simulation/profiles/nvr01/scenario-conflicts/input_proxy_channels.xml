@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<InputProxyChannelList xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <InputProxyChannel>
+    <id>1</id>
+    <name>cam01-channel</name>
+    <sourceInputPortDescriptor>
+      <proxyProtocol>ONVIF</proxyProtocol>
+      <addressingFormatType>ipAddress</addressingFormatType>
+      <ipAddress>192.168.250.202</ipAddress>
+      <managePortNo>8000</managePortNo>
+      <srcInputPort>1</srcInputPort>
+      <userName>synthetic</userName>
+      <streamType>auto</streamType>
+    </sourceInputPortDescriptor>
+  </InputProxyChannel>
+  <InputProxyChannel>
+    <id>2</id>
+    <name>orphan-camera</name>
+    <sourceInputPortDescriptor>
+      <proxyProtocol>HIKVISION</proxyProtocol>
+      <addressingFormatType>ipAddress</addressingFormatType>
+      <ipAddress>192.168.250.250</ipAddress>
+      <managePortNo>8000</managePortNo>
+      <srcInputPort>2</srcInputPort>
+      <userName>synthetic</userName>
+      <streamType>auto</streamType>
+    </sourceInputPortDescriptor>
+  </InputProxyChannel>
+</InputProxyChannelList>

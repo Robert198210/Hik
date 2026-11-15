@@ -197,11 +197,23 @@ def test_fixture_values_match_task_spec() -> None:
     assert 'xmlns="http://www.isapi.org/ver20/XMLSchema"' in ns2 and 'version="2.0"' in ns2
 
 
-def test_isapi_paths_in_src_are_registry_or_denylist_only() -> None:
-    from haca.isapi.registry.phase1_endpoints import PHASE1_ENDPOINTS
+def _expanded_registry_paths() -> set[str]:
+    from haca.isapi.registry.loader import all_registry_paths, load_registry_entries
 
-    registry_paths = {e.path for e in PHASE1_ENDPOINTS}
-    assert registry_paths == {"/ISAPI/System/deviceInfo"}
+    templates = all_registry_paths(load_registry_entries())
+    expanded = set(templates)
+    for template in templates:
+        if "{" in template:
+            expanded.add(
+                template.replace("{channel}", "1")
+                .replace("{id}", "1")
+                .replace("{track}", "1")
+            )
+    return expanded
+
+
+def test_isapi_paths_in_src_are_registry_or_denylist_only() -> None:
+    registry_paths = _expanded_registry_paths()
     path_re = re.compile(r"""["'`>](/(?:ISAPI|SDK|PSIA|cgi-bin)/[^"'`<\s]*)""")
     allowed_synthetic = {"/ISAPI/Synthetic/unavailable", "/ISAPI/Synthetic/missing"}
     for path in _text_files(SRC, suffixes=(".py", ".yaml", ".xml")):
@@ -213,7 +225,7 @@ def test_isapi_paths_in_src_are_registry_or_denylist_only() -> None:
             assert found in registry_paths or found in allowed_synthetic, (rel, found)
     for path in _text_files(SRC, suffixes=(".py",)):
         rel = path.relative_to(SRC).as_posix()
-        if rel in {"security/denylist.py", "isapi/registry/phase1_endpoints.py"}:
+        if rel in {"security/denylist.py", "isapi/registry/loader.py"}:
             continue
         assert not re.search(r"[\"']/(?:ISAPI|SDK|PSIA|cgi-bin)/", path.read_text()), rel
 
@@ -221,11 +233,17 @@ def test_isapi_paths_in_src_are_registry_or_denylist_only() -> None:
 def test_phase1_registry_entry_has_source_and_verification() -> None:
     from haca.isapi.registry.phase1_endpoints import PHASE1_ENDPOINTS
 
-    assert len(PHASE1_ENDPOINTS) == 1
-    entry = PHASE1_ENDPOINTS[0]
-    assert entry.id == "system.device_info" and entry.method == "GET"
-    assert entry.verification == "documented" and entry.source.strip()
-    assert set(entry.device_roles) == {"nvr", "ptz", "camera"}
+    assert len(PHASE1_ENDPOINTS) >= 1
+    for entry in PHASE1_ENDPOINTS:
+        assert entry.source.strip()
+        assert entry.verification in {
+            "observed_live",
+            "documented",
+            "candidate_unverified",
+        }
+    device_info = next(e for e in PHASE1_ENDPOINTS if e.id == "system.device_info")
+    assert device_info.method == "GET"
+    assert set(device_info.device_roles) == {"nvr", "ptz", "camera"}
 
 
 # ---------------------------------------------------------------------------

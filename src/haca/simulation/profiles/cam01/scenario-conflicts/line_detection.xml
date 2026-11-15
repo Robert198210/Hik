@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LineDetection xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <id>1</id>
+  <enabled>true</enabled>
+  <LineItemList>
+    <LineItem>
+      <id>1</id>
+      <enabled>false</enabled>
+      <sensitivityLevel>50</sensitivityLevel>
+      <directionSensitivity>any</directionSensitivity>
+      <detectionTarget>human,vehicle</detectionTarget>
+      <CoordinatesList>
+        <Coordinates><positionX>10</positionX><positionY>10</positionY></Coordinates>
+        <Coordinates><positionX>90</positionX><positionY>90</positionY></Coordinates>
+      </CoordinatesList>
+    </LineItem>
+  </LineItemList>
+</LineDetection>

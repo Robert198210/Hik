@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<InputProxyChannelStatusList xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <InputProxyChannelStatus>
+    <id>1</id>
+    <sourceInputPortDescriptor>
+      <ipAddress>192.168.250.202</ipAddress>
+    </sourceInputPortDescriptor>
+    <online>true</online>
+  </InputProxyChannelStatus>
+</InputProxyChannelStatusList>
