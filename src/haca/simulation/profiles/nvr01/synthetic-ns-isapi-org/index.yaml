@@ -1,0 +1,4 @@
+paths:
+  /ISAPI/System/deviceInfo:
+    file: device_info.xml
+    status: 200

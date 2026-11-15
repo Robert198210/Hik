@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DeviceInfo version="2.0" xmlns="http://www.isapi.org/ver20/XMLSchema">
+  <deviceName>SYNTHETIC NVR01</deviceName>
+  <deviceID>00000000-0000-0000-0000-000000000000</deviceID>
+  <model>DS-7616NXI-K2(D)</model>
+  <serialNumber>SYNTH-NVR01-0001</serialNumber>
+  <macAddress>00:00:5E:00:53:00</macAddress>
+  <firmwareVersion>V4.99.000</firmwareVersion>
+  <firmwareReleasedDate>build 991231</firmwareReleasedDate>
+  <deviceType>NVR</deviceType>
+  <manufacturer>hikvision</manufacturer>
+</DeviceInfo>

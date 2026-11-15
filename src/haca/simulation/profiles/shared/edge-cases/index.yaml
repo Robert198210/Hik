@@ -1,0 +1,2 @@
+# Shared fault-injection bodies; referenced by path in T1.07, not served as normal endpoints.
+paths: {}

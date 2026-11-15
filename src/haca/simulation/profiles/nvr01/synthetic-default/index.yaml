@@ -1,0 +1,5 @@
+# Maps ISAPI request paths to response fixtures for the simulator (T1.07).
+paths:
+  /ISAPI/System/deviceInfo:
+    file: device_info.xml
+    status: 200
