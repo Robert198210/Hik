@@ -112,6 +112,12 @@ class IsapiClient:
                 response = self._client.request(method, url)
             except PolicyViolation:
                 raise
+            except KeyError as exc:
+                raise AuthError(
+                    self._device.id,
+                    endpoint_id,
+                    "digest challenge parsing failed",
+                ) from exc
             except (httpx.ConnectError, httpx.ConnectTimeout, httpx.ReadTimeout) as exc:
                 last_error = exc
                 if attempt < attempts - 1:
@@ -130,6 +136,12 @@ class IsapiClient:
                 ) from exc
             except httpx.TimeoutException as exc:
                 raise DeviceTimeout(self._device.id, endpoint_id, "request timed out") from exc
+            except httpx.HTTPError as exc:
+                raise DeviceConnectionError(
+                    self._device.id,
+                    endpoint_id,
+                    "transport error",
+                ) from exc
 
             if response.status_code in _RETRYABLE_HTTP and attempt < attempts - 1:
                 self._sleep(_BACKOFF_SECONDS[attempt])
@@ -189,9 +201,13 @@ class IsapiClient:
                             status.status_code,
                             status.sub_status_code,
                         )
-            except XmlParseError:
+            except XmlParseError as exc:
                 if self._looks_like_xml(body, content_type):
-                    raise
+                    raise XmlParseError(
+                        self._device.id,
+                        endpoint_id,
+                        exc.message,
+                    ) from exc
                 document = None
             else:
                 if response_status is None:

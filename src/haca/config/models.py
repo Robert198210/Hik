@@ -82,6 +82,16 @@ class DeviceConfig(BaseModel):
             raise ValueError(msg)
         return value
 
+    @field_validator("port")
+    @classmethod
+    def validate_port(cls, value: int | None) -> int | None:
+        if value is None:
+            return value
+        if value < 1 or value > 65535:
+            msg = "port must be in range 1–65535"
+            raise ValueError(msg)
+        return value
+
     @field_validator("host_suffix")
     @classmethod
     def validate_host_suffix(cls, value: int | None) -> int | None:

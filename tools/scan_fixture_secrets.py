@@ -20,6 +20,13 @@ SYNTH_MAC_RE = re.compile(
 ANY_MAC_RE = re.compile(
     r"\b(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}\b",
 )
+SYNTH_MAC_DASH_RE = re.compile(
+    r"\b00-00-5E-00-53-[0-9A-Fa-f]{2}\b",
+    re.IGNORECASE,
+)
+ANY_MAC_DASH_RE = re.compile(
+    r"\b(?:[0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}\b",
+)
 IPV4_RE = re.compile(
     r"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}"
     r"(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b",
@@ -62,6 +69,16 @@ def _scan_text_content(path: Path, text: str, findings: list[Finding]) -> None:
     for match in ANY_MAC_RE.finditer(text):
         mac = match.group(0)
         if not SYNTH_MAC_RE.fullmatch(mac):
+            findings.append(
+                Finding(
+                    rel,
+                    "mac_address",
+                    f"MAC address not in synthetic range: {mac}",
+                )
+            )
+    for match in ANY_MAC_DASH_RE.finditer(text):
+        mac = match.group(0)
+        if not SYNTH_MAC_DASH_RE.fullmatch(mac):
             findings.append(
                 Finding(
                     rel,

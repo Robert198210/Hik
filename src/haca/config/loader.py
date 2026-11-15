@@ -26,7 +26,12 @@ def _load_yaml(path: Path) -> Any:
     try:
         data = yaml.safe_load(text)
     except yaml.YAMLError as exc:
-        raise ConfigError(path, "", f"invalid YAML: {exc}") from exc
+        mark = getattr(exc, "problem_mark", None)
+        if mark is not None:
+            message = f"invalid YAML at line {mark.line + 1}, column {mark.column + 1}"
+        else:
+            message = "invalid YAML syntax"
+        raise ConfigError(path, "", message) from exc
     if data is None:
         return {}
     if not isinstance(data, dict):

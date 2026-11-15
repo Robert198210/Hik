@@ -149,10 +149,6 @@ def test_cli_live_path_with_partial_credentials_does_not_echo_canary(
     assert CANARY not in _all_text(exc.value)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.08-2: missing credential raises uncaught CredentialNotFound traceback from CLI",
-)
 def test_cli_live_path_missing_credentials_exits_cleanly_with_code_1(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -223,10 +219,6 @@ def test_secret_redactor_masks_message_and_args() -> None:
     assert "QA-ARG-SECRET-1" not in stream.getvalue()
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.04-3: quoted Digest params / JSON-style / quoted secrets with spaces not fully masked",
-)
 @pytest.mark.parametrize(
     ("text", "leak"),
     [
@@ -241,20 +233,12 @@ def test_unregistered_secret_shapes_are_masked(text: str, leak: str) -> None:
     assert leak not in redact_text(text)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.04-4: SecretRedactor replaces a mapping args dict with its keys; logging breaks",
-)
 def test_secret_redactor_preserves_mapping_style_args() -> None:
     logger, stream = _logger_with_stream("qa.redact.mapping")
     logger.warning("value=%(a)s", {"a": 1})
     assert "value=1" in stream.getvalue()
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.04-5: SecretRedactor ignores non-str args and exc_info/traceback text",
-)
 @pytest.mark.parametrize("channel", ["object_arg", "exc_info"])
 def test_registered_secret_not_leaked_via_exception_objects(channel: str) -> None:
     register_secret("QA-EXC-SECRET-9")
@@ -295,10 +279,6 @@ def test_install_redaction_covers_existing_handlers(fresh_root_logging: logging.
     assert sum(isinstance(f, SecretRedactor) for f in handler.filters) == 1
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.04-6: handlers added after the first install_redaction() are never filtered",
-)
 def test_install_redaction_covers_handlers_added_later(fresh_root_logging: logging.Logger) -> None:
     root = fresh_root_logging
     redaction.install_redaction()

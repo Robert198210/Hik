@@ -86,6 +86,9 @@ class EndpointPolicy:
     def _check_path_hygiene(raw_path: str) -> None:
         if not raw_path.isascii():
             raise PolicyViolation("path_hygiene", "non-ASCII characters in path")
+        for ch in raw_path:
+            if ord(ch) < 0x20 or ord(ch) == 0x7F:
+                raise PolicyViolation("path_hygiene", "control character in path")
         if "\x00" in raw_path or "\\" in raw_path:
             raise PolicyViolation("path_hygiene", "illegal character in path")
         if "//" in raw_path:
@@ -102,7 +105,7 @@ class EndpointPolicy:
             raise PolicyViolation("path_hygiene", "double percent-encoding in path")
         for match in _PERCENT_BYTE_RE.finditer(raw_path.encode("ascii", errors="strict")):
             byte_val = int(match.group("hex"), 16)
-            if byte_val in (0x2E, 0x2F, 0x5C, 0x00):
+            if byte_val < 0x20 or byte_val == 0x7F or byte_val in (0x2E, 0x2F, 0x5C, 0x00):
                 raise PolicyViolation("path_hygiene", "encoded reserved character in path")
 
     @staticmethod
@@ -164,13 +167,12 @@ class EndpointPolicy:
         if rule.sensitivity == "denied":
             raise PolicyViolation("denied_endpoint", f"endpoint {rule.id!r} is denied")
 
-        method_upper = method.upper()
-        if method_upper not in _ALLOWED_METHODS:
-            raise PolicyViolation("method_not_allowed", f"method {method_upper!r} not allowed")
-        if method_upper == "GET":
+        if method not in _ALLOWED_METHODS:
+            raise PolicyViolation("method_not_allowed", f"method {method!r} not allowed")
+        if method == "GET":
             if rule.method != "GET":
                 raise PolicyViolation("method_not_allowed", "GET not allowed for this rule")
-        elif method_upper == "POST":
+        elif method == "POST":
             if not rule.read_post:
                 raise PolicyViolation("method_not_allowed", "POST not allowed for this rule")
             self._validate_post_body(rule, body)

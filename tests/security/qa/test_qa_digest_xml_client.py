@@ -118,10 +118,6 @@ def test_basic_challenge_is_never_answered_with_basic_credentials() -> None:
     assert all(a is None for a in seen)  # no downgrade to Basic
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.05-1: non-taxonomy httpx/builtin exceptions leak out of IsapiClient.read",
-)
 @pytest.mark.parametrize(
     "scenario",
     ["read_error", "remote_protocol", "write_error", "digest_no_nonce", "digest_unknown_algo"],
@@ -275,10 +271,6 @@ def test_simulator_per_device_nonces_are_distinct() -> None:
     assert _get(b, _digest_header("synthetic", "synthetic-pass", nonce_a)).status_code == 401
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.07-1: rotated-out (stale) nonces stay valid; spec requires 401 for stale nonce",
-)
 def test_simulator_rejects_stale_nonce_after_rotation() -> None:
     dev = _sim()
     old_nonce = _nonce_of(_get(dev, None))
@@ -389,10 +381,6 @@ def test_unusual_but_wellformed_encodings_parse_to_plain_document(body: bytes) -
     assert parse_xml(body).root_tag == "a"
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.05-3: LookupError for unknown XML encoding escapes parse_xml",
-)
 def test_unknown_declared_encoding_raises_xml_parse_error() -> None:
     with pytest.raises(XmlParseError):
         parse_xml(b"<?xml version='1.0' encoding='bogus'?><a/>")
@@ -448,10 +436,6 @@ def test_xxe_via_client_even_with_wrong_content_type() -> None:
             client.read("system.device_info")
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.05-2: XmlParseError raised by IsapiClient carries empty device_id/endpoint_id",
-)
 def test_xml_parse_error_from_client_is_attributed_to_device_and_endpoint() -> None:
     inner = CountingTransport(
         lambda _r: httpx.Response(

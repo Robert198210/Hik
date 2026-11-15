@@ -8,6 +8,7 @@ from xml.etree.ElementTree import Element
 from defusedxml.ElementTree import ParseError, fromstring  # type: ignore[import-untyped]
 
 from haca.isapi.errors import XmlParseError
+from haca.security.redaction import mask_device_identifiers
 
 _MAX_PREVIEW = 80
 
@@ -81,7 +82,7 @@ def _preview(body: bytes) -> str:
     text = body[:_MAX_PREVIEW].decode("utf-8", errors="replace")
     if len(body) > _MAX_PREVIEW:
         text += "…"
-    return text
+    return mask_device_identifiers(text)
 
 
 def parse_xml(body: bytes, max_bytes: int = 5_000_000) -> XmlDocument:
@@ -98,7 +99,7 @@ def parse_xml(body: bytes, max_bytes: int = 5_000_000) -> XmlDocument:
             forbid_entities=True,
             forbid_external=True,
         )
-    except (ParseError, ValueError, TypeError) as exc:
+    except (ParseError, ValueError, TypeError, LookupError) as exc:
         preview = _preview(data)
         raise XmlParseError("", "", f"XML parse error ({preview})") from exc
 

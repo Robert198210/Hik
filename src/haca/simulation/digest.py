@@ -49,11 +49,9 @@ class DigestAuthState:
         )
 
     def rotate_nonce(self) -> None:
-        self.valid_nonces.add(self.current_nonce)
+        self.valid_nonces.discard(self.current_nonce)
         self.current_nonce = uuid.uuid4().hex
         self.valid_nonces.add(self.current_nonce)
-        if len(self.valid_nonces) > 8:
-            self.valid_nonces = {self.current_nonce}
 
     def verify(
         self,

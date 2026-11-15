@@ -21,6 +21,7 @@ from haca.isapi.errors import (
     XmlParseError,
 )
 from haca.security.errors import PolicyViolation
+from haca.security.redaction import mask_device_identifiers
 
 _LOGGER = logging.getLogger("haca.collect")
 
@@ -189,7 +190,7 @@ def _error_result(
     exc: Exception,
     simulated: bool,
 ) -> IdentificationResult:
-    message = getattr(exc, "message", None) or str(exc)
+    message = mask_device_identifiers(getattr(exc, "message", None) or str(exc))
     return IdentificationResult(
         device_id=device_id,
         status=status,

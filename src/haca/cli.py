@@ -19,7 +19,7 @@ from haca.isapi.client import IsapiClient
 from haca.isapi.registry.phase1_endpoints import build_phase1_policy
 from haca.requirements.loader import load_requirements, requirements_hash
 from haca.requirements.models import DeviceRequirements, RequirementsProfile, SystemRequirements
-from haca.security.credentials import CredentialStore, EnvCredentialStore
+from haca.security.credentials import CredentialNotFound, CredentialStore, EnvCredentialStore
 from haca.security.egress import EgressPolicy
 from haca.security.redaction import install_redaction
 from haca.simulation.defaults import (
@@ -33,6 +33,10 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_CONFIG = _REPO_ROOT / "config" / "haca.example.yaml"
 _DEFAULT_DEVICES = _REPO_ROOT / "config" / "devices.example.yaml"
 _SIMULATED_BANNER = "SIMULATED — synthetic fixtures, no real device contacted"
+
+
+def _safe_terminal_text(value: str) -> str:
+    return "".join(ch if 0x20 <= ord(ch) < 0x7F else " " for ch in value)
 
 
 def _needs_decision_fields(profile: RequirementsProfile) -> list[str]:
@@ -61,8 +65,8 @@ def _print_identify_table(results: list[IdentificationResult]) -> None:
             (
                 item.device_id,
                 item.status.value,
-                identity.model if identity else "-",
-                identity.firmware_version if identity else "-",
+                _safe_terminal_text(identity.model) if identity else "-",
+                _safe_terminal_text(identity.firmware_version) if identity else "-",
                 identity.serial_masked if identity else "-",
             )
         )
@@ -83,17 +87,22 @@ def _build_live_clients(
 ) -> list[tuple[ResolvedDevice, IsapiClient]]:
     policy = build_phase1_policy()
     clients: list[tuple[ResolvedDevice, IsapiClient]] = []
-    for device in registry.all():
-        cred = store.get(device.credential_ref)
-        client = IsapiClient(
-            device,
-            cred,
-            registry,
-            policy,
-            EgressPolicy({device.host}),
-            app.timeouts,
-        )
-        clients.append((device, client))
+    try:
+        for device in registry.all():
+            cred = store.get(device.credential_ref)
+            client = IsapiClient(
+                device,
+                cred,
+                registry,
+                policy,
+                EgressPolicy({device.host}),
+                app.timeouts,
+            )
+            clients.append((device, client))
+    except CredentialNotFound:
+        for _device, client in clients:
+            client.close()
+        raise
     return clients
 
 
@@ -201,6 +210,9 @@ def main(argv: list[str] | None = None) -> None:
         code = args.func(args)
     except ConfigError as exc:
         print(exc, file=sys.stderr)
+        sys.exit(1)
+    except CredentialNotFound as exc:
+        print(f"{exc.args[0]!r}: credentials not found", file=sys.stderr)
         sys.exit(1)
     except KeyboardInterrupt:
         sys.exit(1)

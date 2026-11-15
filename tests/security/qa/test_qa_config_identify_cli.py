@@ -208,10 +208,6 @@ def test_secret_like_keys_rejected_everywhere_without_echo(tmp_path: Path, key: 
     assert marker not in str(exc2.value)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.02-2: YAML syntax errors echo the raw source line (may contain secret values)",
-)
 def test_yaml_syntax_error_does_not_echo_source_line(tmp_path: Path) -> None:
     marker = "QA-SECRET-VALUE-88"
     path = _write(
@@ -223,10 +219,6 @@ def test_yaml_syntax_error_does_not_echo_source_line(tmp_path: Path) -> None:
     assert marker not in str(exc.value)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.02-1: DeviceConfig.port has no range validation (0, negative, >65535 accepted)",
-)
 @pytest.mark.parametrize("port", [0, -5, 65536, 70000])
 def test_device_port_range_validated(tmp_path: Path, port: int) -> None:
     text = _DEV.format(id="nvr01", hostline="host_suffix: 10", ref="nvr01") + f"    port: {port}\n"
@@ -420,10 +412,6 @@ def test_identify_odd_but_nonfatal_bodies_never_raise(body: bytes) -> None:
     }
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.08-1: XmlParseError preview (80 chars of body) leaks unmasked serial/MAC into result.message",
-)
 def test_identify_error_message_never_contains_unmasked_serial_or_mac() -> None:
     body = (
         b"<DeviceInfo><serialNumber>SYNTH-LEAK-0001</serialNumber>"
@@ -617,10 +605,6 @@ def test_cli_requirements_example_lists_required_decisions(
     assert "needs_decision: ptz01.ptz_mode" in out
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.08-3: device-supplied strings (model/firmware) printed raw in table output (ANSI/control chars)",
-)
 def test_table_output_neutralises_control_characters_from_device(
     capsys: pytest.CaptureFixture[str],
 ) -> None:

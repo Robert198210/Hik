@@ -99,9 +99,6 @@ def test_read_does_not_accept_extra_params_or_unknown_ids() -> None:
     assert inner.calls == []
 
 
-@pytest.mark.xfail(
-    strict=True, reason="DEF-T1.04-2: authorize() normalises method with str.upper()"
-)
 def test_policy_rejects_non_ascii_or_lowercase_method_spellings() -> None:
     policy = EndpointPolicy(
         [
@@ -273,10 +270,6 @@ def test_fragment_is_not_part_of_policy_decision() -> None:
     assert b"reboot" not in request.url.raw_path
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.04-1: denylist '.*' does not cross %0a/%0d and hygiene does not reject control chars",
-)
 @pytest.mark.parametrize(
     "raw",
     [

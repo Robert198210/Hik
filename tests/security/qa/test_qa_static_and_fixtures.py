@@ -405,10 +405,6 @@ def test_scanner_clean_over_repo_profiles_and_tests() -> None:
     assert scan([SRC / "simulation" / "profiles", REPO / "tests"]) == []
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="DEF-T1.06-1: scanner MAC regex only matches colon-separated MACs; dash-separated slip through",
-)
 def test_scanner_detects_dash_separated_mac(tmp_path: Path) -> None:
     rules = _scan_profile(tmp_path, {"a.xml": "<D><macAddress>44-19-B6-11-22-33</macAddress></D>"})
     assert "mac_address" in rules
