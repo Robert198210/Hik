@@ -95,6 +95,29 @@ def test_response_status_not_support_maps_to_error() -> None:
 
 
 @pytest.mark.simulation
+def test_401_with_response_status_body_is_auth_error() -> None:
+    body = b"""<ResponseStatus><statusCode>4</statusCode>
+<subStatusCode>badAuthorization</subStatusCode></ResponseStatus>"""
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(401, content=body)
+
+    with _client(httpx.MockTransport(handler)) as client, pytest.raises(AuthError):
+        client.read("system.device_info")
+
+
+@pytest.mark.simulation
+def test_403_with_not_support_body_is_not_supported() -> None:
+    body = b"""<ResponseStatus><subStatusCode>notSupport</subStatusCode></ResponseStatus>"""
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(403, content=body)
+
+    with _client(httpx.MockTransport(handler)) as client, pytest.raises(NotSupportedError):
+        client.read("system.device_info")
+
+
+@pytest.mark.simulation
 def test_response_status_url_not_found() -> None:
     body = b"""<ResponseStatus><subStatusCode>RequestUrlNotFound</subStatusCode></ResponseStatus>"""
 

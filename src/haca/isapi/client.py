@@ -168,6 +168,10 @@ class IsapiClient:
         document: XmlDocument | None = None
         response_status = None
 
+        # 401 is unambiguous; 403 may carry a ResponseStatus such as notSupport.
+        if response.status_code == 401:
+            raise AuthError(self._device.id, endpoint_id)
+
         if body:
             try:
                 doc = parse_xml(body)
