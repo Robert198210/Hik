@@ -23,6 +23,13 @@ Workflow: `docs/agent-workflow.md`. Tasks: `docs/tasks/`.
    architecture changes to the Architect instead of making them.
 
 ## Commands
+Environment (dev machine): the shell sets `UV_INDEX` to an internal index and `UV_CACHE_DIR` to a
+read-only sandbox path. HACA uses PyPI only:
+```
+export UV_CACHE_DIR=/var/fpwork/ambrosew/.xdg/cache/uv
+unset UV_INDEX
+export PATH=/var/fpwork/ambrosew/.xdg/local/bin:$PATH
+```
 ```
 uv sync
 uv run pytest -q
