@@ -69,7 +69,8 @@ class ReadOnlyTransport(httpx.BaseTransport):
             raise violation
 
         query = url.query.decode("ascii") if url.query else ""
-        raw_path = url.raw_path.decode("ascii")
+        # httpx URL.raw_path includes the query string; the policy needs them separately.
+        raw_path = url.raw_path.split(b"?", 1)[0].decode("ascii")
 
         try:
             self._policy.authorize(request.method, raw_path, query, request.content)

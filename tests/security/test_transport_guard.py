@@ -151,3 +151,28 @@ def test_allowed_request_delegates_to_inner() -> None:
     response = transport.handle_request(request)
     assert response.status_code == 200
     assert inner.count == 1
+
+
+@pytest.mark.security
+def test_query_string_checked_separately_from_path() -> None:
+    registry = _registry()
+    policy = EndpointPolicy(
+        [
+            EndpointRule(
+                id="system.device_info",
+                path_template="/ISAPI/System/deviceInfo",
+                method="GET",
+                sensitivity="normal",
+                allowed_query=frozenset({"format"}),
+            )
+        ]
+    )
+    inner = CountingTransport()
+    transport = ReadOnlyTransport(inner, registry, policy, _egress(registry))
+    ok = httpx.Request("GET", "http://192.168.250.200/ISAPI/System/deviceInfo?format=json")
+    assert transport.handle_request(ok).status_code == 200
+    bad = httpx.Request("GET", "http://192.168.250.200/ISAPI/System/deviceInfo?cmd=reboot")
+    with pytest.raises(PolicyViolation) as exc_info:
+        transport.handle_request(bad)
+    assert exc_info.value.reason_code == "query_not_allowed"
+    assert inner.count == 1

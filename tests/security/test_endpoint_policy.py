@@ -92,6 +92,47 @@ def test_denylist_overrides_allowlist(path: str) -> None:
 
 @pytest.mark.security
 @pytest.mark.parametrize(
+    "path",
+    [
+        "/ISAPI/System/shutdown",
+        "/ISAPI/System/configurationData/restore",
+        "/ISAPI/ContentMgmt/record/control/manual/start/tracks/101",
+        "/ISAPI/System/IO/outputs/1/trigger",
+        "/ISAPI/PTZCtrl/channels/1/patrols/1/stop",
+        "/ISAPI/PTZCtrl/channels/1/zoom",
+        "/ISAPI/PTZCtrl/channels/1/focus",
+        "/ISAPI/PTZCtrl/channels/1/position3D",
+        "/ISAPI/PTZCtrl/channels/1/park",
+    ],
+)
+def test_denylist_hardening_patterns(path: str) -> None:
+    rule = EndpointRule(id="allow.any", path_template=path, method="GET", sensitivity="normal")
+    with pytest.raises(PolicyViolation) as exc_info:
+        EndpointPolicy([rule]).authorize("GET", path, "", None)
+    assert exc_info.value.reason_code == "denylist_match"
+
+
+@pytest.mark.security
+@pytest.mark.parametrize(
+    "path",
+    [
+        "/ISAPI/PTZCtrl/channels/1/presets",
+        "/ISAPI/PTZCtrl/channels/1/patrols",
+        "/ISAPI/PTZCtrl/channels/1/parkAction",
+        "/ISAPI/Event/triggers",
+        "/ISAPI/ContentMgmt/record/tracks",
+        "/ISAPI/ContentMgmt/Storage/hdd",
+        "/ISAPI/Smart/LineDetection/1",
+        "/ISAPI/Security/adminAccesses",
+    ],
+)
+def test_planned_read_paths_not_denied(path: str) -> None:
+    rule = EndpointRule(id="allow.read", path_template=path, method="GET", sensitivity="normal")
+    assert EndpointPolicy([rule]).authorize("GET", path, "", None).id == "allow.read"
+
+
+@pytest.mark.security
+@pytest.mark.parametrize(
     ("path", "query"),
     [
         ("/ISAPI/System/%2e%2e/reboot", ""),
