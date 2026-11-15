@@ -64,6 +64,15 @@ def _allowed_ipv4(addr: ipaddress.IPv4Address) -> bool:
     return addr in ALLOWED_IPV4 or addr in ALLOWED_TEST_NET
 
 
+def _is_contiguous_ipv4_netmask(addr: ipaddress.IPv4Address) -> bool:
+    """True for valid contiguous subnet masks (e.g. 255.255.255.0)."""
+    bits = int(addr)
+    if bits == 0:
+        return True
+    inverted = (~bits) & 0xFFFFFFFF
+    return (inverted & (inverted + 1)) == 0
+
+
 def _scan_text_content(path: Path, text: str, findings: list[Finding]) -> None:
     rel = str(path)
     for match in ANY_MAC_RE.finditer(text):
@@ -92,6 +101,8 @@ def _scan_text_content(path: Path, text: str, findings: list[Finding]) -> None:
         except ValueError:
             continue
         if not _allowed_ipv4(addr):
+            if _is_contiguous_ipv4_netmask(addr):
+                continue
             findings.append(
                 Finding(
                     rel,

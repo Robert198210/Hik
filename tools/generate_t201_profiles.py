@@ -122,7 +122,7 @@ def network_xml(ip: str) -> str:
       <ipVersion>v4</ipVersion>
       <addressingType>static</addressingType>
       <ipAddress>{ip}</ipAddress>
-      <subnetMask>192.168.250.0</subnetMask>
+      <subnetMask>255.255.255.0</subnetMask>
       <DefaultGateway>
         <ipAddress>192.168.250.1</ipAddress>
       </DefaultGateway>

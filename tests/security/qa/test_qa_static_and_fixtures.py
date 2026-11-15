@@ -21,7 +21,7 @@ QA_DIR = Path(__file__).resolve().parent
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from tools.scan_fixture_secrets import scan  # noqa: E402
+from tools.scan_fixture_secrets import _is_contiguous_ipv4_netmask, scan  # noqa: E402
 
 pytestmark = pytest.mark.security
 
@@ -129,7 +129,11 @@ def test_all_ipv4_literals_in_repo_are_synthetic_or_documented_negative_samples(
                 ip = IPv4Address(literal)
             except ValueError:
                 continue  # version strings such as 0.1.0.0
-            in_ok = ip in _SYNTH_NET or literal in _NEGATIVE_IPS
+            in_ok = (
+                ip in _SYNTH_NET
+                or literal in _NEGATIVE_IPS
+                or _is_contiguous_ipv4_netmask(ip)
+            )
             assert in_ok or path.name == "pyproject.toml", (str(path.relative_to(REPO)), literal)
 
 

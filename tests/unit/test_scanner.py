@@ -54,6 +54,25 @@ def test_scanner_detects_ipv4_violation(scratch: Path) -> None:
     assert "ipv4" in _rules_in(findings)
 
 
+def test_scanner_allows_contiguous_subnet_mask(scratch: Path) -> None:
+    _write(
+        scratch / "network_interfaces.xml",
+        """\
+        <?xml version="1.0" encoding="UTF-8"?>
+        <NetworkInterfaceList>
+          <NetworkInterface>
+            <IPAddress>
+              <subnetMask>255.255.255.0</subnetMask>
+            </IPAddress>
+          </NetworkInterface>
+        </NetworkInterfaceList>
+        """,
+    )
+    _write(scratch / "provenance.yaml", "origin: synthetic\n")
+    findings = scan([scratch.parent.parent.parent])
+    assert "ipv4" not in _rules_in(findings)
+
+
 def test_scanner_detects_serial_violation(scratch: Path) -> None:
     _write(
         scratch / "bad_serial.xml",
