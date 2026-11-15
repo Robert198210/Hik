@@ -1,0 +1,13 @@
+---
+description: HACA test conventions
+globs: tests/**
+alwaysApply: false
+---
+
+# HACA test conventions
+
+- No real network: `httpx.MockTransport` or `haca.simulation` only.
+- Markers: `security`, `simulation`, `live` (live skipped by default).
+- Synthetic identifiers only: `SYNTH-` serials, `00:00:5E:00:53:xx` MACs, `192.168.250.0/24`, UUID `00000000-0000-0000-0000-0000000000xx`.
+- Every acceptance criterion of the task maps to at least one named test.
+- Canary secrets (e.g. `CANARY-PW-7f3a`) must never appear in logs or outputs.

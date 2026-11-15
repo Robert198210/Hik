@@ -1,0 +1,13 @@
+---
+description: HACA non-negotiable rules (read-only, synthetic data, Gemini-only runtime AI)
+alwaysApply: true
+---
+
+# HACA core rules
+
+- Strict read-only: never add device writes, reboot, reset, firmware upgrade, storage format, PTZ movement, or account changes. Requests only via `IsapiClient.read(endpoint_id)`.
+- Never fabricate ISAPI endpoints or XML fields; registry entries need `source` and `verification`.
+- Synthetic data only (ADR-017): never open `/var/fpwork/ambrosew/skrypty/Hikvision/**`, HAR files, or real captures.
+- No secrets anywhere in code, tests, logs, reports, or prompts.
+- Runtime AI is Google Gemini only; no `anthropic`, `openai`, `cursor*`, `claude*` runtime dependencies.
+- Implement only the active task in `docs/tasks/`; escalate architecture changes.

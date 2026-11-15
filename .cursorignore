@@ -1,0 +1,15 @@
+# HACA / ADR-017: local runtime data and secrets are never part of agent context
+config/haca.yaml
+config/devices.yaml
+config/requirements.yaml
+config/requirements.local.yaml
+data/
+live-results/
+reports/
+*.db
+*.sqlite*
+*.har
+*.pcap
+secrets/
+.env
+.env.*

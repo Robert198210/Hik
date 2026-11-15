@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Local runtime data — never commit
+config/haca.yaml
+config/devices.yaml
+config/requirements.local.yaml
+config/requirements.yaml
+data/
+live-results/
+reports/
+*.db
+*.sqlite*
+*.log
+
+# Private data and secrets (ADR-017)
+*.har
+*.pcap
+secrets/
+.env
+.env.*
+credentials.env
+*.pem
+*.key
+
+# Cursor dev-only artefacts
+.cursor/agent-usage.log

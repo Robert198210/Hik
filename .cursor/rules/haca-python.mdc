@@ -1,0 +1,14 @@
+---
+description: HACA Python conventions
+globs: src/**/*.py
+alwaysApply: false
+---
+
+# HACA Python conventions
+
+- Python 3.12, full type hints; `mypy --strict` must pass for `haca.security.*` and `haca.isapi.*`.
+- Pydantic v2 models: `ConfigDict(extra="forbid", frozen=True)` unless a spec says otherwise.
+- XML only through `haca.isapi.xml.parse_xml` (defusedxml). YAML only through `yaml.safe_load`.
+- HTTP to devices only through `IsapiClient`; no other HTTP clients in `src/` except the Gemini adapter.
+- Never log request/response headers or bodies above DEBUG; logs pass through `SecretRedactor`.
+- Simulated outputs carry the `SIMULATED` marker.
