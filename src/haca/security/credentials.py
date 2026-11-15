@@ -47,6 +47,21 @@ class KeyringCredentialStore:
         return Credential(username=username, password=SecretStr(password))
 
 
+class DictCredentialStore:
+    """In-memory credential store (simulation and tests)."""
+
+    def __init__(self, mapping: dict[str, Credential]) -> None:
+        self._mapping = dict(mapping)
+
+    def get(self, credential_ref: str) -> Credential:
+        try:
+            cred = self._mapping[credential_ref]
+        except KeyError as exc:
+            raise CredentialNotFound(credential_ref) from exc
+        register_secret(cred.password.get_secret_value())
+        return cred
+
+
 class EnvCredentialStore:
     @staticmethod
     def _env_prefix(credential_ref: str) -> str:

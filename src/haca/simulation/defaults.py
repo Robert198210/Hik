@@ -12,7 +12,7 @@ from haca.config.models import AppConfig, NetworkConfig, TimeoutConfig
 from haca.devices.models import ResolvedDevice
 from haca.devices.network_policy import NetworkPolicy
 from haca.devices.registry import DeviceRegistry
-from haca.security.credentials import Credential
+from haca.security.credentials import Credential, DictCredentialStore
 from haca.security.redaction import register_secret
 from haca.simulation.device import SimulatedDevice
 from haca.simulation.faults import FaultProfile
@@ -72,6 +72,19 @@ def simulation_credential() -> Credential:
 
 def _default_profile_dir(device_id: str, profile_name: str = "synthetic-default") -> Traversable:
     return simulation_profiles_root() / device_id / profile_name
+
+
+def simulation_credential_store() -> DictCredentialStore:
+    cred = simulation_credential()
+    return DictCredentialStore({device.id: cred for device in default_resolved_devices()})
+
+
+def build_simulation_network_for_scenario(scenario: str) -> SimulatedNetwork:
+    profile_dirs = {
+        device.id: simulation_profiles_root() / device.id / f"scenario-{scenario}"
+        for device in default_resolved_devices()
+    }
+    return build_simulation_network(profile_dirs=profile_dirs)
 
 
 def build_simulation_network(

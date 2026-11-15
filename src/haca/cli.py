@@ -7,9 +7,21 @@ import json
 import sys
 from enum import Enum
 from pathlib import Path
+from typing import cast
+
+import yaml
 
 from haca import __version__
+from haca.catalog.coverage import (
+    CATALOG_VERSION,
+    CoverageEntry,
+    compute_coverage,
+    coverage_summary,
+    observed_uncataloged_count,
+)
+from haca.catalog.loader import load_catalog_entries
 from haca.collect.identify import IdentificationResult, IdentificationStatus, identify_devices
+from haca.collect.runner import run_simulated_collection
 from haca.config.errors import ConfigError
 from haca.config.loader import load_app_config, load_devices
 from haca.config.models import AppConfig
@@ -159,6 +171,147 @@ def _cmd_identify(args: argparse.Namespace) -> int:
     return 0
 
 
+def _load_manual_attestation(path: Path | None) -> dict[str, dict[str, object]] | None:
+    if path is None:
+        return None
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        return None
+    return cast(dict[str, dict[str, object]], data)
+
+
+def _print_collect_outcomes(result: object) -> None:
+    from haca.collect.models import CollectionResult
+
+    if not isinstance(result, CollectionResult):
+        return
+    print("device  endpoint                         outcome")
+    for device in result.devices:
+        for endpoint_id, evidence in sorted(device.evidence.items()):
+            print(
+                f"{device.device_id:<7} {endpoint_id:<32} {evidence.outcome.value}"
+            )
+
+
+def _print_coverage_summary(entries: list[CoverageEntry], result: object) -> None:
+    from haca.collect.models import CollectionResult
+
+    catalog = load_catalog_entries()
+    if not isinstance(result, CollectionResult):
+        return
+    summary = coverage_summary(
+        entries,
+        catalog,
+        observed_uncataloged=observed_uncataloged_count(result),
+    )
+    print(f"coverage catalog_version={summary.catalog_version} totals={summary.totals}")
+    print(f"observed_uncataloged={summary.observed_uncataloged}")
+    for device_id, categories in summary.per_device.items():
+        print(f"  {device_id}: {categories}")
+
+
+def _cmd_collect(args: argparse.Namespace) -> int:
+    json_output = bool(args.json)
+    if not args.simulate:
+        print("live collection is not wired in this build; use --simulate", file=sys.stderr)
+        return 1
+
+    banner_stream = sys.stderr if json_output else sys.stdout
+    print(_SIMULATED_BANNER, file=banner_stream)
+    scenario = args.scenario or "clean"
+    manual = _load_manual_attestation(Path(args.manual)) if args.manual else None
+    result, coverage = run_simulated_collection(scenario)
+    catalog = load_catalog_entries()
+    if manual:
+        coverage = compute_coverage(catalog, result, None, manual=manual)
+
+    from haca.store.db import open_db
+    from haca.store.repositories import save_collection, save_coverage
+
+    db_path = Path(args.db) if args.db else Path("data/haca-sim.db")
+    _, session_factory = open_db(db_path)
+    with session_factory() as session:
+        run_id = save_collection(
+            session,
+            result,
+            orp_hash=None,
+            catalog_version=CATALOG_VERSION,
+            scenario=scenario,
+        )
+        save_coverage(session, run_id, coverage)
+
+    if json_output:
+        payload = {
+            "run_id": run_id,
+            "simulated": True,
+            "scenario": scenario,
+            "coverage": [e.model_dump() for e in coverage],
+        }
+        print(json.dumps(payload, indent=2))
+    else:
+        _print_collect_outcomes(result)
+        _print_coverage_summary(coverage, result)
+        print(f"run_id={run_id}")
+
+    if any(e.status == "INACCESSIBLE" for e in coverage):
+        pass
+    return 0
+
+
+def _cmd_runs_list(args: argparse.Namespace) -> int:
+    from haca.store.db import open_db
+    from haca.store.repositories import list_runs
+
+    db_path = Path(args.db) if args.db else Path("data/haca-sim.db")
+    _, session_factory = open_db(db_path)
+    with session_factory() as session:
+        runs = list_runs(session, limit=args.limit)
+    if args.json:
+        print(
+            json.dumps(
+                [
+                    {
+                        "id": run.id,
+                        "started_at": run.started_at.isoformat(),
+                        "scenario": run.scenario,
+                        "simulated": bool(run.simulated),
+                    }
+                    for run in runs
+                ],
+                indent=2,
+            )
+        )
+    else:
+        print("run_id                              scenario      started_at")
+        for run in runs:
+            print(
+                f"{run.id}  {str(run.scenario or '-'):<12}  {run.started_at.isoformat()}"
+            )
+    return 0
+
+
+def _cmd_diff(args: argparse.Namespace) -> int:
+    from haca.store.db import open_db
+    from haca.store.diff import diff_runs
+
+    db_path = Path(args.db) if args.db else Path("data/haca-sim.db")
+    _, session_factory = open_db(db_path)
+    with session_factory() as session:
+        diff = diff_runs(session, session, args.run_a, args.run_b)
+    if args.json:
+        print(diff.model_dump_json(indent=2))
+    else:
+        for device_id, path, old, new in diff.changed[:20]:
+            print(f"changed {device_id} {path} {old!r} -> {new!r}")
+        if len(diff.changed) > 20:
+            print(f"... {len(diff.changed) - 20} more changes")
+        for device_id, path, value in diff.added[:10]:
+            print(f"added {device_id} {path}={value!r}")
+        for device_id, path, value in diff.removed[:10]:
+            print(f"removed {device_id} {path}={value!r}")
+    return 0
+
+
 def _cmd_requirements_validate(args: argparse.Namespace) -> int:
     requirements_path = Path(args.file)
     devices_path = Path(args.devices) if args.devices else _DEFAULT_DEVICES
@@ -200,6 +353,33 @@ def main(argv: list[str] | None = None) -> None:
     validate_parser.add_argument("--file", required=True)
     validate_parser.add_argument("--devices", default=None)
     validate_parser.set_defaults(func=_cmd_requirements_validate)
+
+    collect_parser = subparsers.add_parser("collect", help="Collect device configuration")
+    collect_parser.add_argument("--simulate", action="store_true")
+    collect_parser.add_argument(
+        "--scenario",
+        choices=["clean", "conflicts", "unsupported"],
+        default="clean",
+    )
+    collect_parser.add_argument("--json", action="store_true")
+    collect_parser.add_argument("--db", default=None)
+    collect_parser.add_argument("--manual", default=None)
+    collect_parser.set_defaults(func=_cmd_collect)
+
+    runs_parser = subparsers.add_parser("runs", help="Persisted audit runs")
+    runs_sub = runs_parser.add_subparsers(dest="runs_command")
+    runs_list = runs_sub.add_parser("list", help="List recent runs")
+    runs_list.add_argument("--db", default=None)
+    runs_list.add_argument("--limit", type=int, default=20)
+    runs_list.add_argument("--json", action="store_true")
+    runs_list.set_defaults(func=_cmd_runs_list)
+
+    diff_parser = subparsers.add_parser("diff", help="Diff settings between runs")
+    diff_parser.add_argument("run_a")
+    diff_parser.add_argument("run_b")
+    diff_parser.add_argument("--db", default=None)
+    diff_parser.add_argument("--json", action="store_true")
+    diff_parser.set_defaults(func=_cmd_diff)
 
     args = parser.parse_args(argv)
     if getattr(args, "func", None) is None:

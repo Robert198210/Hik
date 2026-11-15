@@ -164,12 +164,44 @@ def load_registry_entries(*, yaml_bytes: bytes | None = None) -> tuple[RegistryE
     return tuple(entries)
 
 
+def variant_endpoint_id(base_id: str, variant_index: int) -> str:
+    """Synthetic endpoint id for a registry path variant (used by the collection engine)."""
+    return f"{base_id}#v{variant_index}"
+
+
 def build_policy(
     entries: tuple[RegistryEntry, ...] | None = None,
 ) -> EndpointPolicy:
     """Build an allowlist policy from registry entries (includes denied metadata rules)."""
     resolved = entries if entries is not None else load_registry_entries()
     return EndpointPolicy([_entry_to_rule(e) for e in resolved])
+
+
+def build_collection_policy(
+    entries: tuple[RegistryEntry, ...] | None = None,
+) -> EndpointPolicy:
+    """Like ``build_policy`` but registers each ``variants`` path under ``<id>#vN`` rules.
+
+    Variant rules let ``IsapiClient.read()`` target alternate firmware paths while every
+    HTTP request still passes through ``ReadOnlyTransport`` and ``EndpointPolicy``.
+    """
+    resolved = entries if entries is not None else load_registry_entries()
+    rules: list[EndpointRule] = []
+    for entry in resolved:
+        rules.append(_entry_to_rule(entry))
+        for index, variant in enumerate(entry.variants):
+            rules.append(
+                EndpointRule(
+                    id=variant_endpoint_id(entry.id, index),
+                    path_template=variant,
+                    method=entry.method,
+                    read_post=entry.read_post,
+                    allowed_query=frozenset(),
+                    sensitivity=entry.sensitivity,
+                    post_root_elements=frozenset(entry.post_root_elements),
+                )
+            )
+    return EndpointPolicy(rules)
 
 
 def entries_for_role(
