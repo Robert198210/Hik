@@ -70,7 +70,8 @@ def _flatten_keys(device: DeviceCollection, endpoint_id: str) -> dict[str, str]:
 def _field_present(flat: dict[str, str], field: str) -> bool:
     if field in flat:
         return True
-    segments = [segment for segment in field.replace("[", ".").replace("]", "").split(".") if segment]
+    normalized_field = field.replace("[", ".").replace("]", "")
+    segments = [segment for segment in normalized_field.split(".") if segment]
     for key in flat:
         if (key.endswith(f".{field}") or key == field.split(".")[-1]) and field in key:
             return True
