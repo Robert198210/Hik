@@ -44,17 +44,21 @@ class DeviceRegistry:
         self._policy = policy
         self._by_id: dict[str, ResolvedDevice] = {}
         self._endpoint_index: dict[tuple[IPv4Address, int, str], ResolvedDevice] = {}
+        self._host_port_index: dict[tuple[IPv4Address, int], ResolvedDevice] = {}
 
         for device in devices:
             policy.check_host(device.host)
-            endpoint = (device.host, device.port, device.scheme)
-            if endpoint in self._endpoint_index:
+            host_port = (device.host, device.port)
+            if host_port in self._host_port_index:
+                existing = self._host_port_index[host_port]
                 msg = (
-                    f"duplicate endpoint {device.scheme}://{device.host}:{device.port} "
-                    f"for devices {self._endpoint_index[endpoint].id!r} and {device.id!r}"
+                    f"duplicate endpoint {device.host}:{device.port} "
+                    f"for devices {existing.id!r} and {device.id!r}"
                 )
                 raise DuplicateDeviceEndpointError(msg)
+            endpoint = (device.host, device.port, device.scheme)
             self._by_id[device.id] = device
+            self._host_port_index[host_port] = device
             self._endpoint_index[endpoint] = device
 
         self._devices = tuple(devices)
@@ -77,6 +81,7 @@ class DeviceRegistry:
                 credential_ref=device.credential_ref,
             )
             for device in devices
+            if device.enabled
         ]
         return cls(resolved, policy)
 

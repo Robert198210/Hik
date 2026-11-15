@@ -5,6 +5,7 @@ from typing import Literal
 
 import pytest
 
+from haca.config.models import AppConfig, NetworkConfig, ResolvedDeviceConfig
 from haca.devices.models import ResolvedDevice
 from haca.devices.network_policy import NetworkPolicy
 from haca.devices.registry import DeviceRegistry, DuplicateDeviceEndpointError, UnknownDevice
@@ -59,6 +60,42 @@ def test_duplicate_host_port_raises() -> None:
     second = _device("nvr02", "192.168.250.200")
     with pytest.raises(DuplicateDeviceEndpointError):
         DeviceRegistry([first, second], policy)
+
+
+def test_duplicate_host_port_raises_across_schemes() -> None:
+    policy = NetworkPolicy(SUBNET, simulation=False)
+    first = _device("nvr01", "192.168.250.200", scheme="http")
+    second = _device("nvr02", "192.168.250.200", scheme="https", port=80)
+    with pytest.raises(DuplicateDeviceEndpointError):
+        DeviceRegistry([first, second], policy)
+
+
+def test_from_config_skips_disabled_devices() -> None:
+    app = AppConfig(network=NetworkConfig(subnet=SUBNET))
+    configs = [
+        ResolvedDeviceConfig(
+            id="nvr01",
+            role="nvr",
+            expected_model="SYNTH-NVR",
+            host=IPv4Address("192.168.250.200"),
+            scheme="http",
+            port=80,
+            credential_ref="nvr01",
+            enabled=False,
+        ),
+        ResolvedDeviceConfig(
+            id="ptz01",
+            role="ptz",
+            expected_model="SYNTH-PTZ",
+            host=IPv4Address("192.168.250.201"),
+            scheme="http",
+            port=80,
+            credential_ref="ptz01",
+            enabled=True,
+        ),
+    ]
+    registry = DeviceRegistry.from_config(app, configs)
+    assert registry.all() == (registry.get("ptz01"),)
 
 
 def test_get_unknown_raises() -> None:
