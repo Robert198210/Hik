@@ -1,0 +1,1635 @@
+{
+  "meta": {
+    "haca_version": "0.1.0.dev0",
+    "run_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+    "started_at": "2026-11-16T17:28:40.155983Z",
+    "finished_at": "2026-11-16T17:28:48.774402Z",
+    "simulated": false,
+    "scenario": null,
+    "orp_hash": "548ceb473ae211e2ecb78dbaa32900982bd46ca3b703610428bc944d20b8f458",
+    "catalog_version": "1",
+    "registry_verification_counts": {
+      "documented": 1,
+      "candidate_unverified": 20
+    }
+  },
+  "devices": [
+    {
+      "id": "nvr01",
+      "role": "nvr",
+      "expected_model": "DS-7616NXI-K2(D)",
+      "identity": {
+        "device_id": "nvr01",
+        "model": "DS-7616NXI-K2(D)",
+        "device_type": "NVR",
+        "firmware_version": "V4.85.030",
+        "firmware_major": 4,
+        "firmware_minor": 85,
+        "firmware_patch": 30,
+        "firmware_build": "build 260612",
+        "serial_masked": "****WCVU",
+        "mac_masked": "**:**:**:**:4b:88"
+      },
+      "identification_status": "IDENTIFIED"
+    },
+    {
+      "id": "ptz01",
+      "role": "ptz",
+      "expected_model": "DS-2DE4425IWG1-E",
+      "identity": {
+        "device_id": "ptz01",
+        "model": "DS-2DE4425IWG1-E",
+        "device_type": "IPDome",
+        "firmware_version": "V5.8.1",
+        "firmware_major": 5,
+        "firmware_minor": 8,
+        "firmware_patch": 1,
+        "firmware_build": "build 260326",
+        "serial_masked": "****3692",
+        "mac_masked": "**:**:**:**:54:c6"
+      },
+      "identification_status": "IDENTIFIED"
+    },
+    {
+      "id": "cam01",
+      "role": "camera",
+      "expected_model": "DS-2CD2087G3-LI2UY/SL",
+      "identity": {
+        "device_id": "cam01",
+        "model": "DS-2CD2087G3-LIY",
+        "device_type": "IPCamera",
+        "firmware_version": "V5.8.40",
+        "firmware_major": 5,
+        "firmware_minor": 8,
+        "firmware_patch": 40,
+        "firmware_build": "build 260821",
+        "serial_masked": "****3090",
+        "mac_masked": "**:**:**:**:3a:79"
+      },
+      "identification_status": "MODEL_MISMATCH"
+    }
+  ],
+  "coverage": {
+    "catalog_version": "1",
+    "per_device": {
+      "nvr01": {
+        "identity": {
+          "VERIFIED_ISAPI": 2
+        },
+        "time": {
+          "VERIFIED_ISAPI": 2
+        },
+        "network": {
+          "VERIFIED_ISAPI": 1
+        },
+        "security": {
+          "VERIFIED_ISAPI": 6
+        },
+        "streaming": {
+          "VERIFIED_ISAPI": 5,
+          "INACCESSIBLE": 1
+        },
+        "recording": {
+          "VERIFIED_ISAPI": 3,
+          "INACCESSIBLE": 1,
+          "NOT_IMPLEMENTED_IN_HACA": 1
+        },
+        "storage": {
+          "INACCESSIBLE": 3,
+          "NOT_IMPLEMENTED_IN_HACA": 1
+        },
+        "analytics": {
+          "NOT_APPLICABLE": 6,
+          "NOT_IMPLEMENTED_IN_HACA": 3
+        },
+        "linkage": {
+          "VERIFIED_ISAPI": 1
+        },
+        "ptz": {
+          "NOT_APPLICABLE": 4
+        },
+        "platform": {
+          "VERIFIED_ISAPI": 1
+        }
+      },
+      "ptz01": {
+        "identity": {
+          "VERIFIED_ISAPI": 2
+        },
+        "time": {
+          "VERIFIED_ISAPI": 2
+        },
+        "network": {
+          "VERIFIED_ISAPI": 1
+        },
+        "security": {
+          "VERIFIED_ISAPI": 4,
+          "NOT_APPLICABLE": 2
+        },
+        "streaming": {
+          "VERIFIED_ISAPI": 6
+        },
+        "recording": {
+          "NOT_APPLICABLE": 5
+        },
+        "storage": {
+          "NOT_APPLICABLE": 4
+        },
+        "analytics": {
+          "VERIFIED_ISAPI": 5,
+          "INACCESSIBLE": 1,
+          "NOT_IMPLEMENTED_IN_HACA": 1,
+          "NOT_APPLICABLE": 2
+        },
+        "linkage": {
+          "VERIFIED_ISAPI": 1
+        },
+        "ptz": {
+          "VERIFIED_ISAPI": 4
+        },
+        "platform": {
+          "VERIFIED_ISAPI": 1
+        }
+      },
+      "cam01": {
+        "identity": {
+          "VERIFIED_ISAPI": 2
+        },
+        "time": {
+          "VERIFIED_ISAPI": 2
+        },
+        "network": {
+          "VERIFIED_ISAPI": 1
+        },
+        "security": {
+          "VERIFIED_ISAPI": 4,
+          "NOT_APPLICABLE": 2
+        },
+        "streaming": {
+          "VERIFIED_ISAPI": 6
+        },
+        "recording": {
+          "NOT_APPLICABLE": 5
+        },
+        "storage": {
+          "NOT_APPLICABLE": 4
+        },
+        "analytics": {
+          "VERIFIED_ISAPI": 6,
+          "NOT_IMPLEMENTED_IN_HACA": 1,
+          "NOT_APPLICABLE": 2
+        },
+        "linkage": {
+          "VERIFIED_ISAPI": 1
+        },
+        "ptz": {
+          "NOT_APPLICABLE": 4
+        },
+        "platform": {
+          "VERIFIED_ISAPI": 1
+        }
+      }
+    },
+    "totals": {
+      "VERIFIED_ISAPI": 70,
+      "INACCESSIBLE": 6,
+      "NOT_APPLICABLE": 40,
+      "NOT_IMPLEMENTED_IN_HACA": 7
+    },
+    "observed_uncataloged": 2332
+  },
+  "coverage_entries": [
+    {
+      "device_id": "nvr01",
+      "setting_id": "identity.model",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.device_info"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "identity.firmware",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.device_info"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "time.mode",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.time"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "time.ntp_server",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.time.ntp_servers"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "network.addressing_type",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.network.interfaces"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "security.http_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "security.https_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "security.rtsp_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "security.sdk_port",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "streaming.main.codec",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "streaming.main.resolution",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "streaming.main.frame_rate",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "streaming.main.bitrate_mode",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "streaming.main.bitrate",
+      "status": "INACCESSIBLE",
+      "reason": "field_absent",
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "streaming.main.smart_codec",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "recording.schedule_mode",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "record.tracks"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "recording.schedule_coverage",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "record.tracks"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "recording.pre_post_record",
+      "status": "INACCESSIBLE",
+      "reason": "field_absent",
+      "evidence_tier": "isapi",
+      "endpoint_id": "record.tracks"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "recording.track_enable",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "record.tracks"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "storage.hdd_status",
+      "status": "INACCESSIBLE",
+      "reason": "field_absent",
+      "evidence_tier": "isapi",
+      "endpoint_id": "storage.hdd"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "storage.hdd_capacity",
+      "status": "INACCESSIBLE",
+      "reason": "field_absent",
+      "evidence_tier": "isapi",
+      "endpoint_id": "storage.hdd"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "storage.hdd_free_space",
+      "status": "INACCESSIBLE",
+      "reason": "field_absent",
+      "evidence_tier": "isapi",
+      "endpoint_id": "storage.hdd"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "analytics.line_engine_enabled",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "analytics.line_rules",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "analytics.field_engine_enabled",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "analytics.field_regions",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "analytics.region_entrance",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "analytics.detection_targets",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "linkage.linedetection_notifications",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "event.triggers"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "ptz.park_action_enabled",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "ptz.park_action_type",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "ptz.patrols",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "ptz.presets",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "platform.ezviz_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "platform.ezviz"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "input_proxy.protocol",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "input_proxy.channels"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "input_proxy.online",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "input_proxy.channels_status"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "manual.dual_vca",
+      "status": "NOT_IMPLEMENTED_IN_HACA",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "manual.nvr_save_vca_data",
+      "status": "NOT_IMPLEMENTED_IN_HACA",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "manual.nvr_local_smart_analysis",
+      "status": "NOT_IMPLEMENTED_IN_HACA",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "manual.hdd_model_smr",
+      "status": "NOT_IMPLEMENTED_IN_HACA",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "manual.playback_markers",
+      "status": "NOT_IMPLEMENTED_IN_HACA",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "identity.model",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.device_info"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "identity.firmware",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.device_info"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "time.mode",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.time"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "time.ntp_server",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.time.ntp_servers"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "network.addressing_type",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.network.interfaces"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "security.http_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "security.https_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "security.rtsp_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "security.sdk_port",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "streaming.main.codec",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "streaming.main.resolution",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "streaming.main.frame_rate",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "streaming.main.bitrate_mode",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "streaming.main.bitrate",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "streaming.main.smart_codec",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "recording.schedule_mode",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "recording.schedule_coverage",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "recording.pre_post_record",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "recording.track_enable",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "storage.hdd_status",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "storage.hdd_capacity",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "storage.hdd_free_space",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "analytics.line_engine_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.line_detection"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "analytics.line_rules",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.line_detection"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "analytics.field_engine_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.field_detection"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "analytics.field_regions",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.field_detection"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "analytics.region_entrance",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.region_entrance"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "analytics.detection_targets",
+      "status": "INACCESSIBLE",
+      "reason": "field_absent",
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.line_detection"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "linkage.linedetection_notifications",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "event.triggers"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "ptz.park_action_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "ptz.park_action"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "ptz.park_action_type",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "ptz.park_action"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "ptz.patrols",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "ptz.patrols"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "ptz.presets",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "ptz.presets"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "platform.ezviz_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "platform.ezviz"
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "input_proxy.protocol",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "input_proxy.online",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "manual.dual_vca",
+      "status": "NOT_IMPLEMENTED_IN_HACA",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "manual.nvr_save_vca_data",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "manual.nvr_local_smart_analysis",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "manual.hdd_model_smr",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "manual.playback_markers",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "identity.model",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.device_info"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "identity.firmware",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.device_info"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "time.mode",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.time"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "time.ntp_server",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.time.ntp_servers"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "network.addressing_type",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "system.network.interfaces"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "security.http_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "security.https_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "security.rtsp_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "security.sdk_port",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "security.admin_accesses"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "streaming.main.codec",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "streaming.main.resolution",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "streaming.main.frame_rate",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "streaming.main.bitrate_mode",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "streaming.main.bitrate",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "streaming.main.smart_codec",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "streaming.channels"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "recording.schedule_mode",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "recording.schedule_coverage",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "recording.pre_post_record",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "recording.track_enable",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "storage.hdd_status",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "storage.hdd_capacity",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "storage.hdd_free_space",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "analytics.line_engine_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.line_detection"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "analytics.line_rules",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.line_detection"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "analytics.field_engine_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.field_detection"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "analytics.field_regions",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.field_detection"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "analytics.region_entrance",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.region_entrance"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "analytics.detection_targets",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "smart.line_detection"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "linkage.linedetection_notifications",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "event.triggers"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "ptz.park_action_enabled",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "ptz.park_action_type",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "ptz.patrols",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "ptz.presets",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "platform.ezviz_enabled",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "platform.ezviz"
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "input_proxy.protocol",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "input_proxy.online",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "manual.dual_vca",
+      "status": "NOT_IMPLEMENTED_IN_HACA",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "manual.nvr_save_vca_data",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "manual.nvr_local_smart_analysis",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "manual.hdd_model_smr",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "manual.playback_markers",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    }
+  ],
+  "coverage_statement": "Verified 70 of 123 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.",
+  "findings": [
+    {
+      "id": "R-REC-001:nvr01:track-101-cmr",
+      "rule_id": "R-REC-001",
+      "category": "recording",
+      "classification": "CONFIRMED_CONFLICT",
+      "severity": "high",
+      "basis": "requirement",
+      "devices": [
+        "nvr01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+          "device_id": "nvr01",
+          "endpoint_id": "record.tracks",
+          "xpath": "schedule",
+          "observed_value": "(('Monday', '00:00:00', 'Tuesday', '00:00:00', 'CMR', True), ('Tuesday', '00:00:00', 'Wednesday', '00:00:00', 'CMR', True), ('Wednesday', '00:00:00', 'Thursday', '00:00:00', 'CMR', True), ('Thursday', '00:00:00', 'Friday', '00:00:00', 'CMR', True), ('Friday', '00:00:00', 'Saturday', '00:00:00', 'CMR', True), ('Saturday', '00:00:00', 'Sunday', '00:00:00', 'CMR', True), ('Sunday', '00:00:00', 'Monday', '00:00:00', 'CMR', True))",
+          "raw_sha256": "456b6948432fe9e490d226ffb9adb3c7720054a89c96f4fd87e16257ad87eb1a",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [
+        "system.recording_mode"
+      ],
+      "needs_decision": false,
+      "current_value": "partial_or_motion",
+      "recommended_value": "CMR_24_7",
+      "rationale": "continuous_24_7 requires CMR covering all 7 days",
+      "source_refs": [
+        "ADR-011"
+      ],
+      "source": "deterministic",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "track-101-cmr"
+    },
+    {
+      "id": "R-REC-001:nvr01:track-201-cmr",
+      "rule_id": "R-REC-001",
+      "category": "recording",
+      "classification": "CONFIRMED_CONFLICT",
+      "severity": "high",
+      "basis": "requirement",
+      "devices": [
+        "nvr01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+          "device_id": "nvr01",
+          "endpoint_id": "record.tracks",
+          "xpath": "schedule",
+          "observed_value": "(('Monday', '00:00:00', 'Tuesday', '00:00:00', 'CMR', True), ('Tuesday', '00:00:00', 'Wednesday', '00:00:00', 'CMR', True), ('Wednesday', '00:00:00', 'Thursday', '00:00:00', 'CMR', True), ('Thursday', '00:00:00', 'Friday', '00:00:00', 'CMR', True), ('Friday', '00:00:00', 'Saturday', '00:00:00', 'CMR', True), ('Saturday', '00:00:00', 'Sunday', '00:00:00', 'CMR', True), ('Sunday', '00:00:00', 'Monday', '00:00:00', 'CMR', True))",
+          "raw_sha256": "456b6948432fe9e490d226ffb9adb3c7720054a89c96f4fd87e16257ad87eb1a",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [
+        "system.recording_mode"
+      ],
+      "needs_decision": false,
+      "current_value": "partial_or_motion",
+      "recommended_value": "CMR_24_7",
+      "rationale": "continuous_24_7 requires CMR covering all 7 days",
+      "source_refs": [
+        "ADR-011"
+      ],
+      "source": "deterministic",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "track-201-cmr"
+    },
+    {
+      "id": "R-VCA-001:ptz01:line-engine-off",
+      "rule_id": "R-VCA-001",
+      "category": "analytics",
+      "classification": "CONFIRMED_CONFLICT",
+      "severity": "high",
+      "basis": "requirement",
+      "devices": [
+        "ptz01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+          "device_id": "ptz01",
+          "endpoint_id": "smart.line_detection",
+          "xpath": "enabled",
+          "observed_value": "false",
+          "raw_sha256": "7c3870f1b3e99f6095e1ca47b63eab0e989a0db30e0b71b567850e9f5c090091",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [
+        "devices.ptz01.required_events"
+      ],
+      "needs_decision": false,
+      "current_value": null,
+      "recommended_value": null,
+      "rationale": "Line crossing required but engine disabled",
+      "source_refs": [
+        "ADR-011"
+      ],
+      "source": "deterministic",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "line-engine-off"
+    },
+    {
+      "id": "R-TIME-001:cam01:time-mode-cam01",
+      "rule_id": "R-TIME-001",
+      "category": "time",
+      "classification": "CONFIRMED_CONFLICT",
+      "severity": "medium",
+      "basis": "requirement",
+      "devices": [
+        "cam01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+          "device_id": "cam01",
+          "endpoint_id": "system.time",
+          "xpath": "timeMode",
+          "observed_value": "manual",
+          "raw_sha256": "bb6d60814b9921204ae5af7af592f49919c01cb8643ff613a49529faf35ffb2e",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [
+        "system.time_source"
+      ],
+      "needs_decision": false,
+      "current_value": "manual",
+      "recommended_value": "platform",
+      "rationale": "ORP time source is NVR sync but device timeMode manual differs from NVR platform",
+      "source_refs": [
+        "ADR-011"
+      ],
+      "source": "deterministic",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "time-mode-cam01"
+    },
+    {
+      "id": "R-TIME-001:ptz01:time-mode-ptz01",
+      "rule_id": "R-TIME-001",
+      "category": "time",
+      "classification": "CONFIRMED_CONFLICT",
+      "severity": "medium",
+      "basis": "requirement",
+      "devices": [
+        "ptz01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+          "device_id": "ptz01",
+          "endpoint_id": "system.time",
+          "xpath": "timeMode",
+          "observed_value": "manual",
+          "raw_sha256": "75e5ba7c0161dc8cd8c2718545003670a376054a79fe1a6303b4d8297b499a32",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [
+        "system.time_source"
+      ],
+      "needs_decision": false,
+      "current_value": "manual",
+      "recommended_value": "platform",
+      "rationale": "ORP time source is NVR sync but device timeMode manual differs from NVR platform",
+      "source_refs": [
+        "ADR-011"
+      ],
+      "source": "deterministic",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "time-mode-ptz01"
+    },
+    {
+      "id": "R-HIKC-001:nvr01:hikc-undecided",
+      "rule_id": "R-HIKC-001",
+      "category": "platform",
+      "classification": "INFO",
+      "severity": "info",
+      "basis": "requirement",
+      "devices": [
+        "nvr01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+          "device_id": "nvr01",
+          "endpoint_id": "platform.ezviz",
+          "xpath": "enabled",
+          "observed_value": "true",
+          "raw_sha256": "b3605466b8681127cd10015eb71f5777bd156fa7a12d0de25fb96a2973d5b5b4",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [
+        "system.hik_connect"
+      ],
+      "needs_decision": true,
+      "current_value": "true",
+      "recommended_value": null,
+      "rationale": "Hik-Connect policy undecided in ORP",
+      "source_refs": [
+        "ADR-011"
+      ],
+      "source": "deterministic",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "hikc-undecided"
+    },
+    {
+      "id": "R-LINK-001:cam01,nvr01:center-undecided-cam01",
+      "rule_id": "R-LINK-001",
+      "category": "linkage",
+      "classification": "INFO",
+      "severity": "info",
+      "basis": "requirement",
+      "devices": [
+        "nvr01",
+        "cam01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+          "device_id": "nvr01",
+          "endpoint_id": "event.triggers",
+          "xpath": "notificationMethod",
+          "observed_value": "['record']",
+          "raw_sha256": "f0a54403dcd6a5644855f32cd0aa1eca562f98078b4c934c87e95ae2ee26cee8",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [
+        "devices.cam01.notify_center_required"
+      ],
+      "needs_decision": true,
+      "current_value": null,
+      "recommended_value": null,
+      "rationale": "notify_center_required unset; linedetection trigger lacks center",
+      "source_refs": [
+        "ADR-011"
+      ],
+      "source": "deterministic",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "center-undecided-cam01"
+    },
+    {
+      "id": "R-PTZ-001:ptz01:ptz-mode-undecided",
+      "rule_id": "R-PTZ-001",
+      "category": "ptz",
+      "classification": "INFO",
+      "severity": "info",
+      "basis": "requirement",
+      "devices": [
+        "ptz01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+          "device_id": "ptz01",
+          "endpoint_id": "ptz.park_action",
+          "xpath": "enabled",
+          "observed_value": "False",
+          "raw_sha256": "102e8d76bf081753d64074d7c46fbe010b0cd2ed577efa26feac793fcd7e381c",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [
+        "devices.ptz01.ptz_mode"
+      ],
+      "needs_decision": true,
+      "current_value": null,
+      "recommended_value": null,
+      "rationale": "PTZ mode undecided in ORP",
+      "source_refs": [
+        "ADR-011"
+      ],
+      "source": "deterministic",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "ptz-mode-undecided"
+    },
+    {
+      "id": "R-REC-002:nvr01:track-101-disabled",
+      "rule_id": "R-REC-002",
+      "category": "recording",
+      "classification": "INSUFFICIENT_DATA",
+      "severity": "info",
+      "basis": "technical",
+      "devices": [
+        "nvr01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+          "device_id": "nvr01",
+          "endpoint_id": "record.tracks",
+          "xpath": "Enable",
+          "observed_value": "false",
+          "raw_sha256": "456b6948432fe9e490d226ffb9adb3c7720054a89c96f4fd87e16257ad87eb1a",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [],
+      "needs_decision": false,
+      "current_value": null,
+      "recommended_value": null,
+      "rationale": "Track disabled but schedule exists; verify playback markers manually",
+      "source_refs": [
+        "manual.playback_markers"
+      ],
+      "source": "deterministic",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "track-101-disabled"
+    },
+    {
+      "id": "R-REC-002:nvr01:track-201-disabled",
+      "rule_id": "R-REC-002",
+      "category": "recording",
+      "classification": "INSUFFICIENT_DATA",
+      "severity": "info",
+      "basis": "technical",
+      "devices": [
+        "nvr01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+          "device_id": "nvr01",
+          "endpoint_id": "record.tracks",
+          "xpath": "Enable",
+          "observed_value": "false",
+          "raw_sha256": "456b6948432fe9e490d226ffb9adb3c7720054a89c96f4fd87e16257ad87eb1a",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [],
+      "needs_decision": false,
+      "current_value": null,
+      "recommended_value": null,
+      "rationale": "Track disabled but schedule exists; verify playback markers manually",
+      "source_refs": [
+        "manual.playback_markers"
+      ],
+      "source": "deterministic",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "track-201-disabled"
+    },
+    {
+      "id": "R-SEC-001:nvr01:https-undecided",
+      "rule_id": "R-SEC-001",
+      "category": "security",
+      "classification": "INFO",
+      "severity": "info",
+      "basis": "requirement",
+      "devices": [
+        "nvr01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "e80dc5f3-a8cc-4198-9b8b-0a4893b73f45",
+          "device_id": "nvr01",
+          "endpoint_id": "security.admin_accesses",
+          "xpath": "HTTPS.enabled",
+          "observed_value": "false",
+          "raw_sha256": "f893daadd34eb8b3003448b7688b6f10a94ca80171a6610156d984cad11043aa",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [
+        "system.https_required"
+      ],
+      "needs_decision": true,
+      "current_value": null,
+      "recommended_value": null,
+      "rationale": "HTTP enabled and HTTPS disabled; https_required unspecified",
+      "source_refs": [
+        "ADR-011"
+      ],
+      "source": "deterministic",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "https-undecided"
+    }
+  ],
+  "needs_decision": [
+    {
+      "field": "devices.cam01.notify_center_required",
+      "note": "notify_center_required unset; linedetection trigger lacks center",
+      "finding_id": "R-LINK-001:cam01,nvr01:center-undecided-cam01"
+    },
+    {
+      "field": "devices.ptz01.ptz_mode",
+      "note": "PTZ mode undecided in ORP",
+      "finding_id": "R-PTZ-001:ptz01:ptz-mode-undecided"
+    },
+    {
+      "field": "system.hik_connect",
+      "note": "Hik-Connect policy undecided in ORP",
+      "finding_id": "R-HIKC-001:nvr01:hikc-undecided"
+    },
+    {
+      "field": "system.https_required",
+      "note": "HTTP enabled and HTTPS disabled; https_required unspecified",
+      "finding_id": "R-SEC-001:nvr01:https-undecided"
+    }
+  ],
+  "manual_checks": [
+    "manual.dual_vca",
+    "manual.hdd_model_smr",
+    "manual.nvr_local_smart_analysis",
+    "manual.nvr_save_vca_data",
+    "manual.playback_markers"
+  ],
+  "ai": null
+}
