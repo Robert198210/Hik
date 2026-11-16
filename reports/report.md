@@ -1,7 +1,7 @@
 ## Summary
 
-- classifications: {'CONFIRMED_CONFLICT': 1, 'POTENTIAL_CONFLICT': 3, 'INFO': 5, 'INSUFFICIENT_DATA': 2}
-- severities: {'high': 2, 'medium': 2, 'info': 7}
+- classifications: {'CONFIRMED_CONFLICT': 1, 'POTENTIAL_CONFLICT': 2, 'INFO': 6, 'INSUFFICIENT_DATA': 2}
+- severities: {'high': 3, 'info': 8}
 
 ## Needs decision
 
@@ -18,21 +18,15 @@
   - evidence: `smart.line_detection` `enabled` = `false`
   - ORP: devices.ptz01.required_events
 - **ai** POTENTIAL_CONFLICT
-  - devices: ptz01
-  - current → recommended: `false` → `true`
-  - The ORP requires line_crossing events for ptz01, but analytics.line_engine_enabled is currently set to false.
-  - evidence: `smart.line_detection` `line_detection.engine_enabled` = `false`
-
-- **ai** POTENTIAL_CONFLICT
   - devices: nvr01
   - current → recommended: `false` → `true`
-  - The ORP specifies continuous_24_7 recording mode, but recording.track_enable is currently set to false on nvr01.
+  - ORP specifies continuous_24_7 recording_mode, but recording.track_enable is currently false on nvr01.
   - evidence: `record.tracks` `tracks[101].enable` = `false`
 - **ai** POTENTIAL_CONFLICT
   - devices: ptz01
-  - current → recommended: `frozenset()` → `—`
-  - The ORP requires notify_center_required to be true for ptz01, but linkage.linedetection_notifications currently contains no notification linkage.
-  - evidence: `event.triggers` `triggers[linedetection].methods` = `frozenset()`
+  - current → recommended: `false` → `true`
+  - ORP requires line_crossing event detection for ptz01, but analytics.line_engine_enabled is currently set to false.
+  - evidence: `smart.line_detection` `line_detection.engine_enabled` = `false`
 
 - **R-HIKC-001** INFO
   - devices: nvr01
@@ -66,8 +60,13 @@
 - **ai** INFO
   - devices: nvr01
   - current → recommended: `true` → `—`
-  - The ORP sets remote_access to lan_vpn_only while hik_connect is undecided; platform.ezviz_enabled is currently set to true.
+  - ORP specifies hik_connect as undecided while platform.ezviz_enabled is set to true on nvr01.
   - evidence: `platform.ezviz` `platform.ezviz_enabled` = `true`
+- **ai** INFO
+  - devices: nvr01
+  - current → recommended: `false` → `—`
+  - ORP specifies https_required as unspecified while security.https_enabled is currently false on nvr01.
+  - evidence: `security.admin_accesses` `admin_access.protocols.HTTPS.enabled` = `false`
 
 ## Coverage matrix
 
