@@ -1,9 +1,9 @@
 {
   "meta": {
     "haca_version": "0.1.0.dev0",
-    "run_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
-    "started_at": "2026-11-16T18:55:58.077490Z",
-    "finished_at": "2026-11-16T18:56:23.832014Z",
+    "run_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+    "started_at": "2026-11-16T19:05:32.967609Z",
+    "finished_at": "2026-11-16T19:05:43.743116Z",
     "simulated": false,
     "scenario": null,
     "orp_hash": "548ceb473ae211e2ecb78dbaa32900982bd46ca3b703610428bc944d20b8f458",
@@ -1198,7 +1198,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
+          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "schedule",
@@ -1236,7 +1236,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
+          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "schedule",
@@ -1274,7 +1274,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
+          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
           "device_id": "ptz01",
           "endpoint_id": "smart.line_detection",
           "xpath": "enabled",
@@ -1312,12 +1312,12 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
+          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
           "device_id": "cam01",
           "endpoint_id": "system.time",
           "xpath": "timeMode",
           "observed_value": "manual",
-          "raw_sha256": "34ae42cf9031849d8a148a82ffaf078015c69b7f78da70a52232656caabdcf4e",
+          "raw_sha256": "c3c7cc4aa3d1c83a53063d4128c4b47a67fe736abcb797e36c8f9f0a7ccf1c3d",
           "tier": "isapi"
         }
       ],
@@ -1350,12 +1350,12 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
+          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
           "device_id": "ptz01",
           "endpoint_id": "system.time",
           "xpath": "timeMode",
           "observed_value": "manual",
-          "raw_sha256": "a38aa0bd82d878c3ef6c93792a58abd8f401fe6ec6f2b8df9b94481f715d0847",
+          "raw_sha256": "185cfce0a5c38a714f998ece59f773a70703dca060bdf0f90fa7d31b0fe615e9",
           "tier": "isapi"
         }
       ],
@@ -1388,7 +1388,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
+          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
           "device_id": "nvr01",
           "endpoint_id": "platform.ezviz",
           "xpath": "enabled",
@@ -1427,7 +1427,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
+          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
           "device_id": "nvr01",
           "endpoint_id": "event.triggers",
           "xpath": "notificationMethod",
@@ -1465,7 +1465,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
+          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
           "device_id": "ptz01",
           "endpoint_id": "ptz.park_action",
           "xpath": "enabled",
@@ -1503,7 +1503,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
+          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "Enable",
@@ -1539,7 +1539,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
+          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "Enable",
@@ -1575,7 +1575,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "28bb9b49-0703-4234-996d-4c7e80459bf4",
+          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
           "device_id": "nvr01",
           "endpoint_id": "security.admin_accesses",
           "xpath": "HTTPS.enabled",
@@ -1634,6 +1634,7 @@
   "ai": {
     "status": "error",
     "reason": "network_error",
+    "detail": "ClientError: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'Invalid JSON payload received. Unknown name \"additional_properties\" at \\'generation_config.response_schema\\': Cannot find field.\\nInvalid JSON payload received. Unknown name \"additional_properties\" at \\'generation_config.response_schema.properties[1].value.items\\': Cannot find field.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.BadRequest', 'fieldViolations': [{'field': 'generation_config.response_",
     "summary": null,
     "cross_device_notes": [],
     "rejected": [],
