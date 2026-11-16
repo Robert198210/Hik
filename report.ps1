@@ -2,14 +2,22 @@
 # Odczyt NVR i kamer, propozycje Gemini, zapis reports\report.* i wysylka na GitHub.
 # Zwykly Windows PowerShell, katalog projektu, bez administratora.
 # Nie dodaje ustaw-hasla.ps1.
+# Po git pull uruchamia sie jeszcze raz z pliku na dysku, zanim zacznie audyt.
+
+param([switch]$Updated)
 
 Set-Location $PSScriptRoot
-. .\ustaw-hasla.ps1
-
-git pull --ff-only
-if ($LASTEXITCODE -ne 0) {
-  Write-Host "git pull nie doszedl. Audyt i tak startuje."
+if (-not $Updated) {
+  git pull --ff-only
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host "git pull nie doszedl. Audyt i tak startuje."
+  } else {
+    & $PSCommandPath -Updated
+    exit $LASTEXITCODE
+  }
 }
+
+. .\ustaw-hasla.ps1
 
 $py = Join-Path $PSScriptRoot ".venv\Scripts\python.exe"
 if (-not (Test-Path $py)) {
