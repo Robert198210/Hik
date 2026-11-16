@@ -1,0 +1,20 @@
+# Brama (router): 192.168.1.1
+# HACA wymaga sieci, w której leżą urządzenia, a nie samego adresu bramy.
+network:
+  subnet: 192.168.1.0/24
+timeouts:
+  connect: 5.0
+  read: 20.0
+database_path: data/haca.db
+simulation: false
+ai:
+  model: gemini-3.8-flash
+  temperature: 0.2
+  max_output_tokens: 4096
+  max_input_tokens: 128000
+  max_calls_per_audit: 1
+  budget_chars: 200000
+  pricing:
+    gemini-3.8-flash:
+      input_per_mtok: 0.75
+      output_per_mtok: 3.75
