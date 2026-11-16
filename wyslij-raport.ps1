@@ -22,6 +22,11 @@ if ($LASTEXITCODE -eq 0) {
   Write-Host "raports bez zmian"
   exit 0
 }
+if (-not (git config user.email)) {
+  git config user.email "Robert198210@users.noreply.github.com"
+  git config user.name "Robert198210"
+}
 git commit -m "Update live audit report"
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 git push
-exit 0
+exit $LASTEXITCODE
