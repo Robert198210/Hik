@@ -1,7 +1,7 @@
 ## Summary
 
-- classifications: {'CONFIRMED_CONFLICT': 3, 'POTENTIAL_CONFLICT': 3, 'INFO': 5, 'INSUFFICIENT_DATA': 2}
-- severities: {'high': 5, 'medium': 1, 'info': 7}
+- classifications: {'CONFIRMED_CONFLICT': 1, 'POTENTIAL_CONFLICT': 3, 'INFO': 5, 'INSUFFICIENT_DATA': 2}
+- severities: {'high': 2, 'medium': 2, 'info': 7}
 
 ## Needs decision
 
@@ -12,38 +12,26 @@
 
 ## Findings
 
-- **R-REC-001** CONFIRMED_CONFLICT
-  - devices: nvr01
-  - current → recommended: `partial_or_motion` → `CMR_24_7`
-  - continuous_24_7 requires CMR covering all 7 days
-  - evidence: `record.tracks` `schedule` = `(('Monday', '00:00:00', 'Tuesday', '00:00:00', 'CMR', True), ('Tuesday', '00:00:00', 'Wednesday', '00:00:00', 'CMR', True), ('Wednesday', '00:00:00', 'Thursday', '00:00:00', 'CMR', True), ('Thursday', '00:00:00', 'Friday', '00:00:00', 'CMR', True), ('Friday', '00:00:00', 'Saturday', '00:00:00', 'CMR', True), ('Saturday', '00:00:00', 'Sunday', '00:00:00', 'CMR', True), ('Sunday', '00:00:00', 'Monday', '00:00:00', 'CMR', True))`
-  - ORP: system.recording_mode
-- **R-REC-001** CONFIRMED_CONFLICT
-  - devices: nvr01
-  - current → recommended: `partial_or_motion` → `CMR_24_7`
-  - continuous_24_7 requires CMR covering all 7 days
-  - evidence: `record.tracks` `schedule` = `(('Monday', '00:00:00', 'Tuesday', '00:00:00', 'CMR', True), ('Tuesday', '00:00:00', 'Wednesday', '00:00:00', 'CMR', True), ('Wednesday', '00:00:00', 'Thursday', '00:00:00', 'CMR', True), ('Thursday', '00:00:00', 'Friday', '00:00:00', 'CMR', True), ('Friday', '00:00:00', 'Saturday', '00:00:00', 'CMR', True), ('Saturday', '00:00:00', 'Sunday', '00:00:00', 'CMR', True), ('Sunday', '00:00:00', 'Monday', '00:00:00', 'CMR', True))`
-  - ORP: system.recording_mode
 - **R-VCA-001** CONFIRMED_CONFLICT
   - devices: ptz01
   - Line crossing required but engine disabled
   - evidence: `smart.line_detection` `enabled` = `false`
   - ORP: devices.ptz01.required_events
 - **ai** POTENTIAL_CONFLICT
-  - devices: nvr01
-  - current → recommended: `false` → `true`
-  - ORP requires continuous_24_7 recording, but recording.track_enable is currently false on nvr01.
-  - evidence: `record.tracks` `tracks[101].enable` = `false`
-- **ai** POTENTIAL_CONFLICT
   - devices: ptz01
   - current → recommended: `false` → `true`
-  - ORP specifies line_crossing as a required event for ptz01, but analytics.line_engine_enabled is currently set to false.
+  - The ORP requires line_crossing events for ptz01, but analytics.line_engine_enabled is currently set to false.
   - evidence: `smart.line_detection` `line_detection.engine_enabled` = `false`
 
 - **ai** POTENTIAL_CONFLICT
+  - devices: nvr01
+  - current → recommended: `false` → `true`
+  - The ORP specifies continuous_24_7 recording mode, but recording.track_enable is currently set to false on nvr01.
+  - evidence: `record.tracks` `tracks[101].enable` = `false`
+- **ai** POTENTIAL_CONFLICT
   - devices: ptz01
   - current → recommended: `frozenset()` → `—`
-  - ORP mandates notify_center_required as true for ptz01, but linkage.linedetection_notifications does not include center notification.
+  - The ORP requires notify_center_required to be true for ptz01, but linkage.linedetection_notifications currently contains no notification linkage.
   - evidence: `event.triggers` `triggers[linedetection].methods` = `frozenset()`
 
 - **R-HIKC-001** INFO
@@ -78,7 +66,7 @@
 - **ai** INFO
   - devices: nvr01
   - current → recommended: `true` → `—`
-  - ORP sets remote_access to lan_vpn_only with hik_connect undecided, while platform.ezviz_enabled is active on nvr01.
+  - The ORP sets remote_access to lan_vpn_only while hik_connect is undecided; platform.ezviz_enabled is currently set to true.
   - evidence: `platform.ezviz` `platform.ezviz_enabled` = `true`
 
 ## Coverage matrix

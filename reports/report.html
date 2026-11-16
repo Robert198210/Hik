@@ -17,7 +17,7 @@
 <body>
   
   <h1>HACA configuration audit</h1>
-  <p>Run 269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1 · catalog v1</p>
+  <p>Run 2c2aa714-1532-4fc2-a3c8-b1750fec015b · catalog v1</p>
 
   <h2>Summary</h2>
   <p>Verified 70 of 123 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.</p>
@@ -26,22 +26,6 @@
   <table>
     <thead><tr><th>Rule</th><th>Class</th><th>Severity</th><th>Devices</th><th>Rationale</th></tr></thead>
     <tbody>
-    
-      <tr>
-        <td>R-REC-001</td>
-        <td>CONFIRMED_CONFLICT</td>
-        <td class="severity-high">high</td>
-        <td>nvr01</td>
-        <td>continuous_24_7 requires CMR covering all 7 days</td>
-      </tr>
-    
-      <tr>
-        <td>R-REC-001</td>
-        <td>CONFIRMED_CONFLICT</td>
-        <td class="severity-high">high</td>
-        <td>nvr01</td>
-        <td>continuous_24_7 requires CMR covering all 7 days</td>
-      </tr>
     
       <tr>
         <td>R-VCA-001</td>
@@ -55,16 +39,16 @@
         <td>ai</td>
         <td>POTENTIAL_CONFLICT</td>
         <td class="severity-high">high</td>
-        <td>nvr01</td>
-        <td>ORP requires continuous_24_7 recording, but recording.track_enable is currently false on nvr01.</td>
+        <td>ptz01</td>
+        <td>The ORP requires line_crossing events for ptz01, but analytics.line_engine_enabled is currently set to false.</td>
       </tr>
     
       <tr>
         <td>ai</td>
         <td>POTENTIAL_CONFLICT</td>
-        <td class="severity-high">high</td>
-        <td>ptz01</td>
-        <td>ORP specifies line_crossing as a required event for ptz01, but analytics.line_engine_enabled is currently set to false.</td>
+        <td class="severity-medium">medium</td>
+        <td>nvr01</td>
+        <td>The ORP specifies continuous_24_7 recording mode, but recording.track_enable is currently set to false on nvr01.</td>
       </tr>
     
       <tr>
@@ -72,7 +56,7 @@
         <td>POTENTIAL_CONFLICT</td>
         <td class="severity-medium">medium</td>
         <td>ptz01</td>
-        <td>ORP mandates notify_center_required as true for ptz01, but linkage.linedetection_notifications does not include center notification.</td>
+        <td>The ORP requires notify_center_required to be true for ptz01, but linkage.linedetection_notifications currently contains no notification linkage.</td>
       </tr>
     
       <tr>
@@ -128,7 +112,7 @@
         <td>INFO</td>
         <td class="severity-info">info</td>
         <td>nvr01</td>
-        <td>ORP sets remote_access to lan_vpn_only with hik_connect undecided, while platform.ezviz_enabled is active on nvr01.</td>
+        <td>The ORP sets remote_access to lan_vpn_only while hik_connect is undecided; platform.ezviz_enabled is currently set to true.</td>
       </tr>
     
     </tbody>
@@ -138,7 +122,7 @@
   <h2>AI analysis</h2>
   <p>Status: ok</p>
   
-  <p>Configuration analysis identified potential conflicts regarding VCA line detection and recording track state, alongside informational notes regarding cloud platform integration.</p>
+  <p>Audit completed. Identified potential conflicts on ptz01 regarding disabled line crossing analytics and missing center notification linkage required by the ORP, as well as disabled track recording on nvr01 despite continuous recording requirements.</p>
   
   
   
