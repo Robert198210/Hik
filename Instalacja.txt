@@ -1,0 +1,44 @@
+PS C:\programy\hik> py -3.12 -m venv .venv
+PS C:\programy\hik> .\.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1 : File C:\programy\hik\.venv\Scripts\Activate.ps1 cannot be loaded because running scripts
+ is disabled on this system. For more information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?Link
+ID=135170.
+At line:1 char:1
++ .\.venv\Scripts\Activate.ps1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+PS C:\programy\hik> .\.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1 : File C:\programy\hik\.venv\Scripts\Activate.ps1 cannot be loaded because running scripts
+ is disabled on this system. For more information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?Link
+ID=135170.
+At line:1 char:1
++ .\.venv\Scripts\Activate.ps1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+PS C:\programy\hik> Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+
+Execution Policy Change
+The execution policy helps protect you from scripts that you do not trust. Changing the execution policy might expose
+you to the security risks described in the about_Execution_Policies help topic at
+https:/go.microsoft.com/fwlink/?LinkID=135170. Do you want to change the execution policy?
+[Y] Yes  [A] Yes to All  [N] No  [L] No to All  [S] Suspend  [?] Help (default is "N"): Y
+PS C:\programy\hik> .\.venv\Scripts\Activate.ps1
+(.venv) PS C:\programy\hik> python -m pip install -U pip
+Requirement already satisfied: pip in c:\programy\hik\.venv\lib\site-packages (25.0.1)
+Collecting pip
+  Using cached pip-26.3-py3-none-any.whl.metadata (4.6 kB)
+Using cached pip-26.3-py3-none-any.whl (2.0 MB)
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 25.0.1
+    Uninstalling pip-25.0.1:
+      Successfully uninstalled pip-25.0.1
+Successfully installed pip-26.3
+(.venv) PS C:\programy\hik> pip install -e .
+Obtaining file:///C:/programy/hik
+ERROR: file:///C:/programy/hik does not appear to be a Python project: neither 'setup.py' nor 'pyproject.toml' found.
+(.venv) PS C:\programy\hik> python -m haca --version
+C:\programy\hik\.venv\Scripts\python.exe: No module named haca
+(.venv) PS C:\programy\hik>
