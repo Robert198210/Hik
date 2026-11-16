@@ -212,11 +212,29 @@ def _print_coverage_summary(entries: list[CoverageEntry], result: object) -> Non
         print(f"  {device_id}: {categories}")
 
 
+def _resolved_devices(app: AppConfig, devices_path: Path) -> list[ResolvedDevice]:
+    from haca.config.loader import load_devices as load_device_file
+
+    resolved = load_device_file(devices_path, app.network)
+    return [
+        ResolvedDevice(
+            id=device.id,
+            role=device.role,
+            expected_model=device.expected_model,
+            host=device.host,
+            port=device.port,
+            scheme=device.scheme,
+            credential_ref=device.credential_ref,
+        )
+        for device in resolved
+        if device.enabled
+    ]
+
+
 def _cmd_collect(args: argparse.Namespace) -> int:
     json_output = bool(args.json)
     if not args.simulate:
-        print("live collection is not wired in this build; use --simulate", file=sys.stderr)
-        return 1
+        return _cmd_collect_live(args)
 
     banner_stream = sys.stderr if json_output else sys.stdout
     print(_SIMULATED_BANNER, file=banner_stream)
@@ -257,6 +275,47 @@ def _cmd_collect(args: argparse.Namespace) -> int:
 
     if any(e.status == "INACCESSIBLE" for e in coverage):
         pass
+    return 0
+
+
+def _cmd_collect_live(args: argparse.Namespace) -> int:
+    from haca.collect.runner import run_live_collection
+    from haca.store.db import open_db
+    from haca.store.repositories import save_collection, save_coverage
+
+    config_path = Path(args.config) if args.config else _DEFAULT_CONFIG
+    devices_path = Path(args.devices) if args.devices else _DEFAULT_DEVICES
+    app = load_app_config(config_path)
+    devices = _resolved_devices(app, devices_path)
+    manual = _load_manual_attestation(Path(args.manual)) if args.manual else None
+    result, coverage = run_live_collection(app, devices, EnvCredentialStore())
+    catalog = load_catalog_entries()
+    if manual:
+        coverage = compute_coverage(catalog, result, None, manual=manual)
+
+    db_path = Path(args.db) if args.db else Path("data/haca.db")
+    _, session_factory = open_db(db_path)
+    with session_factory() as session:
+        run_id = save_collection(
+            session,
+            result,
+            orp_hash=None,
+            catalog_version=CATALOG_VERSION,
+            scenario=None,
+        )
+        save_coverage(session, run_id, coverage)
+
+    if args.json:
+        payload = {
+            "run_id": run_id,
+            "simulated": False,
+            "coverage": [entry.model_dump() for entry in coverage],
+        }
+        print(json.dumps(payload, indent=2))
+    else:
+        _print_collect_outcomes(result)
+        _print_coverage_summary(coverage, result)
+        print(f"run_id={run_id}")
     return 0
 
 
@@ -348,8 +407,7 @@ def _run_simulated_audit(
 
 def _cmd_audit(args: argparse.Namespace) -> int:
     if not args.simulate:
-        print("live audit is not wired in this build; use --simulate", file=sys.stderr)
-        return 1
+        return _run_live_audit(args)
     scenario = args.scenario or "clean"
     default_req = _REPO_ROOT / "config" / "requirements.example.yaml"
     requirements = Path(args.requirements) if args.requirements else default_req
@@ -370,6 +428,56 @@ def _cmd_audit(args: argparse.Namespace) -> int:
         use_ai=bool(getattr(args, "ai", False)),
         config_path=config_path,
     )
+
+
+def _run_live_audit(args: argparse.Namespace) -> int:
+    from haca.audit import AuditOrchestrator, audit_exit_code
+    from haca.reports.html import render_html
+    from haca.reports.json_report import write_report_json
+    from haca.reports.markdown import render_markdown
+
+    config_path = Path(args.config) if args.config else _DEFAULT_CONFIG
+    devices_path = Path(args.devices) if args.devices else _DEFAULT_DEVICES
+    app = load_app_config(config_path)
+    devices = _resolved_devices(app, devices_path)
+    default_req = _REPO_ROOT / "config" / "requirements.example.yaml"
+    requirements = Path(args.requirements) if args.requirements else default_req
+    orp = load_requirements(requirements, {device.id for device in devices})
+    out_dir = Path(args.out) if args.out else Path("reports")
+    db_path = Path(args.db) if args.db else None
+    manual_path = Path(args.manual) if args.manual else None
+    raw_formats = args.format or "json,md"
+    formats = {part.strip().lower() for part in raw_formats.split(",") if part.strip()}
+    report = AuditOrchestrator().run_audit(
+        app,
+        devices,
+        orp,
+        simulate=False,
+        scenario=None,
+        manual_attestations=_load_manual_attestation(manual_path),
+        db_path=db_path,
+        use_ai=bool(getattr(args, "ai", False)),
+        credential_store=EnvCredentialStore(),
+    )
+    out_dir.mkdir(parents=True, exist_ok=True)
+    base = out_dir / f"haca-audit-{report.meta.run_id}"
+    written: list[Path] = []
+    if "json" in formats:
+        json_path = base.with_suffix(".json")
+        write_report_json(report, str(json_path))
+        written.append(json_path)
+    if "md" in formats:
+        md_path = base.with_suffix(".md")
+        md_path.write_text(render_markdown(report), encoding="utf-8")
+        written.append(md_path)
+    if "html" in formats:
+        html_path = base.with_suffix(".html")
+        html_path.write_text(render_html(report), encoding="utf-8")
+        written.append(html_path)
+    print(f"findings={len(report.findings)}")
+    for path in written:
+        print(path)
+    return audit_exit_code(list(report.findings))
 
 
 def _cmd_ai_preview(args: argparse.Namespace) -> int:
@@ -522,6 +630,8 @@ def main(argv: list[str] | None = None) -> None:
     collect_parser.add_argument("--json", action="store_true")
     collect_parser.add_argument("--db", default=None)
     collect_parser.add_argument("--manual", default=None)
+    collect_parser.add_argument("--config", default=str(_DEFAULT_CONFIG))
+    collect_parser.add_argument("--devices", default=str(_DEFAULT_DEVICES))
     collect_parser.set_defaults(func=_cmd_collect)
 
     runs_parser = subparsers.add_parser("runs", help="Persisted audit runs")
@@ -553,6 +663,7 @@ def main(argv: list[str] | None = None) -> None:
     audit_parser.add_argument("--db", default=None)
     audit_parser.add_argument("--ai", action="store_true")
     audit_parser.add_argument("--config", default=str(_DEFAULT_CONFIG))
+    audit_parser.add_argument("--devices", default=str(_DEFAULT_DEVICES))
     audit_parser.set_defaults(func=_cmd_audit)
 
     ai_parser = subparsers.add_parser("ai", help="Gemini analysis tools")

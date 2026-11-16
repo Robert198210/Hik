@@ -7,6 +7,7 @@ Last updated: 2026-11-16
 | Task | Status | Notes |
 |---|---|---|
 | T4.01 Gemini adapter, payload, validator, HTML | Done | `haca.ai` package, `--ai` audit, `ai preview`/`ai models`, SQLite schema v2 (`ai_calls`/`ai_cache`), HTML report. pytest 1167, ruff/mypy clean. Gate S3 QA not run (developer completion only). |
+| Live audit | Done | `haca audit` and `haca collect` without `--simulate` read the configured devices. pytest 1170. |
 
 ## Phase 3 — Deterministic audit
 

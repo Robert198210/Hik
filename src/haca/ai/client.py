@@ -70,7 +70,7 @@ class GeminiClient:
             client_kwargs["http_options"] = http_options
         else:
             _assert_gemini_only_egress()
-        client_cls = getattr(genai, "Client")
+        client_cls = getattr(genai, "Client")  # noqa: B009
         self._client = client_cls(**client_kwargs)
 
     def generate(self, prompt: str, payload_json: str) -> AiCallResult:

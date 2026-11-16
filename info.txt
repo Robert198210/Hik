@@ -105,15 +105,16 @@ Identyfikacja na symulatorze:
   python -m haca identify --simulate
 
 
-6. Czego ta wersja jeszcze nie robi
-------------------------------------
-Pełny audyt prawdziwych urządzeń nie jest podłączony.
-Te dwie komendy wypiszą komunikat i zakończą się kodem 1:
+6. Audyt prawdziwych urządzeń
+-----------------------------
+Laptop musi być w tej samej sieci co rejestrator.
+Najpierw krok 7 (hasła w oknie PowerShell). Potem, katalog projektu, (.venv) aktywne:
 
-  python -m haca audit
-  python -m haca collect
+  python -m haca audit --config haca.laptop.yaml --devices devices.laptop.yaml --format html,json,md --out reports
 
-Działa odczyt identyfikacji na żywo (krok 7), jeśli laptop jest w tej samej sieci LAN co NVR/kamery.
+Bez --simulate. Program łączy się z 192.168.1.200, .201 i .202.
+Raport: katalog reports, plik .html otwórz dwuklikiem.
+Kod 3 oznacza wykryte konflikty. Kod 0 oznacza brak konfliktu o wysokiej wadze.
 
 
 7. Identyfikacja prawdziwych urządzeń (opcjonalnie)

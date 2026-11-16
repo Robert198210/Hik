@@ -49,6 +49,7 @@ class DeviceCollection(BaseModel):
     views: DeviceViews
     missing_fields: tuple[str, ...] = ()
     flattened: dict[str, str] = Field(default_factory=dict)  # noqa: RUF009
+    identification_status: str | None = None
 
 
 class CollectionResult(BaseModel):

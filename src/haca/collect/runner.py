@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import time
+
+import httpx
+
 from haca.catalog.coverage import (
     CoverageEntry,
     compute_coverage,
@@ -11,8 +15,11 @@ from haca.catalog.coverage import (
 from haca.catalog.loader import load_catalog_entries
 from haca.collect.engine import CollectionEngine
 from haca.collect.models import CollectionResult
+from haca.config.models import AppConfig
 from haca.devices.models import ResolvedDevice
+from haca.devices.network_policy import NetworkPolicy
 from haca.isapi.registry.loader import build_collection_policy, load_registry_entries
+from haca.security.credentials import CredentialStore
 from haca.security.egress import EgressPolicy
 from haca.simulation.defaults import (
     build_simulation_network_for_scenario,
@@ -41,6 +48,33 @@ def run_simulated_collection(scenario: str) -> tuple[CollectionResult, list[Cove
         factory,  # type: ignore[arg-type]
     )
     result = engine.collect(devices, simulated=True)
+    coverage = compute_coverage(catalog, result, None)
+    return result, coverage
+
+
+def run_live_collection(
+    app: AppConfig,
+    devices: list[ResolvedDevice],
+    credentials: CredentialStore,
+) -> tuple[CollectionResult, list[CoverageEntry]]:
+    """Read configuration from real devices. No simulation transport."""
+    registry = load_registry_entries()
+    catalog = load_catalog_entries()
+
+    def factory(_device: ResolvedDevice) -> httpx.BaseTransport:
+        return httpx.HTTPTransport(retries=0)
+
+    engine = CollectionEngine(
+        registry,
+        build_collection_policy(registry),
+        EgressPolicy({device.host for device in devices}),
+        credentials,
+        app.timeouts,
+        factory,
+        network_policy=NetworkPolicy(app.network.subnet, simulation=False),
+        retry_sleep=time.sleep,
+    )
+    result = engine.collect(devices, simulated=False)
     coverage = compute_coverage(catalog, result, None)
     return result, coverage
 

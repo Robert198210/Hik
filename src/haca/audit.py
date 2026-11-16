@@ -23,8 +23,9 @@ from haca.catalog.coverage import (
 )
 from haca.catalog.loader import load_catalog_entries
 from haca.catalog.models import CatalogEntry, ManualSource
-from haca.collect.identify import IdentificationResult, identify_devices
-from haca.collect.runner import run_simulated_collection
+from haca.collect.identify import IdentificationResult, IdentificationStatus, identify_devices
+from haca.collect.models import CollectionResult
+from haca.collect.runner import run_live_collection, run_simulated_collection
 from haca.config.models import AppConfig
 from haca.devices.models import ResolvedDevice
 from haca.isapi.client import IsapiClient
@@ -33,6 +34,7 @@ from haca.isapi.registry.phase1_endpoints import build_phase1_policy
 from haca.reports.models import AuditMeta, AuditReport, DeviceReportEntry
 from haca.requirements.loader import requirements_hash
 from haca.requirements.models import RequirementsProfile
+from haca.security.credentials import CredentialStore
 from haca.security.egress import EgressPolicy
 from haca.simulation.defaults import (
     build_simulation_network_for_scenario,
@@ -59,6 +61,7 @@ class AuditOrchestrator:
         db_path: Path | None = None,
         use_ai: bool = False,
         ai_client: AiClient | None = None,
+        credential_store: CredentialStore | None = None,
     ) -> AuditReport:
         started = datetime.now(UTC)
         catalog = load_catalog_entries()
@@ -75,7 +78,18 @@ class AuditOrchestrator:
                 for r in _identify_simulated(scenario or "clean")
             ]
         else:
-            raise NotImplementedError("live audit is not wired in MVP")
+            if credential_store is None:
+                from haca.security.credentials import EnvCredentialStore
+
+                credential_store = EnvCredentialStore()
+            collection, coverage = run_live_collection(
+                app_config, devices, credential_store
+            )
+            if manual_attestations:
+                coverage = compute_coverage(
+                    catalog, collection, orp, manual=manual_attestations
+                )
+            id_results = _identify_from_collection(collection)
 
         run_id = str(uuid.uuid4())
         engine = RuleEngine()
@@ -193,6 +207,22 @@ def audit_exit_code(findings: list[Finding]) -> int:
     if any(f.severity in (Severity.critical, Severity.high) for f in findings):
         return 3
     return 0
+
+
+def _identify_from_collection(collection: CollectionResult) -> list[IdentificationResult]:
+    results: list[IdentificationResult] = []
+    for device in collection.devices:
+        status_name = device.identification_status or IdentificationStatus.ERROR.value
+        results.append(
+            IdentificationResult(
+                device_id=device.device_id,
+                status=IdentificationStatus(status_name),
+                identity=device.identity,
+                message="",
+                simulated=collection.simulated,
+            )
+        )
+    return results
 
 
 def _identify_simulated(scenario: str) -> list[IdentificationResult]:

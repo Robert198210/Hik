@@ -63,6 +63,8 @@ class CollectionEngine:
         credential_store: CredentialStore,
         timeouts: TimeoutConfig,
         transport_factory: Callable[[ResolvedDevice], httpx.BaseTransport],
+        network_policy: NetworkPolicy | None = None,
+        retry_sleep: Callable[[float], None] | None = None,
     ) -> None:
         self._registry = registry
         self._registry_by_id = {e.id: e for e in registry}
@@ -71,6 +73,10 @@ class CollectionEngine:
         self._credential_store = credential_store
         self._timeouts = timeouts
         self._transport_factory = transport_factory
+        self._network_policy = network_policy or NetworkPolicy(
+            _SIM_SUBNET, simulation=True
+        )
+        self._retry_sleep = retry_sleep or (lambda _seconds: None)
 
     def collect(
         self,
@@ -100,7 +106,7 @@ class CollectionEngine:
     ) -> DeviceCollection:
         cred = self._credential_store.get(device.credential_ref)
         transport = self._transport_factory(device)
-        registry = DeviceRegistry([device], NetworkPolicy(_SIM_SUBNET, simulation=True))
+        registry = DeviceRegistry([device], self._network_policy)
         evidence: dict[str, RawEvidence] = {}
         flattened: dict[str, str] = {}
         views = DeviceViews()
@@ -118,7 +124,7 @@ class CollectionEngine:
             self._egress,
             self._timeouts,
             inner_transport=transport,
-            sleep=lambda _s: None,
+            sleep=self._retry_sleep,
         ) as client:
             id_result = identify(client, device, simulated=simulated)
             identity = id_result.identity
@@ -181,6 +187,7 @@ class CollectionEngine:
             views=views,
             missing_fields=tuple(missing_fields),
             flattened=flattened,
+            identification_status=id_result.status.value,
         )
 
     @staticmethod
