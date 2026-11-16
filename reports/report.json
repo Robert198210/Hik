@@ -1,9 +1,9 @@
 {
   "meta": {
     "haca_version": "0.1.0.dev0",
-    "run_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
-    "started_at": "2026-11-16T19:05:32.967609Z",
-    "finished_at": "2026-11-16T19:05:43.743116Z",
+    "run_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
+    "started_at": "2026-11-16T19:10:54.924016Z",
+    "finished_at": "2026-11-16T19:11:05.196043Z",
     "simulated": false,
     "scenario": null,
     "orp_hash": "548ceb473ae211e2ecb78dbaa32900982bd46ca3b703610428bc944d20b8f458",
@@ -1198,7 +1198,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "schedule",
@@ -1236,7 +1236,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "schedule",
@@ -1274,7 +1274,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
           "device_id": "ptz01",
           "endpoint_id": "smart.line_detection",
           "xpath": "enabled",
@@ -1301,6 +1301,74 @@
       "subject": "line-engine-off"
     },
     {
+      "id": "ai:nvr01:recording.track_enable:",
+      "rule_id": "ai",
+      "category": "ai",
+      "classification": "POTENTIAL_CONFLICT",
+      "severity": "high",
+      "basis": "technical",
+      "devices": [
+        "nvr01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
+          "device_id": "nvr01",
+          "endpoint_id": "record.tracks",
+          "xpath": "tracks[101].enable",
+          "observed_value": "false",
+          "raw_sha256": "456b6948432fe9e490d226ffb9adb3c7720054a89c96f4fd87e16257ad87eb1a",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [],
+      "needs_decision": false,
+      "current_value": "false",
+      "recommended_value": null,
+      "rationale": "Setting_id recording.track_enable is false on nvr01, impacting the ORP system.recording_mode requirement of continuous_24_7.",
+      "source_refs": [],
+      "source": "ai_validated",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "recording.track_enable"
+    },
+    {
+      "id": "ai:ptz01:analytics.line_engine_enabled:true",
+      "rule_id": "ai",
+      "category": "ai",
+      "classification": "POTENTIAL_CONFLICT",
+      "severity": "high",
+      "basis": "technical",
+      "devices": [
+        "ptz01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
+          "device_id": "ptz01",
+          "endpoint_id": "smart.line_detection",
+          "xpath": "line_detection.engine_enabled",
+          "observed_value": "false",
+          "raw_sha256": "7c3870f1b3e99f6095e1ca47b63eab0e989a0db30e0b71b567850e9f5c090091",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [],
+      "needs_decision": false,
+      "current_value": "false",
+      "recommended_value": "true",
+      "rationale": "Setting_id analytics.line_engine_enabled is currently false on ptz01, conflicting with the ORP required_events specification for line_crossing.",
+      "source_refs": [],
+      "source": "ai_validated",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "analytics.line_engine_enabled"
+    },
+    {
       "id": "R-TIME-001:cam01:time-mode-cam01",
       "rule_id": "R-TIME-001",
       "category": "time",
@@ -1312,12 +1380,12 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
           "device_id": "cam01",
           "endpoint_id": "system.time",
           "xpath": "timeMode",
           "observed_value": "manual",
-          "raw_sha256": "c3c7cc4aa3d1c83a53063d4128c4b47a67fe736abcb797e36c8f9f0a7ccf1c3d",
+          "raw_sha256": "dc15c8d9b94daa855fe926e6dcf4bc65571f336173359017e2990a35d4c6a84f",
           "tier": "isapi"
         }
       ],
@@ -1350,12 +1418,12 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
           "device_id": "ptz01",
           "endpoint_id": "system.time",
           "xpath": "timeMode",
           "observed_value": "manual",
-          "raw_sha256": "185cfce0a5c38a714f998ece59f773a70703dca060bdf0f90fa7d31b0fe615e9",
+          "raw_sha256": "7d228fd0b6f73c5546cc9c60e5c95d95ad69faccc452ca26263673b9b33e7141",
           "tier": "isapi"
         }
       ],
@@ -1388,7 +1456,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
           "device_id": "nvr01",
           "endpoint_id": "platform.ezviz",
           "xpath": "enabled",
@@ -1427,7 +1495,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
           "device_id": "nvr01",
           "endpoint_id": "event.triggers",
           "xpath": "notificationMethod",
@@ -1465,7 +1533,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
           "device_id": "ptz01",
           "endpoint_id": "ptz.park_action",
           "xpath": "enabled",
@@ -1503,7 +1571,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "Enable",
@@ -1539,7 +1607,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "Enable",
@@ -1575,7 +1643,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "f3851eff-537a-4ae8-bfea-e62af5faa779",
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
           "device_id": "nvr01",
           "endpoint_id": "security.admin_accesses",
           "xpath": "HTTPS.enabled",
@@ -1600,6 +1668,40 @@
       "rule_error": false,
       "recommendation": null,
       "subject": "https-undecided"
+    },
+    {
+      "id": "ai:nvr01:platform.ezviz_enabled:",
+      "rule_id": "ai",
+      "category": "ai",
+      "classification": "INFO",
+      "severity": "info",
+      "basis": "technical",
+      "devices": [
+        "nvr01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "4d844c8a-b1c7-4fe7-848b-35d00a50293c",
+          "device_id": "nvr01",
+          "endpoint_id": "platform.ezviz",
+          "xpath": "platform.ezviz_enabled",
+          "observed_value": "true",
+          "raw_sha256": "b3605466b8681127cd10015eb71f5777bd156fa7a12d0de25fb96a2973d5b5b4",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [],
+      "needs_decision": false,
+      "current_value": "true",
+      "recommended_value": null,
+      "rationale": "Setting_id platform.ezviz_enabled is true on nvr01 while the ORP specifies remote_access as lan_vpn_only and hik_connect remains undecided.",
+      "source_refs": [],
+      "source": "ai_validated",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "platform.ezviz_enabled"
     }
   ],
   "needs_decision": [
@@ -1632,18 +1734,34 @@
     "manual.playback_markers"
   ],
   "ai": {
-    "status": "error",
-    "reason": "network_error",
-    "detail": "ClientError: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'Invalid JSON payload received. Unknown name \"additional_properties\" at \\'generation_config.response_schema\\': Cannot find field.\\nInvalid JSON payload received. Unknown name \"additional_properties\" at \\'generation_config.response_schema.properties[1].value.items\\': Cannot find field.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.BadRequest', 'fieldViolations': [{'field': 'generation_config.response_",
-    "summary": null,
-    "cross_device_notes": [],
-    "rejected": [],
+    "status": "ok",
+    "reason": null,
+    "detail": null,
+    "summary": "Audit of Hikvision deployment identified time synchronization and analytics engine mismatches against the specified Operational Requirements Profile.",
+    "cross_device_notes": [
+      "Both ptz01 and cam01 have setting_id time.mode set to manual instead of synchronizing with nvr01.",
+      "Device ptz01 has setting_id analytics.line_engine_enabled disabled, preventing required line_crossing event capture."
+    ],
+    "rejected": [
+      {
+        "device_id": "ptz01",
+        "setting_id": "time.mode",
+        "reason": "orp_contradiction",
+        "rationale": "Setting_id time.mode is set to manual on ptz01, which conflicts with the ORP system.time_source specification requiring nvr_sync."
+      },
+      {
+        "device_id": "cam01",
+        "setting_id": "time.mode",
+        "reason": "orp_contradiction",
+        "rationale": "Setting_id time.mode is set to manual on cam01, which conflicts with the ORP system.time_source specification requiring nvr_sync."
+      }
+    ],
     "corroborations": [],
-    "model": null,
-    "prompt_version": null,
+    "model": "gemini-3.8-flash",
+    "prompt_version": "2026-11-16-v1",
     "cached": false,
-    "input_tokens": 0,
-    "output_tokens": 0,
-    "total_tokens": 0
+    "input_tokens": 3998,
+    "output_tokens": 486,
+    "total_tokens": 7869
   }
 }

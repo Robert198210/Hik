@@ -17,7 +17,7 @@
 <body>
   
   <h1>HACA configuration audit</h1>
-  <p>Run f3851eff-537a-4ae8-bfea-e62af5faa779 · catalog v1</p>
+  <p>Run 4d844c8a-b1c7-4fe7-848b-35d00a50293c · catalog v1</p>
 
   <h2>Summary</h2>
   <p>Verified 70 of 123 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.</p>
@@ -49,6 +49,22 @@
         <td class="severity-high">high</td>
         <td>ptz01</td>
         <td>Line crossing required but engine disabled</td>
+      </tr>
+    
+      <tr>
+        <td>ai</td>
+        <td>POTENTIAL_CONFLICT</td>
+        <td class="severity-high">high</td>
+        <td>nvr01</td>
+        <td>Setting_id recording.track_enable is false on nvr01, impacting the ORP system.recording_mode requirement of continuous_24_7.</td>
+      </tr>
+    
+      <tr>
+        <td>ai</td>
+        <td>POTENTIAL_CONFLICT</td>
+        <td class="severity-high">high</td>
+        <td>ptz01</td>
+        <td>Setting_id analytics.line_engine_enabled is currently false on ptz01, conflicting with the ORP required_events specification for line_crossing.</td>
       </tr>
     
       <tr>
@@ -115,15 +131,32 @@
         <td>HTTP enabled and HTTPS disabled; https_required unspecified</td>
       </tr>
     
+      <tr>
+        <td>ai</td>
+        <td>INFO</td>
+        <td class="severity-info">info</td>
+        <td>nvr01</td>
+        <td>Setting_id platform.ezviz_enabled is true on nvr01 while the ORP specifies remote_access as lan_vpn_only and hik_connect remains undecided.</td>
+      </tr>
+    
     </tbody>
   </table>
 
   
   <h2>AI analysis</h2>
-  <p>Status: error (network_error)</p>
-  <p>Detail: <code>ClientError: 400 INVALID_ARGUMENT. {&#39;error&#39;: {&#39;code&#39;: 400, &#39;message&#39;: &#39;Invalid JSON payload received. Unknown name &#34;additional_properties&#34; at \&#39;generation_config.response_schema\&#39;: Cannot find field.\nInvalid JSON payload received. Unknown name &#34;additional_properties&#34; at \&#39;generation_config.response_schema.properties[1].value.items\&#39;: Cannot find field.&#39;, &#39;status&#39;: &#39;INVALID_ARGUMENT&#39;, &#39;details&#39;: [{&#39;@type&#39;: &#39;type.googleapis.com/google.rpc.BadRequest&#39;, &#39;fieldViolations&#39;: [{&#39;field&#39;: &#39;generation_config.response_</code></p>
+  <p>Status: ok</p>
+  
+  <p>Audit of Hikvision deployment identified time synchronization and analytics engine mismatches against the specified Operational Requirements Profile.</p>
   
   
+    <h3>Rejected suggestions</h3>
+    <ul class="ai-rejected">
+    
+      <li>ptz01 / time.mode — orp_contradiction: Setting_id time.mode is set to manual on ptz01, which conflicts with the ORP system.time_source specification requiring nvr_sync.</li>
+    
+      <li>cam01 / time.mode — orp_contradiction: Setting_id time.mode is set to manual on cam01, which conflicts with the ORP system.time_source specification requiring nvr_sync.</li>
+    
+    </ul>
   
   
 

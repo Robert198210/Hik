@@ -1,7 +1,7 @@
 ## Summary
 
-- classifications: {'CONFIRMED_CONFLICT': 5, 'INFO': 4, 'INSUFFICIENT_DATA': 2}
-- severities: {'high': 3, 'medium': 2, 'info': 6}
+- classifications: {'CONFIRMED_CONFLICT': 5, 'POTENTIAL_CONFLICT': 2, 'INFO': 5, 'INSUFFICIENT_DATA': 2}
+- severities: {'high': 5, 'medium': 2, 'info': 7}
 
 ## Needs decision
 
@@ -29,6 +29,16 @@
   - Line crossing required but engine disabled
   - evidence: `smart.line_detection` `enabled` = `false`
   - ORP: devices.ptz01.required_events
+- **ai** POTENTIAL_CONFLICT
+  - devices: nvr01
+  - current → recommended: `false` → `—`
+  - Setting_id recording.track_enable is false on nvr01, impacting the ORP system.recording_mode requirement of continuous_24_7.
+  - evidence: `record.tracks` `tracks[101].enable` = `false`
+- **ai** POTENTIAL_CONFLICT
+  - devices: ptz01
+  - current → recommended: `false` → `true`
+  - Setting_id analytics.line_engine_enabled is currently false on ptz01, conflicting with the ORP required_events specification for line_crossing.
+  - evidence: `smart.line_detection` `line_detection.engine_enabled` = `false`
 
 - **R-TIME-001** CONFIRMED_CONFLICT
   - devices: cam01
@@ -72,6 +82,11 @@
   - HTTP enabled and HTTPS disabled; https_required unspecified
   - evidence: `security.admin_accesses` `HTTPS.enabled` = `false`
   - ORP: system.https_required
+- **ai** INFO
+  - devices: nvr01
+  - current → recommended: `true` → `—`
+  - Setting_id platform.ezviz_enabled is true on nvr01 while the ORP specifies remote_access as lan_vpn_only and hik_connect remains undecided.
+  - evidence: `platform.ezviz` `platform.ezviz_enabled` = `true`
 
 ## Coverage matrix
 
