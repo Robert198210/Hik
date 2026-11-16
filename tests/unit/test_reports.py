@@ -86,6 +86,9 @@ def test_json_masks_serial() -> None:
     payload = report_to_json(_sample_report())
     assert "ABCDEF123456" not in payload
     assert "****3456" in payload
+    assert "R-TEST:nvr01:demo" in payload
+    assert "DS-7616NXI-K2(D)" in payload
+    assert "IDENTIFIED" in payload
 
 
 def test_markdown_simulated_banner() -> None:

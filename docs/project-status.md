@@ -1,6 +1,14 @@
 # Project Status
 
-Last updated: 2026-11-15
+Last updated: 2026-11-16
+
+## Phase 3 — Deterministic audit
+
+| Task | Status | Notes |
+|---|---|---|
+| T3.01 Rules and correlator | Done | `5fa4c38`, architect fix for `nvr_sync` on `R-TIME-001` |
+| T3.02 Audit CLI and reports | Done | `9c14a85`, architect fix: report masking no longer redacts rule ids, models, or `IDENTIFIED` |
+| QA Phase 3 / gate S2 | Not started | After the architect fix is committed |
 
 ## Phase 2 — Registry + catalog (MVP)
 

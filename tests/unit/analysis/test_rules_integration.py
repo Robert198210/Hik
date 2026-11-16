@@ -62,6 +62,7 @@ def test_scenario_conflicts_detects_planted_rules() -> None:
         "R-VCA-003",
         "R-LINK-001",
         "R-PTZ-002",
+        "R-TIME-001",
     }
     assert expected <= rule_ids
     assert all(

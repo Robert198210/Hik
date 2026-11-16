@@ -737,7 +737,7 @@ class RLink001:
                     if ch is None:
                         continue
                     linked = _find_event(triggers_by_ch.get(ch, []), "linedetection")
-                    if linked and "center" not in trig.methods:
+                    if linked is not None and "center" not in linked.methods:
                         findings.append(
                             ctx.build_finding(
                                 rule_id=self.id,
@@ -773,7 +773,7 @@ class RLink001:
             if ch is None:
                 continue
             linked = _find_event(triggers_by_ch.get(ch, []), "linedetection")
-            if linked is None or "center" not in trig.methods:
+            if linked is None or "center" not in linked.methods:
                 findings.append(
                     ctx.build_finding(
                         rule_id=self.id,
@@ -839,6 +839,44 @@ class RTime001:
                             recommended_value="NTP",
                         )
                     )
+
+        if ctx.orp_access.enum_value("system.time_source") == "nvr_sync":
+            nvr_dev = next((d for d in ctx.result.devices if d.role == "nvr"), None)
+            nvr_mode = (
+                nvr_dev.views.time.time_mode
+                if nvr_dev and nvr_dev.views.time and nvr_dev.views.time.time_mode
+                else None
+            )
+            if nvr_dev is not None and nvr_mode:
+                for dev in ctx.result.devices:
+                    if dev.device_id == nvr_dev.device_id:
+                        continue
+                    mode = dev.views.time.time_mode if dev.views.time else None
+                    if mode and mode.upper() != nvr_mode.upper():
+                        findings.append(
+                            ctx.build_finding(
+                                rule_id=self.id,
+                                title=self.title,
+                                category=self.category,
+                                basis="requirement",
+                                default_severity=self.default_severity,
+                                devices=(dev.device_id,),
+                                classification=Classification.CONFIRMED_CONFLICT,
+                                subject=f"time-mode-{dev.device_id}",
+                                rationale=(
+                                    "ORP time source is NVR sync but device "
+                                    f"timeMode {mode} differs from NVR {nvr_mode}"
+                                ),
+                                evidence=[
+                                    ctx.evidence(
+                                        dev.device_id, "system.time", "timeMode", mode
+                                    )
+                                ],
+                                orp_refs=("system.time_source",),
+                                current_value=mode,
+                                recommended_value=nvr_mode,
+                            )
+                        )
 
         nvr = next((d for d in ctx.result.devices if d.role == "nvr"), None)
         ref_ts = None

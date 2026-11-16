@@ -6,7 +6,10 @@ import re
 from typing import Any
 
 _MAC_COLON = re.compile(r"\b(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}\b")
-_SERIAL_LIKE = re.compile(r"\b[A-Z][A-Z0-9-]{6,}\b")
+_MAC_DASH = re.compile(r"\b(?:[0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}\b")
+# Synthetic serials only. A broader uppercase pattern also matched rule ids
+# (R-STOR-001), ADR citations, model names, and IDENTIFIED.
+_SERIAL_LIKE = re.compile(r"\bSYNTH-[A-Z0-9-]{4,}\b")
 _RULE_ID = re.compile(r"^R-[A-Z0-9]+-\d{3}$")
 
 
@@ -18,7 +21,7 @@ def mask_serial(value: str) -> str:
 
 
 def mask_mac(value: str) -> str:
-    parts = value.split(":")
+    parts = re.split(r"[:-]", value)
     if len(parts) == 6:
         return f"**:**:**:**:{parts[4]}:{parts[5]}"
     return "**:**:**:**:**:**"
@@ -47,6 +50,7 @@ def mask_text(value: str) -> str:
         return mask_serial(match.group(0))
 
     text = _MAC_COLON.sub(_mac, value)
+    text = _MAC_DASH.sub(_mac, text)
     return _SERIAL_LIKE.sub(_serial, text)
 
 
