@@ -6,13 +6,13 @@ timeouts:
 database_path: data/haca.db
 simulation: false
 ai:
-  model: gemini-2.0-flash
+  model: gemini-3.8-flash
   temperature: 0.2
   max_output_tokens: 4096
   max_input_tokens: 128000
   max_calls_per_audit: 1
   budget_chars: 200000
   pricing:
-    gemini-2.0-flash:
-      input_per_mtok: 0.10
-      output_per_mtok: 0.40
+    gemini-3.8-flash:
+      input_per_mtok: 0.75
+      output_per_mtok: 3.75
