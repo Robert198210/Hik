@@ -26,6 +26,7 @@ if ($LASTEXITCODE -ne 0) {
 & $py -m haca audit `
   --config haca.laptop.yaml `
   --devices devices.laptop.yaml `
+  --requirements requirements.laptop.yaml `
   --format html,json,md `
   --out reports `
   --basename report `

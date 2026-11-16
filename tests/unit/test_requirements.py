@@ -11,6 +11,7 @@ from haca.requirements.models import (
     RecordingMode,
     RequirementsProfile,
     SystemRequirements,
+    TimeSource,
     Tristate,
 )
 
@@ -23,6 +24,13 @@ def test_example_requirements_load() -> None:
     profile = load_requirements(CONFIG_DIR / "requirements.example.yaml", DEVICE_IDS)
     assert profile.system.recording_mode == RecordingMode.continuous_24_7
     assert profile.devices["ptz01"].auto_tracking == Tristate.forbidden
+    assert profile.system.time_source == TimeSource.nvr_sync
+
+
+def test_laptop_requirements_use_ntp() -> None:
+    profile = load_requirements(REPO_ROOT / "requirements.laptop.yaml", DEVICE_IDS)
+    assert profile.system.time_source == TimeSource.ntp
+    assert profile.system.recording_mode == RecordingMode.continuous_24_7
 
 
 def test_empty_profile_defaults(tmp_path: Path) -> None:
