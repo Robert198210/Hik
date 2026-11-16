@@ -95,3 +95,28 @@ class FindingRow(Base):
     classification: Mapped[str] = mapped_column(String(32))
     severity: Mapped[str] = mapped_column(String(16))
     payload_json: Mapped[str] = mapped_column(Text)
+
+
+class AiCallRow(Base):
+    __tablename__ = "ai_calls"
+    __table_args__ = (Index("ix_ai_calls_run", "run_id"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    run_id: Mapped[str] = mapped_column(String(36))
+    model: Mapped[str] = mapped_column(String(128))
+    prompt_version: Mapped[str] = mapped_column(String(64))
+    input_tokens: Mapped[int] = mapped_column(Integer)
+    output_tokens: Mapped[int] = mapped_column(Integer)
+    total_tokens: Mapped[int] = mapped_column(Integer)
+    est_cost: Mapped[float | None] = mapped_column(Float, nullable=True)
+    latency_ms: Mapped[int] = mapped_column(Integer)
+    payload_sha256: Mapped[str] = mapped_column(String(64))
+    status: Mapped[str] = mapped_column(String(32))
+
+
+class AiCacheRow(Base):
+    __tablename__ = "ai_cache"
+
+    cache_key: Mapped[str] = mapped_column(String(64), primary_key=True)
+    response_json: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

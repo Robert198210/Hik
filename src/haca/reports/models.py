@@ -46,4 +46,37 @@ class AuditReport(BaseModel):
     findings: tuple[Finding, ...]
     needs_decision: tuple[dict[str, Any], ...]
     manual_checks: tuple[str, ...]
-    ai: None = None
+    ai: ReportAiSection | None = None
+
+
+class AiRejected(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    device_id: str
+    setting_id: str
+    reason: str
+    rationale: str
+
+
+class AiCorroboration(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    finding_id: str
+    note: str
+
+
+class ReportAiSection(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    status: str
+    reason: str | None = None
+    summary: str | None = None
+    cross_device_notes: tuple[str, ...] = ()
+    rejected: tuple[AiRejected, ...] = ()
+    corroborations: tuple[AiCorroboration, ...] = ()
+    model: str | None = None
+    prompt_version: str | None = None
+    cached: bool = False
+    input_tokens: int = 0
+    output_tokens: int = 0
+    total_tokens: int = 0

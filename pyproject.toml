@@ -10,11 +10,12 @@ dependencies = [
     "sqlalchemy>=2.0",
     "pyyaml>=6.0",
     "keyring>=25.0",
+    "jinja2>=3.1",
 ]
 
 [project.optional-dependencies]
 ai = ["google-genai"]
-web = ["fastapi", "uvicorn", "jinja2"]
+web = ["fastapi", "uvicorn"]
 browser = ["playwright"]
 
 [project.scripts]
@@ -30,6 +31,8 @@ packages = ["src/haca"]
 [tool.hatch.build.targets.wheel.force-include]
 "src/haca/isapi/registry/endpoints.yaml" = "haca/isapi/registry/endpoints.yaml"
 "src/haca/catalog/settings.yaml" = "haca/catalog/settings.yaml"
+"src/haca/ai/knowledge/hikvision-acusense.md" = "haca/ai/knowledge/hikvision-acusense.md"
+"src/haca/reports/templates/report.html.j2" = "haca/reports/templates/report.html.j2"
 
 [dependency-groups]
 dev = [
@@ -69,6 +72,10 @@ warn_unused_configs = true
 [[tool.mypy.overrides]]
 module = ["haca.security.*", "haca.isapi.*", "haca.devices.*"]
 strict = true
+
+[[tool.mypy.overrides]]
+module = ["haca.ai.client"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

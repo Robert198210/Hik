@@ -299,15 +299,23 @@ def _run_simulated_audit(
     db_path: Path | None,
     manual_path: Path | None,
     formats: set[str],
+    *,
+    use_ai: bool,
+    config_path: Path | None,
 ) -> int:
     from haca.audit import AuditOrchestrator, audit_exit_code
+    from haca.reports.html import render_html
     from haca.reports.json_report import write_report_json
     from haca.reports.markdown import render_markdown
 
     devices = list(default_resolved_devices())
     device_ids = {d.id for d in devices}
     orp = load_requirements(requirements_path, device_ids)
-    app = simulation_app_config()
+    app = (
+        load_app_config(config_path)
+        if config_path is not None
+        else simulation_app_config()
+    )
     manual = _load_manual_attestation(manual_path)
     report = AuditOrchestrator().run_audit(
         app,
@@ -317,18 +325,22 @@ def _run_simulated_audit(
         scenario=scenario,
         manual_attestations=manual,
         db_path=db_path,
+        use_ai=use_ai,
     )
     out_dir.mkdir(parents=True, exist_ok=True)
     base = out_dir / f"haca-audit-{report.meta.run_id}"
     json_path = base.with_suffix(".json")
     md_path = base.with_suffix(".md")
+    html_path = base.with_suffix(".html")
     if "json" in formats:
         write_report_json(report, str(json_path))
     if "md" in formats:
         md_path.write_text(render_markdown(report), encoding="utf-8")
+    if "html" in formats:
+        html_path.write_text(render_html(report), encoding="utf-8")
 
     print(f"findings={len(report.findings)}")
-    for path in (json_path, md_path):
+    for path in (json_path, md_path, html_path):
         if path.exists():
             print(path)
     return audit_exit_code(list(report.findings))
@@ -346,10 +358,94 @@ def _cmd_audit(args: argparse.Namespace) -> int:
     manual_path = Path(args.manual) if args.manual else None
     raw_formats = args.format or "json,md"
     formats = {part.strip().lower() for part in raw_formats.split(",") if part.strip()}
+    config_path = Path(args.config) if getattr(args, "config", None) else None
     print(_SIMULATED_BANNER)
     return _run_simulated_audit(
-        scenario, requirements, out_dir, db_path, manual_path, formats
+        scenario,
+        requirements,
+        out_dir,
+        db_path,
+        manual_path,
+        formats,
+        use_ai=bool(getattr(args, "ai", False)),
+        config_path=config_path,
     )
+
+
+def _cmd_ai_preview(args: argparse.Namespace) -> int:
+    from haca.ai.client import FakeAiClient
+    from haca.ai.payload import build_payload
+    from haca.audit import AuditOrchestrator
+    from haca.catalog.coverage import coverage_summary, observed_uncataloged_count
+    from haca.catalog.loader import load_catalog_entries
+
+    scenario = args.scenario or "clean"
+    devices = list(default_resolved_devices())
+    default_req = _REPO_ROOT / "config" / "requirements.example.yaml"
+    requirements = Path(args.requirements) if args.requirements else default_req
+    device_ids = {d.id for d in devices}
+    orp = load_requirements(requirements, device_ids)
+    config_path = Path(args.config) if args.config else _DEFAULT_CONFIG
+    app = load_app_config(config_path) if config_path.is_file() else simulation_app_config()
+    report = AuditOrchestrator().run_audit(
+        app,
+        devices,
+        orp,
+        simulate=True,
+        scenario=scenario,
+    )
+    collection, coverage = run_simulated_collection(scenario)
+    catalog = load_catalog_entries()
+    summary = coverage_summary(
+        coverage,
+        catalog,
+        observed_uncataloged=observed_uncataloged_count(collection),
+    )
+    payload = build_payload(
+        report=report,
+        collection=collection,
+        devices=devices,
+        orp=orp,
+        catalog=catalog,
+        coverage=coverage,
+        coverage_summary=summary,
+        findings=report.findings,
+        subnet=app.network.subnet,
+        budget_chars=app.ai.budget_chars if app.ai else 200_000,
+    )
+    from haca.ai.prompts import build_prompt
+
+    fake = FakeAiClient()
+    tokens = fake.count_tokens(f"{build_prompt()}\n{payload.json_text}")
+    print(payload.json_text)
+    print(f"estimated_tokens={tokens}")
+    return 0
+
+
+def _cmd_ai_models(_args: argparse.Namespace) -> int:
+    from haca.ai.credentials import load_gemini_api_key
+
+    key = load_gemini_api_key()
+    if key is None:
+        print(
+            "Gemini API key not configured (keyring haca/gemini_api_key or GEMINI_API_KEY)",
+            file=sys.stderr,
+        )
+        return 1
+    app = load_app_config(_DEFAULT_CONFIG)
+    if app.ai is None:
+        print("ai.model is not set in configuration", file=sys.stderr)
+        return 1
+    try:
+        from haca.ai.client import GeminiClient
+
+        client = GeminiClient(key, app.ai.model)
+        for name in client.list_models():
+            print(name)
+    except ImportError:
+        print("google-genai optional package is not installed", file=sys.stderr)
+        return 1
+    return 0
 
 
 def _cmd_diff(args: argparse.Namespace) -> int:
@@ -455,7 +551,24 @@ def main(argv: list[str] | None = None) -> None:
     audit_parser.add_argument("--out", default=None)
     audit_parser.add_argument("--format", default="json,md")
     audit_parser.add_argument("--db", default=None)
+    audit_parser.add_argument("--ai", action="store_true")
+    audit_parser.add_argument("--config", default=str(_DEFAULT_CONFIG))
     audit_parser.set_defaults(func=_cmd_audit)
+
+    ai_parser = subparsers.add_parser("ai", help="Gemini analysis tools")
+    ai_sub = ai_parser.add_subparsers(dest="ai_command")
+    ai_preview = ai_sub.add_parser("preview", help="Print redacted AI payload")
+    ai_preview.add_argument("--simulate", action="store_true")
+    ai_preview.add_argument(
+        "--scenario",
+        choices=["clean", "conflicts", "unsupported"],
+        default="conflicts",
+    )
+    ai_preview.add_argument("--requirements", default=None)
+    ai_preview.add_argument("--config", default=str(_DEFAULT_CONFIG))
+    ai_preview.set_defaults(func=_cmd_ai_preview)
+    ai_models = ai_sub.add_parser("models", help="List Gemini models for configured key")
+    ai_models.set_defaults(func=_cmd_ai_models)
 
     args = parser.parse_args(argv)
     if getattr(args, "func", None) is None:

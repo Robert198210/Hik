@@ -308,6 +308,7 @@ def test_pyproject_matches_t101_spec() -> None:
         "sqlalchemy",
         "pyyaml",
         "keyring",
+        "jinja2",
     }
     assert set(project["optional-dependencies"]) == {"ai", "web", "browser"}
     assert project["scripts"]["haca"] == "haca.cli:main"

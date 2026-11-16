@@ -54,6 +54,7 @@ class CatalogEntry(BaseModel):
     sources: tuple[CatalogSource, ...]
     verification: CatalogVerification = "candidate_unverified"
     orp_link: str | None = None
+    known_values: tuple[str, ...] | None = None
 
     @field_validator("sources")
     @classmethod

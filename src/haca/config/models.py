@@ -44,6 +44,25 @@ class TimeoutConfig(BaseModel):
     read: float = Field(default=20.0, ge=0.5, le=120.0)
 
 
+class ModelPricing(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    input_per_mtok: float = Field(ge=0.0)
+    output_per_mtok: float = Field(ge=0.0)
+
+
+class AiConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    model: str
+    temperature: float = Field(default=0.2, ge=0.0, le=1.0)
+    max_output_tokens: int = Field(default=4096, ge=256, le=65536)
+    max_input_tokens: int = Field(default=128_000, ge=1024)
+    max_calls_per_audit: int = Field(default=1, ge=1, le=2)
+    budget_chars: int = Field(default=200_000, ge=10_000)
+    pricing: dict[str, ModelPricing] = Field(default_factory=dict)
+
+
 class AppConfig(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -51,6 +70,7 @@ class AppConfig(BaseModel):
     timeouts: TimeoutConfig = Field(default_factory=TimeoutConfig)
     database_path: Path = Path("data/haca.db")
     simulation: bool = False
+    ai: AiConfig | None = None
 
 
 class DeviceConfig(BaseModel):

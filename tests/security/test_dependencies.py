@@ -15,6 +15,8 @@ def test_runtime_dependencies_exclude_forbidden_ai_packages() -> None:
     pyproject = Path(__file__).resolve().parents[2] / "pyproject.toml"
     data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
     raw_deps = data["project"]["dependencies"]
+    optional_ai = data["project"].get("optional-dependencies", {}).get("ai", [])
+    assert any(dep.startswith("google-genai") for dep in optional_ai)
     declared = {
         dep.split("[")[0].split(">")[0].split("=")[0].strip() for dep in raw_deps
     }

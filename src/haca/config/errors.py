@@ -29,9 +29,18 @@ class ConfigError(Exception):
         self.message = message
         super().__init__(f"{path}: {field}: {message}")
 
+    _TOKEN_ALLOWLIST = frozenset(
+        {
+            "max_output_tokens",
+            "max_input_tokens",
+        }
+    )
+
     @staticmethod
     def secret_field_name(key: str) -> bool:
         normalized = key.lower().replace("-", "_")
-        return normalized in _SECRET_KEY_PATTERN or any(
-            part in normalized for part in ("password", "secret", "token")
-        )
+        if normalized in ConfigError._TOKEN_ALLOWLIST:
+            return False
+        if normalized in _SECRET_KEY_PATTERN:
+            return True
+        return any(part in normalized for part in ("password", "secret", "token"))

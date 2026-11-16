@@ -351,6 +351,7 @@ source = { editable = "." }
 dependencies = [
     { name = "defusedxml" },
     { name = "httpx" },
+    { name = "jinja2" },
     { name = "keyring" },
     { name = "pydantic" },
     { name = "pyyaml" },
@@ -366,7 +367,6 @@ browser = [
 ]
 web = [
     { name = "fastapi" },
-    { name = "jinja2" },
     { name = "uvicorn" },
 ]
 
@@ -385,7 +385,7 @@ requires-dist = [
     { name = "fastapi", marker = "extra == 'web'" },
     { name = "google-genai", marker = "extra == 'ai'" },
     { name = "httpx", specifier = ">=0.27" },
-    { name = "jinja2", marker = "extra == 'web'" },
+    { name = "jinja2", specifier = ">=3.1" },
     { name = "keyring", specifier = ">=25.0" },
     { name = "playwright", marker = "extra == 'browser'" },
     { name = "pydantic", specifier = ">=2.7" },

@@ -2,13 +2,19 @@
 
 Last updated: 2026-11-16
 
+## Phase 4 — Gemini analysis (v0.2)
+
+| Task | Status | Notes |
+|---|---|---|
+| T4.01 Gemini adapter, payload, validator, HTML | Done | `haca.ai` package, `--ai` audit, `ai preview`/`ai models`, SQLite schema v2 (`ai_calls`/`ai_cache`), HTML report. pytest 1167, ruff/mypy clean. Gate S3 QA not run (developer completion only). |
+
 ## Phase 3 — Deterministic audit
 
 | Task | Status | Notes |
 |---|---|---|
 | T3.01 Rules and correlator | Done | `5fa4c38`, architect fix for `nvr_sync` on `R-TIME-001` |
-| T3.02 Audit CLI and reports | Done | `9c14a85`, architect fix: report masking no longer redacts rule ids, models, or `IDENTIFIED` |
-| QA Phase 3 / gate S2 | Not started | After the architect fix is committed |
+| T3.02 Audit CLI and reports | Done | `9c14a85`, architect fix `d02951e`: report masking no longer redacts rule ids, models, or `IDENTIFIED` |
+| QA Phase 3 / gate S2 | Skipped | QA agent hung at 10:01 with no report and no commit. Do not relaunch that pass. Phase 3 stands on pytest 1159, ruff, mypy, `scenario-clean` exit 0, `scenario-conflicts` exit 3. Next implementation task is T4.01. |
 
 ## Phase 2 — Registry + catalog (MVP)
 

@@ -6,7 +6,10 @@ import uuid
 from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from haca.ai.client import AiClient
 
 from haca import __version__
 from haca.analysis.engine import RuleEngine
@@ -54,9 +57,9 @@ class AuditOrchestrator:
         scenario: str | None,
         manual_attestations: dict[str, dict[str, object]] | None = None,
         db_path: Path | None = None,
-        ai: object | None = None,
+        use_ai: bool = False,
+        ai_client: AiClient | None = None,
     ) -> AuditReport:
-        del app_config, ai
         started = datetime.now(UTC)
         catalog = load_catalog_entries()
         if simulate:
@@ -93,18 +96,51 @@ class AuditOrchestrator:
             f"Verified {verified} of {total} settings in HACA catalog v{summary.catalog_version}. "
             "The catalog does not cover every Hikvision setting."
         )
+        ai_section = None
+        session_factory = None
+        if db_path is not None:
+            from haca.store.db import open_db
+
+            _, session_factory = open_db(db_path)
+
+        if use_ai:
+            from haca.ai.pipeline import enrich_findings
+
+            session = session_factory() if session_factory is not None else None
+            try:
+                enriched = enrich_findings(
+                    findings=tuple(findings),
+                    collection=collection,
+                    devices=devices,
+                    orp=orp,
+                    catalog=catalog,
+                    coverage=coverage,
+                    coverage_summary=summary,
+                    app_config=app_config,
+                    ai_config=app_config.ai,
+                    run_id=run_id,
+                    client=ai_client,
+                    session=session,
+                    force_enable=True,
+                )
+                findings = list(enriched.findings)
+                ai_section = enriched.ai
+                if session is not None:
+                    session.commit()
+            finally:
+                if session is not None:
+                    session.close()
+
         needs = _needs_decision_from_findings(findings)
         manual_checks = _manual_checklist_ids(catalog, coverage, manual_attestations)
 
-        if db_path is not None:
-            from haca.store.db import open_db
+        if db_path is not None and session_factory is not None:
             from haca.store.repositories import (
                 save_audit_findings,
                 save_collection,
                 save_coverage,
             )
 
-            _, session_factory = open_db(db_path)
             with session_factory() as session:
                 persisted_id = save_collection(
                     session,
@@ -147,7 +183,7 @@ class AuditOrchestrator:
             findings=tuple(findings),
             needs_decision=tuple(needs),
             manual_checks=manual_checks,
-            ai=None,
+            ai=ai_section,
         )
 
 

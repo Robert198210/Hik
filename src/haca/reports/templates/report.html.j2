@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HACA audit report</title>
+  <style>{{ css }}</style>
+</head>
+<body>
+  {% if report.meta.simulated %}
+  <div class="simulated"><strong>SIMULATED</strong> — synthetic fixtures only.</div>
+  {% endif %}
+  <h1>HACA configuration audit</h1>
+  <p>Run {{ report.meta.run_id }} · catalog v{{ report.meta.catalog_version }}</p>
+
+  <h2>Summary</h2>
+  <p>{{ report.coverage_statement }}</p>
+
+  <h2>Findings</h2>
+  <table>
+    <thead><tr><th>Rule</th><th>Class</th><th>Severity</th><th>Devices</th><th>Rationale</th></tr></thead>
+    <tbody>
+    {% for f in report.findings %}
+      <tr>
+        <td>{{ f.rule_id }}</td>
+        <td>{{ f.classification }}</td>
+        <td class="severity-{{ f.severity }}">{{ f.severity }}</td>
+        <td>{{ f.devices | join(', ') }}</td>
+        <td>{{ f.rationale }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  {% if report.ai %}
+  <h2>AI analysis</h2>
+  <p>Status: {{ report.ai.status }}{% if report.ai.reason %} ({{ report.ai.reason }}){% endif %}</p>
+  {% if report.ai.summary %}<p>{{ report.ai.summary }}</p>{% endif %}
+  {% if report.ai.corroborations %}
+    <h3>Corroborations</h3>
+    <ul>{% for c in report.ai.corroborations %}<li>{{ c.finding_id }} — {{ c.note }}</li>{% endfor %}</ul>
+  {% endif %}
+  {% if report.ai.rejected %}
+    <h3>Rejected suggestions</h3>
+    <ul class="ai-rejected">
+    {% for r in report.ai.rejected %}
+      <li>{{ r.device_id }} / {{ r.setting_id }} — {{ r.reason }}: {{ r.rationale }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  {% endif %}
+
+  <h2>Manual checks</h2>
+  <ul>{% for m in report.manual_checks %}<li>{{ m }}</li>{% endfor %}</ul>
+</body>
+</html>
