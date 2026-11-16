@@ -1,12 +1,12 @@
 {
   "meta": {
     "haca_version": "0.1.0.dev0",
-    "run_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
-    "started_at": "2026-11-16T19:30:01.344857Z",
-    "finished_at": "2026-11-16T19:30:10.358204Z",
+    "run_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
+    "started_at": "2026-11-16T19:33:20.859395Z",
+    "finished_at": "2026-11-16T19:33:30.276653Z",
     "simulated": false,
     "scenario": null,
-    "orp_hash": "548ceb473ae211e2ecb78dbaa32900982bd46ca3b703610428bc944d20b8f458",
+    "orp_hash": "7a020e0408e6be7bcd63565d3dcce7eef718a94e5ca3a75a670080348a669c5b",
     "catalog_version": "1",
     "registry_verification_counts": {
       "documented": 1,
@@ -1198,7 +1198,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "schedule",
@@ -1236,7 +1236,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "schedule",
@@ -1274,7 +1274,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "ptz01",
           "endpoint_id": "smart.line_detection",
           "xpath": "enabled",
@@ -1312,7 +1312,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "tracks[101].enable",
@@ -1326,7 +1326,7 @@
       "needs_decision": false,
       "current_value": "false",
       "recommended_value": "true",
-      "rationale": "ORP specifies continuous_24_7 recording mode, but recording.track_enable is currently set to 'false'.",
+      "rationale": "ORP requires continuous_24_7 recording, but recording.track_enable is currently false on nvr01.",
       "source_refs": [],
       "source": "ai_validated",
       "simulated_confirmed": false,
@@ -1346,7 +1346,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "ptz01",
           "endpoint_id": "smart.line_detection",
           "xpath": "line_detection.engine_enabled",
@@ -1360,7 +1360,7 @@
       "needs_decision": false,
       "current_value": "false",
       "recommended_value": "true",
-      "rationale": "ORP requires line_crossing events for ptz01, but analytics.line_engine_enabled is currently set to 'false'.",
+      "rationale": "ORP specifies line_crossing as a required event for ptz01, but analytics.line_engine_enabled is currently set to false.",
       "source_refs": [],
       "source": "ai_validated",
       "simulated_confirmed": false,
@@ -1380,7 +1380,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "ptz01",
           "endpoint_id": "event.triggers",
           "xpath": "triggers[linedetection].methods",
@@ -1394,7 +1394,7 @@
       "needs_decision": false,
       "current_value": "frozenset()",
       "recommended_value": null,
-      "rationale": "ORP specifies notify_center_required=true for ptz01, but linkage.linedetection_notifications does not include center linkage.",
+      "rationale": "ORP mandates notify_center_required as true for ptz01, but linkage.linedetection_notifications does not include center notification.",
       "source_refs": [],
       "source": "ai_validated",
       "simulated_confirmed": false,
@@ -1414,7 +1414,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "nvr01",
           "endpoint_id": "platform.ezviz",
           "xpath": "enabled",
@@ -1453,7 +1453,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "nvr01",
           "endpoint_id": "event.triggers",
           "xpath": "notificationMethod",
@@ -1491,7 +1491,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "ptz01",
           "endpoint_id": "ptz.park_action",
           "xpath": "enabled",
@@ -1529,7 +1529,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "Enable",
@@ -1565,7 +1565,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "Enable",
@@ -1601,7 +1601,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "nvr01",
           "endpoint_id": "security.admin_accesses",
           "xpath": "HTTPS.enabled",
@@ -1639,7 +1639,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
+          "snapshot_id": "269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1",
           "device_id": "nvr01",
           "endpoint_id": "platform.ezviz",
           "xpath": "platform.ezviz_enabled",
@@ -1653,47 +1653,13 @@
       "needs_decision": false,
       "current_value": "true",
       "recommended_value": null,
-      "rationale": "ORP specifies remote_access as lan_vpn_only with hik_connect undecided, while platform.ezviz_enabled is set to 'true'.",
+      "rationale": "ORP sets remote_access to lan_vpn_only with hik_connect undecided, while platform.ezviz_enabled is active on nvr01.",
       "source_refs": [],
       "source": "ai_validated",
       "simulated_confirmed": false,
       "rule_error": false,
       "recommendation": null,
       "subject": "platform.ezviz_enabled"
-    },
-    {
-      "id": "ai:nvr01:security.https_enabled:",
-      "rule_id": "ai",
-      "category": "ai",
-      "classification": "INFO",
-      "severity": "info",
-      "basis": "technical",
-      "devices": [
-        "nvr01"
-      ],
-      "evidence": [
-        {
-          "snapshot_id": "013909ed-4ed3-455e-8f52-a1697c5e9dd0",
-          "device_id": "nvr01",
-          "endpoint_id": "security.admin_accesses",
-          "xpath": "admin_access.protocols.HTTPS.enabled",
-          "observed_value": "false",
-          "raw_sha256": "f893daadd34eb8b3003448b7688b6f10a94ca80171a6610156d984cad11043aa",
-          "tier": "isapi"
-        }
-      ],
-      "evidence_tier": "isapi",
-      "orp_refs": [],
-      "needs_decision": false,
-      "current_value": "false",
-      "recommended_value": null,
-      "rationale": "ORP specifies https_required as unspecified, while security.https_enabled is set to 'false' and security.http_enabled is 'true'.",
-      "source_refs": [],
-      "source": "ai_validated",
-      "simulated_confirmed": false,
-      "rule_error": false,
-      "recommendation": null,
-      "subject": "security.https_enabled"
     }
   ],
   "needs_decision": [
@@ -1729,19 +1695,17 @@
     "status": "ok",
     "reason": null,
     "detail": null,
-    "summary": "Configuration analysis identified potential conflicts with operational requirements regarding VCA line detection on ptz01 and recording track enablement on nvr01, along with informational items regarding Hik-Connect and HTTPS status.",
+    "summary": "Configuration analysis identified potential conflicts regarding VCA line detection and recording track state, alongside informational notes regarding cloud platform integration.",
     "cross_device_notes": [
-      "ptz01 has analytics.line_engine_enabled disabled despite line_crossing requirement, unlike cam01 where analytics.line_engine_enabled is 'true'.",
-      "nvr01 has recording.track_enable set to 'false', which impacts recording across connected channels ptz01 and cam01.",
-      "All devices have platform.ezviz_enabled set to 'true', pending clarification on the undecided hik_connect requirement under lan_vpn_only policy."
+      "The NVR uses input_proxy.protocol HIKVISION, which facilitates transmitting camera-side VCA metadata to nvr01 for timeline markers as required by the ORP."
     ],
     "rejected": [],
     "corroborations": [],
     "model": "gemini-3.8-flash",
     "prompt_version": "2026-11-16-v1",
     "cached": false,
-    "input_tokens": 3856,
-    "output_tokens": 529,
-    "total_tokens": 7192
+    "input_tokens": 3854,
+    "output_tokens": 411,
+    "total_tokens": 5793
   }
 }

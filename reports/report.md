@@ -1,7 +1,7 @@
 ## Summary
 
-- classifications: {'CONFIRMED_CONFLICT': 3, 'POTENTIAL_CONFLICT': 3, 'INFO': 6, 'INSUFFICIENT_DATA': 2}
-- severities: {'high': 5, 'medium': 1, 'info': 8}
+- classifications: {'CONFIRMED_CONFLICT': 3, 'POTENTIAL_CONFLICT': 3, 'INFO': 5, 'INSUFFICIENT_DATA': 2}
+- severities: {'high': 5, 'medium': 1, 'info': 7}
 
 ## Needs decision
 
@@ -32,18 +32,18 @@
 - **ai** POTENTIAL_CONFLICT
   - devices: nvr01
   - current → recommended: `false` → `true`
-  - ORP specifies continuous_24_7 recording mode, but recording.track_enable is currently set to 'false'.
+  - ORP requires continuous_24_7 recording, but recording.track_enable is currently false on nvr01.
   - evidence: `record.tracks` `tracks[101].enable` = `false`
 - **ai** POTENTIAL_CONFLICT
   - devices: ptz01
   - current → recommended: `false` → `true`
-  - ORP requires line_crossing events for ptz01, but analytics.line_engine_enabled is currently set to 'false'.
+  - ORP specifies line_crossing as a required event for ptz01, but analytics.line_engine_enabled is currently set to false.
   - evidence: `smart.line_detection` `line_detection.engine_enabled` = `false`
 
 - **ai** POTENTIAL_CONFLICT
   - devices: ptz01
   - current → recommended: `frozenset()` → `—`
-  - ORP specifies notify_center_required=true for ptz01, but linkage.linedetection_notifications does not include center linkage.
+  - ORP mandates notify_center_required as true for ptz01, but linkage.linedetection_notifications does not include center notification.
   - evidence: `event.triggers` `triggers[linedetection].methods` = `frozenset()`
 
 - **R-HIKC-001** INFO
@@ -78,13 +78,8 @@
 - **ai** INFO
   - devices: nvr01
   - current → recommended: `true` → `—`
-  - ORP specifies remote_access as lan_vpn_only with hik_connect undecided, while platform.ezviz_enabled is set to 'true'.
+  - ORP sets remote_access to lan_vpn_only with hik_connect undecided, while platform.ezviz_enabled is active on nvr01.
   - evidence: `platform.ezviz` `platform.ezviz_enabled` = `true`
-- **ai** INFO
-  - devices: nvr01
-  - current → recommended: `false` → `—`
-  - ORP specifies https_required as unspecified, while security.https_enabled is set to 'false' and security.http_enabled is 'true'.
-  - evidence: `security.admin_accesses` `admin_access.protocols.HTTPS.enabled` = `false`
 
 ## Coverage matrix
 

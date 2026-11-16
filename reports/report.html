@@ -17,7 +17,7 @@
 <body>
   
   <h1>HACA configuration audit</h1>
-  <p>Run 013909ed-4ed3-455e-8f52-a1697c5e9dd0 · catalog v1</p>
+  <p>Run 269e8e1b-51e3-4c20-a5f9-d6dbc72ee9d1 · catalog v1</p>
 
   <h2>Summary</h2>
   <p>Verified 70 of 123 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.</p>
@@ -56,7 +56,7 @@
         <td>POTENTIAL_CONFLICT</td>
         <td class="severity-high">high</td>
         <td>nvr01</td>
-        <td>ORP specifies continuous_24_7 recording mode, but recording.track_enable is currently set to &#39;false&#39;.</td>
+        <td>ORP requires continuous_24_7 recording, but recording.track_enable is currently false on nvr01.</td>
       </tr>
     
       <tr>
@@ -64,7 +64,7 @@
         <td>POTENTIAL_CONFLICT</td>
         <td class="severity-high">high</td>
         <td>ptz01</td>
-        <td>ORP requires line_crossing events for ptz01, but analytics.line_engine_enabled is currently set to &#39;false&#39;.</td>
+        <td>ORP specifies line_crossing as a required event for ptz01, but analytics.line_engine_enabled is currently set to false.</td>
       </tr>
     
       <tr>
@@ -72,7 +72,7 @@
         <td>POTENTIAL_CONFLICT</td>
         <td class="severity-medium">medium</td>
         <td>ptz01</td>
-        <td>ORP specifies notify_center_required=true for ptz01, but linkage.linedetection_notifications does not include center linkage.</td>
+        <td>ORP mandates notify_center_required as true for ptz01, but linkage.linedetection_notifications does not include center notification.</td>
       </tr>
     
       <tr>
@@ -128,15 +128,7 @@
         <td>INFO</td>
         <td class="severity-info">info</td>
         <td>nvr01</td>
-        <td>ORP specifies remote_access as lan_vpn_only with hik_connect undecided, while platform.ezviz_enabled is set to &#39;true&#39;.</td>
-      </tr>
-    
-      <tr>
-        <td>ai</td>
-        <td>INFO</td>
-        <td class="severity-info">info</td>
-        <td>nvr01</td>
-        <td>ORP specifies https_required as unspecified, while security.https_enabled is set to &#39;false&#39; and security.http_enabled is &#39;true&#39;.</td>
+        <td>ORP sets remote_access to lan_vpn_only with hik_connect undecided, while platform.ezviz_enabled is active on nvr01.</td>
       </tr>
     
     </tbody>
@@ -146,7 +138,7 @@
   <h2>AI analysis</h2>
   <p>Status: ok</p>
   
-  <p>Configuration analysis identified potential conflicts with operational requirements regarding VCA line detection on ptz01 and recording track enablement on nvr01, along with informational items regarding Hik-Connect and HTTPS status.</p>
+  <p>Configuration analysis identified potential conflicts regarding VCA line detection and recording track state, alongside informational notes regarding cloud platform integration.</p>
   
   
   
