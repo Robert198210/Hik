@@ -1,5 +1,8 @@
-HACA na Windows 10 — co zrobić na laptopie
-==========================================
+HACA na Windows 10 — instalacja od zera
+========================================
+
+Na laptopie nie ma katalogu Hik, kodu ani wcześniejszej kopii.
+Nie używaj git pull. Wszystko powstaje w krokach poniżej.
 
 Nie uruchamiaj niczego jako administrator.
 Wszystkie komendy wklejaj w zwykłym Windows PowerShell
@@ -38,22 +41,28 @@ Sprawdzenie — nowe okno PowerShell:
   git --version
 
 
-3. Pobranie projektu
---------------------
-PowerShell. Katalog wybierz sam, przykład C:\Tools:
+3. Pobranie projektu (pierwszy raz, katalogu Hik jeszcze nie ma)
+----------------------------------------------------------------
+PowerShell. Te komendy tworzą katalog od zera:
 
-  mkdir C:\Tools
-  cd C:\Tools
+  cd $env:USERPROFILE
+  mkdir Tools
+  cd Tools
   git clone https://github.com/Robert198210/Hik.git
   cd Hik
 
-Od tej pory każda kolejna komenda jest w katalogu C:\Tools\Hik
-(w PowerShell widać to na początku linii).
+Powstaje katalog:
+  C:\Users\<twoj_login>\Tools\Hik
+W środku jest m.in. ten plik info.txt.
+
+Od tej pory każda kolejna komenda jest w tym katalogu
+(w PowerShell widać ścieżkę na początku linii).
+Nie wpisuj git pull.
 
 
 4. Środowisko i instalacja
 --------------------------
-Nadal zwykły PowerShell, katalog C:\Tools\Hik:
+Nadal zwykły PowerShell, katalog Tools\Hik (tam, gdzie skończył się krok 3):
 
   py -3.12 -m venv .venv
   .\.venv\Scripts\Activate.ps1
@@ -80,12 +89,12 @@ Oczekiwane: haca 0.1.0.dev0
 5. Audyt na danych syntetycznych (bez kamer)
 --------------------------------------------
 To działa od razu. Nie łączy się z NVR ani kamerami.
-PowerShell, katalog C:\Tools\Hik, środowisko (.venv) aktywne:
+PowerShell, katalog Tools\Hik, środowisko (.venv) aktywne:
 
   python -m haca audit --simulate --scenario clean
   python -m haca audit --simulate --scenario conflicts --format html,json,md --out reports
 
-Raporty: C:\Tools\Hik\reports\
+Raporty: Tools\Hik\reports\  (obok info.txt)
 Plik .html otwórz zwykłym dwuklikiem (przeglądarka).
 
 Scenariusz clean kończy się kodem 0.
@@ -109,7 +118,7 @@ Działa odczyt identyfikacji na żywo (krok 7), jeśli laptop jest w tej samej s
 
 7. Identyfikacja prawdziwych urządzeń (opcjonalnie)
 ---------------------------------------------------
-Najpierw skopiuj przykłady. PowerShell, katalog C:\Tools\Hik:
+Najpierw skopiuj przykłady. PowerShell, katalog Tools\Hik:
 
   copy config\haca.example.yaml config\haca.yaml
   copy config\devices.example.yaml config\devices.yaml
@@ -140,7 +149,7 @@ Zmienne znikają po zamknięciu okna PowerShell.
 
 8. Gemini (opcjonalnie, nie jest potrzebne do audytu)
 -----------------------------------------------------
-Tylko jeśli chcesz sekcję AI. W PowerShell, katalog C:\Tools\Hik, (.venv) aktywne:
+Tylko jeśli chcesz sekcję AI. W PowerShell, katalog Tools\Hik, (.venv) aktywne:
 
   pip install -e ".[ai]"
   $env:GEMINI_API_KEY = "klucz_z_google_ai_studio"
