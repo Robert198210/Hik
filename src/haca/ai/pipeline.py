@@ -34,6 +34,7 @@ from haca.reports.models import (
     ReportAiSection,
 )
 from haca.requirements.models import RequirementsProfile
+from haca.security.redaction import redact_text
 
 _LOGGER = logging.getLogger("haca.ai")
 
@@ -143,19 +144,28 @@ def enrich_findings(
             analysis = call_result.parsed
             if analysis is None:
                 status = "error"
+                raw_head = redact_text((call_result.raw_text or "")[:300])
+                detail = (
+                    f"no parsed AiAnalysis; raw_chars={len(call_result.raw_text or '')}; "
+                    f"raw_head={raw_head!r}"
+                )
+                _LOGGER.warning("AI response not parsed: %s", detail)
                 return AiEnrichmentResult(
                     findings=findings,
-                    ai=ReportAiSection(status="error", reason="invalid_response"),
+                    ai=ReportAiSection(
+                        status="error", reason="invalid_response", detail=detail
+                    ),
                     payload=payload,
                 )
             if session is not None:
                 store_cache(session, cache_key, analysis)
                 session.commit()
     except Exception as exc:  # noqa: BLE001
-        _LOGGER.warning("AI call failed: %s", type(exc).__name__)
+        detail = redact_text(f"{type(exc).__name__}: {str(exc)[:500]}")
+        _LOGGER.warning("AI call failed: %s", detail)
         return AiEnrichmentResult(
             findings=findings,
-            ai=ReportAiSection(status="error", reason="network_error"),
+            ai=ReportAiSection(status="error", reason="network_error", detail=detail),
             payload=payload,
         )
     finally:

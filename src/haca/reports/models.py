@@ -70,6 +70,7 @@ class ReportAiSection(BaseModel):
 
     status: str
     reason: str | None = None
+    detail: str | None = None
     summary: str | None = None
     cross_device_notes: tuple[str, ...] = ()
     rejected: tuple[AiRejected, ...] = ()

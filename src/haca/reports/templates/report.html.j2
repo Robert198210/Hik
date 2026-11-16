@@ -34,6 +34,7 @@
   {% if report.ai %}
   <h2>AI analysis</h2>
   <p>Status: {{ report.ai.status }}{% if report.ai.reason %} ({{ report.ai.reason }}){% endif %}</p>
+  {% if report.ai.detail %}<p>Detail: <code>{{ report.ai.detail }}</code></p>{% endif %}
   {% if report.ai.summary %}<p>{{ report.ai.summary }}</p>{% endif %}
   {% if report.ai.corroborations %}
     <h3>Corroborations</h3>

@@ -192,17 +192,19 @@ class FakeAiClient:
         *,
         analysis: AiAnalysis | None = None,
         fail: bool = False,
+        fail_message: str = "simulated ai failure",
         model: str = "fake-model",
     ) -> None:
         self.analysis = analysis
         self.fail = fail
+        self.fail_message = fail_message
         self.model = model
         self.calls: list[tuple[str, str]] = []
 
     def generate(self, prompt: str, payload_json: str) -> AiCallResult:
         self.calls.append((prompt, payload_json))
         if self.fail:
-            raise RuntimeError("simulated ai failure")
+            raise RuntimeError(self.fail_message)
         parsed = self.analysis
         raw = parsed.model_dump_json() if parsed else "not-json"
         return AiCallResult(

@@ -480,6 +480,10 @@ def _run_live_audit(args: argparse.Namespace) -> int:
         report, out_dir, formats, getattr(args, "basename", None)
     )
     print(f"findings={len(report.findings)}")
+    if report.ai is not None:
+        print(f"ai_status={report.ai.status} reason={report.ai.reason or '-'}")
+        if report.ai.detail:
+            print(f"ai_detail={report.ai.detail}")
     for path in written:
         print(path)
     return audit_exit_code(list(report.findings))

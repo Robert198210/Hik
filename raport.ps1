@@ -44,6 +44,7 @@ if ($null -eq $report.ai) {
   $reason = $report.ai.reason
   if (-not $reason) { $reason = "" }
   Write-Host ("AI: {0} {1}" -f $report.ai.status, $reason)
+  if ($report.ai.detail) { Write-Host ("AI detail: {0}" -f $report.ai.detail) }
   Write-Host ("Propozycje AI: {0}" -f $proposals)
   if ($report.ai.summary) {
     Write-Host $report.ai.summary

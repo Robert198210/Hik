@@ -156,3 +156,36 @@ def test_cache_prevents_second_client_call(tmp_path: Path) -> None:
             force_enable=True,
         )
         assert len(client.calls) == 1
+
+def test_failed_call_reports_exception_detail_without_key() -> None:
+    from haca.security.redaction import register_secret
+
+    secret = "AIzaTESTSECRETVALUE1234567890"  # noqa: S105 - fake key for redaction test
+    register_secret(secret)
+    collection, coverage = run_simulated_collection("clean")
+    catalog = load_catalog_entries()
+    device_ids = {d.id for d in default_resolved_devices()}
+    orp = load_requirements(Path("config/requirements.example.yaml"), device_ids)
+    coverage = compute_coverage(catalog, collection, orp)
+    summary = coverage_summary(coverage, catalog)
+    client = FakeAiClient(fail=True, fail_message=f"401 UNAUTHENTICATED key={secret}")
+    result = enrich_findings(
+        findings=(),
+        collection=collection,
+        devices=list(default_resolved_devices()),
+        orp=orp,
+        catalog=catalog,
+        coverage=coverage,
+        coverage_summary=summary,
+        app_config=_base_app(),
+        ai_config=_base_app().ai,
+        run_id="run-x",
+        client=client,
+        session=None,
+        force_enable=True,
+    )
+    assert result.ai.status == "error"
+    assert result.ai.reason == "network_error"
+    assert result.ai.detail is not None
+    assert result.ai.detail.startswith("RuntimeError:")
+    assert secret not in result.ai.detail
