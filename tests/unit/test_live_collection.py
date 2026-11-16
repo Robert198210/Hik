@@ -74,6 +74,34 @@ def test_live_policy_collects_lan_device_without_leaving_the_process() -> None:
     assert device.evidence["system.device_info"].outcome.value == "AUTH_DENIED"
 
 
+def test_basename_overwrites_stable_report_names(tmp_path: Path) -> None:
+    proc = subprocess.run(  # noqa: S603
+        [
+            sys.executable,
+            "-m",
+            "haca",
+            "audit",
+            "--simulate",
+            "--scenario",
+            "clean",
+            "--format",
+            "json,md,html",
+            "--out",
+            str(tmp_path),
+            "--basename",
+            "raport",
+        ],
+        cwd=_REPO,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 0
+    assert (tmp_path / "raport.json").is_file()
+    assert (tmp_path / "raport.md").is_file()
+    assert (tmp_path / "raport.html").is_file()
+    assert list(tmp_path.glob("haca-audit-*")) == []
+
+
 def test_live_audit_cli_stops_when_credentials_are_missing() -> None:
     env = {key: value for key, value in os.environ.items() if not key.startswith("HACA_CRED_")}
     proc = subprocess.run(  # noqa: S603

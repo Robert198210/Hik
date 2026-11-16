@@ -351,6 +351,39 @@ def _cmd_runs_list(args: argparse.Namespace) -> int:
     return 0
 
 
+def _write_audit_files(
+    report: object,
+    out_dir: Path,
+    formats: set[str],
+    basename: str | None,
+) -> list[Path]:
+    from haca.reports.html import render_html
+    from haca.reports.json_report import write_report_json
+    from haca.reports.markdown import render_markdown
+    from haca.reports.models import AuditReport
+
+    if not isinstance(report, AuditReport):
+        msg = "expected AuditReport"
+        raise TypeError(msg)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    stem = basename if basename else f"haca-audit-{report.meta.run_id}"
+    base = out_dir / stem
+    written: list[Path] = []
+    if "json" in formats:
+        json_path = base.with_suffix(".json")
+        write_report_json(report, str(json_path))
+        written.append(json_path)
+    if "md" in formats:
+        md_path = base.with_suffix(".md")
+        md_path.write_text(render_markdown(report), encoding="utf-8")
+        written.append(md_path)
+    if "html" in formats:
+        html_path = base.with_suffix(".html")
+        html_path.write_text(render_html(report), encoding="utf-8")
+        written.append(html_path)
+    return written
+
+
 def _run_simulated_audit(
     scenario: str,
     requirements_path: Path,
@@ -361,11 +394,9 @@ def _run_simulated_audit(
     *,
     use_ai: bool,
     config_path: Path | None,
+    basename: str | None = None,
 ) -> int:
     from haca.audit import AuditOrchestrator, audit_exit_code
-    from haca.reports.html import render_html
-    from haca.reports.json_report import write_report_json
-    from haca.reports.markdown import render_markdown
 
     devices = list(default_resolved_devices())
     device_ids = {d.id for d in devices}
@@ -386,22 +417,10 @@ def _run_simulated_audit(
         db_path=db_path,
         use_ai=use_ai,
     )
-    out_dir.mkdir(parents=True, exist_ok=True)
-    base = out_dir / f"haca-audit-{report.meta.run_id}"
-    json_path = base.with_suffix(".json")
-    md_path = base.with_suffix(".md")
-    html_path = base.with_suffix(".html")
-    if "json" in formats:
-        write_report_json(report, str(json_path))
-    if "md" in formats:
-        md_path.write_text(render_markdown(report), encoding="utf-8")
-    if "html" in formats:
-        html_path.write_text(render_html(report), encoding="utf-8")
-
+    written = _write_audit_files(report, out_dir, formats, basename)
     print(f"findings={len(report.findings)}")
-    for path in (json_path, md_path, html_path):
-        if path.exists():
-            print(path)
+    for path in written:
+        print(path)
     return audit_exit_code(list(report.findings))
 
 
@@ -427,14 +446,12 @@ def _cmd_audit(args: argparse.Namespace) -> int:
         formats,
         use_ai=bool(getattr(args, "ai", False)),
         config_path=config_path,
+        basename=getattr(args, "basename", None),
     )
 
 
 def _run_live_audit(args: argparse.Namespace) -> int:
     from haca.audit import AuditOrchestrator, audit_exit_code
-    from haca.reports.html import render_html
-    from haca.reports.json_report import write_report_json
-    from haca.reports.markdown import render_markdown
 
     config_path = Path(args.config) if args.config else _DEFAULT_CONFIG
     devices_path = Path(args.devices) if args.devices else _DEFAULT_DEVICES
@@ -459,21 +476,9 @@ def _run_live_audit(args: argparse.Namespace) -> int:
         use_ai=bool(getattr(args, "ai", False)),
         credential_store=EnvCredentialStore(),
     )
-    out_dir.mkdir(parents=True, exist_ok=True)
-    base = out_dir / f"haca-audit-{report.meta.run_id}"
-    written: list[Path] = []
-    if "json" in formats:
-        json_path = base.with_suffix(".json")
-        write_report_json(report, str(json_path))
-        written.append(json_path)
-    if "md" in formats:
-        md_path = base.with_suffix(".md")
-        md_path.write_text(render_markdown(report), encoding="utf-8")
-        written.append(md_path)
-    if "html" in formats:
-        html_path = base.with_suffix(".html")
-        html_path.write_text(render_html(report), encoding="utf-8")
-        written.append(html_path)
+    written = _write_audit_files(
+        report, out_dir, formats, getattr(args, "basename", None)
+    )
     print(f"findings={len(report.findings)}")
     for path in written:
         print(path)
@@ -664,6 +669,11 @@ def main(argv: list[str] | None = None) -> None:
     audit_parser.add_argument("--ai", action="store_true")
     audit_parser.add_argument("--config", default=str(_DEFAULT_CONFIG))
     audit_parser.add_argument("--devices", default=str(_DEFAULT_DEVICES))
+    audit_parser.add_argument(
+        "--basename",
+        default=None,
+        help="fixed report file name; overwrites previous files with that name",
+    )
     audit_parser.set_defaults(func=_cmd_audit)
 
     ai_parser = subparsers.add_parser("ai", help="Gemini analysis tools")

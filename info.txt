@@ -116,6 +116,12 @@ Bez --simulate. Program łączy się z 192.168.1.200, .201 i .202.
 Raport: katalog reports, plik .html otwórz dwuklikiem.
 Kod 3 oznacza wykryte konflikty. Kod 0 oznacza brak konfliktu o wysokiej wadze.
 
+Żeby od razu nadpisać raport na GitHubie w katalogu raports, w tym samym oknie:
+
+  .\wyslij-raport.ps1
+
+Powstają raports\raport.html, raport.json i raport.md. Poprzednie pliki o tej nazwie są zastępowane.
+
 
 7. Identyfikacja prawdziwych urządzeń (opcjonalnie)
 ---------------------------------------------------
