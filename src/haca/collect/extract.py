@@ -359,7 +359,7 @@ def extract_views(
                 tag = child.tag.split("}")[-1]
                 if tag == "eventType":
                     event_type = (child.text or "").strip() or None
-                elif tag == "channelID":
+                elif tag in ("channelID", "videoInputChannelID", "dynVideoInputChannelID"):
                     channel = _as_int(child.text)
                 elif tag == "notificationMethod":
                     val = (child.text or "").strip()
@@ -491,6 +491,7 @@ def _parse_field_items(doc: XmlDocument) -> tuple[VcaItemView, ...]:
         if elem.tag.split("}")[-1] != "FieldDetectionRegion":
             continue
         item_id = enabled = target = None
+        coord_count = 0
         for child in elem.iter():
             tag = child.tag.split("}")[-1]
             if tag == "id" and child.text:
@@ -499,7 +500,16 @@ def _parse_field_items(doc: XmlDocument) -> tuple[VcaItemView, ...]:
                 enabled = _as_bool(child.text)
             elif tag == "detectionTarget":
                 target = (child.text or "").strip() or None
-        items.append(VcaItemView(id=item_id, enabled=enabled, detection_target=target))
+            elif tag == "RegionCoordinates":
+                coord_count += 1
+        items.append(
+            VcaItemView(
+                id=item_id,
+                enabled=enabled,
+                detection_target=target,
+                coordinate_count=coord_count or None,
+            )
+        )
     return tuple(items)
 
 
@@ -528,7 +538,8 @@ def _parse_tracks(doc: XmlDocument) -> tuple[TrackView, ...]:
         for action in elem.iter():
             if action.tag.split("}")[-1] != "ScheduleAction":
                 continue
-            start_day = end_day = start_time = end_time = mode = "CMR"
+            start_day = end_day = start_time = end_time = None
+            mode = "CMR"
             record = True
             for child in action.iter():
                 tag = child.tag.split("}")[-1]
