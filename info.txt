@@ -1,0 +1,153 @@
+HACA na Windows 10 — co zrobić na laptopie
+==========================================
+
+Nie uruchamiaj niczego jako administrator.
+Wszystkie komendy wklejaj w zwykłym Windows PowerShell
+(nie CMD, nie PowerShell ISE, nie „Windows PowerShell (Administrator)”).
+
+Jak otworzyć PowerShell:
+  Start -> wpisz PowerShell -> Enter
+  (zwykła pozycja „Windows PowerShell”, bez tarczy administratora).
+
+
+1. Python 3.12
+--------------
+Pobierz instalator z https://www.python.org/downloads/release/python-31213/
+(plik Windows installer 64-bit).
+
+Uruchom instalator zwykłym dwuklikiem (nie „Uruchom jako administrator”).
+Na pierwszym ekranie zaznacz: Add python.exe to PATH.
+Potem: Install Now.
+
+Sprawdzenie — PowerShell:
+
+  py -3.12 --version
+
+Oczekiwane: Python 3.12.x
+Jeśli „py” nie jest rozpoznane, zamknij PowerShell, otwórz nowe okno i powtórz.
+
+
+2. Git (jeśli jeszcze nie ma)
+-----------------------------
+https://git-scm.com/download/win
+Instalator: zwykły dwuklik, opcje domyślne, Next do końca.
+Jeśli Windows sam poprosi o zgodę administratora — to tylko instalator, zatwierdź.
+
+Sprawdzenie — nowe okno PowerShell:
+
+  git --version
+
+
+3. Pobranie projektu
+--------------------
+PowerShell. Katalog wybierz sam, przykład C:\Tools:
+
+  mkdir C:\Tools
+  cd C:\Tools
+  git clone https://github.com/Robert198210/Hik.git
+  cd Hik
+
+Od tej pory każda kolejna komenda jest w katalogu C:\Tools\Hik
+(w PowerShell widać to na początku linii).
+
+
+4. Środowisko i instalacja
+--------------------------
+Nadal zwykły PowerShell, katalog C:\Tools\Hik:
+
+  py -3.12 -m venv .venv
+  .\.venv\Scripts\Activate.ps1
+  python -m pip install -U pip
+  pip install -e .
+
+Jeśli Activate.ps1 zgłosi błąd o ExecutionPolicy, w tym samym oknie PowerShell
+(bez administratora) wpisz raz:
+
+  Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+
+Potem ponownie:
+
+  .\.venv\Scripts\Activate.ps1
+
+Aktywne środowisko poznasz po (.venv) na początku linii.
+Sprawdzenie:
+
+  python -m haca --version
+
+Oczekiwane: haca 0.1.0.dev0
+
+
+5. Audyt na danych syntetycznych (bez kamer)
+--------------------------------------------
+To działa od razu. Nie łączy się z NVR ani kamerami.
+PowerShell, katalog C:\Tools\Hik, środowisko (.venv) aktywne:
+
+  python -m haca audit --simulate --scenario clean
+  python -m haca audit --simulate --scenario conflicts --format html,json,md --out reports
+
+Raporty: C:\Tools\Hik\reports\
+Plik .html otwórz zwykłym dwuklikiem (przeglądarka).
+
+Scenariusz clean kończy się kodem 0.
+Scenariusz conflicts kończy się kodem 3 — to wykryte konflikty, nie awaria programu.
+
+Identyfikacja na symulatorze:
+
+  python -m haca identify --simulate
+
+
+6. Czego ta wersja jeszcze nie robi
+------------------------------------
+Pełny audyt prawdziwych urządzeń nie jest podłączony.
+Te dwie komendy wypiszą komunikat i zakończą się kodem 1:
+
+  python -m haca audit
+  python -m haca collect
+
+Działa odczyt identyfikacji na żywo (krok 7), jeśli laptop jest w tej samej sieci LAN co NVR/kamery.
+
+
+7. Identyfikacja prawdziwych urządzeń (opcjonalnie)
+---------------------------------------------------
+Najpierw skopiuj przykłady. PowerShell, katalog C:\Tools\Hik:
+
+  copy config\haca.example.yaml config\haca.yaml
+  copy config\devices.example.yaml config\devices.yaml
+
+Potem edytuj config\haca.yaml i config\devices.yaml w Notatniku
+(zwykłe otwarcie pliku, nie administrator):
+  - subnet: Twoja sieć, np. 192.168.1.0/24
+  - host_suffix albo host: adresy NVR i kamer
+  - expected_model: dokładny model z tabliczki
+
+Haseł nie wpisuj do plików YAML.
+W tym samym oknie PowerShell, przed identify, ustaw zmienne
+(podmień loginy i hasła; nazwy zmiennych wynikają z credential_ref w devices.yaml):
+
+  $env:HACA_CRED_NVR01_USERNAME = "twoj_login"
+  $env:HACA_CRED_NVR01_PASSWORD = "twoje_haslo"
+  $env:HACA_CRED_PTZ01_USERNAME = "twoj_login"
+  $env:HACA_CRED_PTZ01_PASSWORD = "twoje_haslo"
+  $env:HACA_CRED_CAM01_USERNAME = "twoj_login"
+  $env:HACA_CRED_CAM01_PASSWORD = "twoje_haslo"
+
+Potem:
+
+  python -m haca identify --config config\haca.yaml --devices config\devices.yaml
+
+Zmienne znikają po zamknięciu okna PowerShell.
+
+
+8. Gemini (opcjonalnie, nie jest potrzebne do audytu)
+-----------------------------------------------------
+Tylko jeśli chcesz sekcję AI. W PowerShell, katalog C:\Tools\Hik, (.venv) aktywne:
+
+  pip install -e ".[ai]"
+  $env:GEMINI_API_KEY = "klucz_z_google_ai_studio"
+
+Potem:
+
+  python -m haca audit --simulate --scenario conflicts --ai --config config\haca.example.yaml
+
+Bez klucza program i tak robi audyt deterministyczny i pomija AI.
+Klucza nie zapisuj w plikach w katalogu projektu.
