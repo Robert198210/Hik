@@ -105,22 +105,27 @@ Identyfikacja na symulatorze:
   python -m haca identify --simulate
 
 
-6. Audyt prawdziwych urządzeń
------------------------------
+6. Jedna komenda — audyt, propozycje AI, GitHub
+------------------------------------------------
 Laptop musi być w tej samej sieci co rejestrator.
-Najpierw krok 7 (hasła w oknie PowerShell). Potem, katalog projektu, (.venv) aktywne:
+PowerShell, katalog projektu (tam, gdzie leży raport.ps1).
+Środowiska (.venv) nie trzeba włączać. Haseł nie wpisuje się w tej komendzie.
 
-  python -m haca audit --config haca.laptop.yaml --devices devices.laptop.yaml --format html,json,md --out reports
+  .\raport
 
-Bez --simulate. Program łączy się z 192.168.1.200, .201 i .202.
-Raport: katalog reports, plik .html otwórz dwuklikiem.
+To jedyna komenda na co dzień. Skrypt sam:
+  - bierze hasła z ustaw-hasla.ps1
+  - odczytuje NVR 192.168.1.200, PTZ .201 i kamerę stałą .202
+  - pyta Gemini o propozycje zmian (klucz z Windows Credential Manager)
+  - zapisuje raports\raport.html, raport.json i raport.md
+  - wysyła te trzy pliki na GitHub i nadpisuje poprzedni raport
+
+Otwórz raports\raport.html dwuklikiem.
 Kod 3 oznacza wykryte konflikty. Kod 0 oznacza brak konfliktu o wysokiej wadze.
+Na końcu okna jest linia „Propozycje AI: N”.
+Program niczego nie zapisuje na urządzeniach. Propozycje są tylko w raporcie.
 
-Żeby od razu nadpisać raport na GitHubie w katalogu raports, w tym samym oknie:
-
-  .\wyslij-raport.ps1
-
-Powstają raports\raport.html, raport.json i raport.md. Poprzednie pliki o tej nazwie są zastępowane.
+Stara nazwa .\wyslij-raport.ps1 robi to samo.
 
 
 7. Identyfikacja prawdziwych urządzeń (opcjonalnie)
@@ -154,16 +159,12 @@ Potem:
 Zmienne znikają po zamknięciu okna PowerShell.
 
 
-8. Gemini (opcjonalnie, nie jest potrzebne do audytu)
------------------------------------------------------
-Tylko jeśli chcesz sekcję AI. W PowerShell, katalog Tools\Hik, (.venv) aktywne:
+8. Klucz Gemini
+---------------
+.\raport używa klucza z Windows Credential Manager
+(usługa haca, nazwa gemini_api_key).
+Jeśli pakietu Google jeszcze nie ma, skrypt doinstaluje go przy pierwszym uruchomieniu.
 
-  pip install -e ".[ai]"
-  $env:GEMINI_API_KEY = "klucz_z_google_ai_studio"
-
-Potem:
-
-  python -m haca audit --simulate --scenario conflicts --ai --config config\haca.example.yaml
-
-Bez klucza program i tak robi audyt deterministyczny i pomija AI.
-Klucza nie zapisuj w plikach w katalogu projektu.
+Bez klucza raport i tak powstanie, ale w oknie będzie
+„AI: skipped missing_api_key” i nie będzie propozycji od Gemini.
+Klucza nie wpisuj do plików w katalogu projektu.
