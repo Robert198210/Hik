@@ -17,7 +17,7 @@
 <body>
   
   <h1>HACA configuration audit</h1>
-  <p>Run 4d844c8a-b1c7-4fe7-848b-35d00a50293c · catalog v1</p>
+  <p>Run 013909ed-4ed3-455e-8f52-a1697c5e9dd0 · catalog v1</p>
 
   <h2>Summary</h2>
   <p>Verified 70 of 123 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.</p>
@@ -56,7 +56,7 @@
         <td>POTENTIAL_CONFLICT</td>
         <td class="severity-high">high</td>
         <td>nvr01</td>
-        <td>Setting_id recording.track_enable is false on nvr01, impacting the ORP system.recording_mode requirement of continuous_24_7.</td>
+        <td>ORP specifies continuous_24_7 recording mode, but recording.track_enable is currently set to &#39;false&#39;.</td>
       </tr>
     
       <tr>
@@ -64,23 +64,15 @@
         <td>POTENTIAL_CONFLICT</td>
         <td class="severity-high">high</td>
         <td>ptz01</td>
-        <td>Setting_id analytics.line_engine_enabled is currently false on ptz01, conflicting with the ORP required_events specification for line_crossing.</td>
+        <td>ORP requires line_crossing events for ptz01, but analytics.line_engine_enabled is currently set to &#39;false&#39;.</td>
       </tr>
     
       <tr>
-        <td>R-TIME-001</td>
-        <td>CONFIRMED_CONFLICT</td>
-        <td class="severity-medium">medium</td>
-        <td>cam01</td>
-        <td>ORP time source is NVR sync but device timeMode manual differs from NVR platform</td>
-      </tr>
-    
-      <tr>
-        <td>R-TIME-001</td>
-        <td>CONFIRMED_CONFLICT</td>
+        <td>ai</td>
+        <td>POTENTIAL_CONFLICT</td>
         <td class="severity-medium">medium</td>
         <td>ptz01</td>
-        <td>ORP time source is NVR sync but device timeMode manual differs from NVR platform</td>
+        <td>ORP specifies notify_center_required=true for ptz01, but linkage.linedetection_notifications does not include center linkage.</td>
       </tr>
     
       <tr>
@@ -136,7 +128,15 @@
         <td>INFO</td>
         <td class="severity-info">info</td>
         <td>nvr01</td>
-        <td>Setting_id platform.ezviz_enabled is true on nvr01 while the ORP specifies remote_access as lan_vpn_only and hik_connect remains undecided.</td>
+        <td>ORP specifies remote_access as lan_vpn_only with hik_connect undecided, while platform.ezviz_enabled is set to &#39;true&#39;.</td>
+      </tr>
+    
+      <tr>
+        <td>ai</td>
+        <td>INFO</td>
+        <td class="severity-info">info</td>
+        <td>nvr01</td>
+        <td>ORP specifies https_required as unspecified, while security.https_enabled is set to &#39;false&#39; and security.http_enabled is &#39;true&#39;.</td>
       </tr>
     
     </tbody>
@@ -146,17 +146,8 @@
   <h2>AI analysis</h2>
   <p>Status: ok</p>
   
-  <p>Audit of Hikvision deployment identified time synchronization and analytics engine mismatches against the specified Operational Requirements Profile.</p>
+  <p>Configuration analysis identified potential conflicts with operational requirements regarding VCA line detection on ptz01 and recording track enablement on nvr01, along with informational items regarding Hik-Connect and HTTPS status.</p>
   
-  
-    <h3>Rejected suggestions</h3>
-    <ul class="ai-rejected">
-    
-      <li>ptz01 / time.mode — orp_contradiction: Setting_id time.mode is set to manual on ptz01, which conflicts with the ORP system.time_source specification requiring nvr_sync.</li>
-    
-      <li>cam01 / time.mode — orp_contradiction: Setting_id time.mode is set to manual on cam01, which conflicts with the ORP system.time_source specification requiring nvr_sync.</li>
-    
-    </ul>
   
   
 

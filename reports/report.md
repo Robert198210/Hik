@@ -1,7 +1,7 @@
 ## Summary
 
-- classifications: {'CONFIRMED_CONFLICT': 5, 'POTENTIAL_CONFLICT': 2, 'INFO': 5, 'INSUFFICIENT_DATA': 2}
-- severities: {'high': 5, 'medium': 2, 'info': 7}
+- classifications: {'CONFIRMED_CONFLICT': 3, 'POTENTIAL_CONFLICT': 3, 'INFO': 6, 'INSUFFICIENT_DATA': 2}
+- severities: {'high': 5, 'medium': 1, 'info': 8}
 
 ## Needs decision
 
@@ -31,27 +31,20 @@
   - ORP: devices.ptz01.required_events
 - **ai** POTENTIAL_CONFLICT
   - devices: nvr01
-  - current → recommended: `false` → `—`
-  - Setting_id recording.track_enable is false on nvr01, impacting the ORP system.recording_mode requirement of continuous_24_7.
+  - current → recommended: `false` → `true`
+  - ORP specifies continuous_24_7 recording mode, but recording.track_enable is currently set to 'false'.
   - evidence: `record.tracks` `tracks[101].enable` = `false`
 - **ai** POTENTIAL_CONFLICT
   - devices: ptz01
   - current → recommended: `false` → `true`
-  - Setting_id analytics.line_engine_enabled is currently false on ptz01, conflicting with the ORP required_events specification for line_crossing.
+  - ORP requires line_crossing events for ptz01, but analytics.line_engine_enabled is currently set to 'false'.
   - evidence: `smart.line_detection` `line_detection.engine_enabled` = `false`
 
-- **R-TIME-001** CONFIRMED_CONFLICT
-  - devices: cam01
-  - current → recommended: `manual` → `platform`
-  - ORP time source is NVR sync but device timeMode manual differs from NVR platform
-  - evidence: `system.time` `timeMode` = `manual`
-  - ORP: system.time_source
-- **R-TIME-001** CONFIRMED_CONFLICT
+- **ai** POTENTIAL_CONFLICT
   - devices: ptz01
-  - current → recommended: `manual` → `platform`
-  - ORP time source is NVR sync but device timeMode manual differs from NVR platform
-  - evidence: `system.time` `timeMode` = `manual`
-  - ORP: system.time_source
+  - current → recommended: `frozenset()` → `—`
+  - ORP specifies notify_center_required=true for ptz01, but linkage.linedetection_notifications does not include center linkage.
+  - evidence: `event.triggers` `triggers[linedetection].methods` = `frozenset()`
 
 - **R-HIKC-001** INFO
   - devices: nvr01
@@ -85,8 +78,13 @@
 - **ai** INFO
   - devices: nvr01
   - current → recommended: `true` → `—`
-  - Setting_id platform.ezviz_enabled is true on nvr01 while the ORP specifies remote_access as lan_vpn_only and hik_connect remains undecided.
+  - ORP specifies remote_access as lan_vpn_only with hik_connect undecided, while platform.ezviz_enabled is set to 'true'.
   - evidence: `platform.ezviz` `platform.ezviz_enabled` = `true`
+- **ai** INFO
+  - devices: nvr01
+  - current → recommended: `false` → `—`
+  - ORP specifies https_required as unspecified, while security.https_enabled is set to 'false' and security.http_enabled is 'true'.
+  - evidence: `security.admin_accesses` `admin_access.protocols.HTTPS.enabled` = `false`
 
 ## Coverage matrix
 
