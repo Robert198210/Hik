@@ -19,7 +19,10 @@ config/requirements.local.yaml
 config/requirements.yaml
 data/
 live-results/
-/reports/
+/reports/*
+!/reports/report.html
+!/reports/report.json
+!/reports/report.md
 *.db
 *.sqlite*
 *.log

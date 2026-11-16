@@ -108,24 +108,23 @@ Identyfikacja na symulatorze:
 6. Jedna komenda — audyt, propozycje AI, GitHub
 ------------------------------------------------
 Laptop musi być w tej samej sieci co rejestrator.
-PowerShell, katalog projektu (tam, gdzie leży raport.ps1).
+PowerShell, katalog projektu (tam, gdzie leży report.ps1).
 Środowiska (.venv) nie trzeba włączać. Haseł nie wpisuje się w tej komendzie.
 
-  .\raport
+  .\report
 
 To jedyna komenda na co dzień. Skrypt sam:
   - bierze hasła z ustaw-hasla.ps1
   - odczytuje NVR 192.168.1.200, PTZ .201 i kamerę stałą .202
   - pyta Gemini o propozycje zmian (klucz z Windows Credential Manager)
-  - zapisuje raports\raport.html, raport.json i raport.md
+  - zapisuje reports\report.html, report.json i report.md
   - wysyła te trzy pliki na GitHub i nadpisuje poprzedni raport
 
-Otwórz raports\raport.html dwuklikiem.
+Otwórz reports\report.html dwuklikiem.
 Kod 3 oznacza wykryte konflikty. Kod 0 oznacza brak konfliktu o wysokiej wadze.
 Na końcu okna jest linia „Propozycje AI: N”.
 Program niczego nie zapisuje na urządzeniach. Propozycje są tylko w raporcie.
 
-Stara nazwa .\wyslij-raport.ps1 robi to samo.
 
 
 7. Identyfikacja prawdziwych urządzeń (opcjonalnie)
@@ -161,7 +160,7 @@ Zmienne znikają po zamknięciu okna PowerShell.
 
 8. Klucz Gemini
 ---------------
-.\raport używa klucza z Windows Credential Manager
+.\report używa klucza z Windows Credential Manager
 (usługa haca, nazwa gemini_api_key).
 Jeśli pakietu Google jeszcze nie ma, skrypt doinstaluje go przy pierwszym uruchomieniu.
 

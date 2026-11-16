@@ -89,16 +89,16 @@ def test_basename_overwrites_stable_report_names(tmp_path: Path) -> None:
             "--out",
             str(tmp_path),
             "--basename",
-            "raport",
+            "report",
         ],
         cwd=_REPO,
         capture_output=True,
         text=True,
     )
     assert proc.returncode == 0
-    assert (tmp_path / "raport.json").is_file()
-    assert (tmp_path / "raport.md").is_file()
-    assert (tmp_path / "raport.html").is_file()
+    assert (tmp_path / "report.json").is_file()
+    assert (tmp_path / "report.md").is_file()
+    assert (tmp_path / "report.html").is_file()
     assert list(tmp_path.glob("haca-audit-*")) == []
 
 

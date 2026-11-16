@@ -1,5 +1,5 @@
-# Jedna komenda na laptopie: .\raport
-# Odczyt NVR i kamer, propozycje Gemini, zapis raports\raport.* i wysylka na GitHub.
+# Jedna komenda na laptopie: .\report
+# Odczyt NVR i kamer, propozycje Gemini, zapis reports\report.* i wysylka na GitHub.
 # Zwykly Windows PowerShell, katalog projektu, bez administratora.
 # Nie dodaje ustaw-hasla.ps1.
 
@@ -27,15 +27,15 @@ if ($LASTEXITCODE -ne 0) {
   --config haca.laptop.yaml `
   --devices devices.laptop.yaml `
   --format html,json,md `
-  --out raports `
-  --basename raport `
+  --out reports `
+  --basename report `
   --ai
 $code = $LASTEXITCODE
 if ($code -ne 0 -and $code -ne 3) {
   exit $code
 }
 
-$jsonPath = Join-Path $PSScriptRoot "raports\raport.json"
+$jsonPath = Join-Path $PSScriptRoot "reports\report.json"
 $report = Get-Content -Raw -Encoding UTF8 $jsonPath | ConvertFrom-Json
 if ($null -eq $report.ai) {
   Write-Host "AI: brak sekcji w raporcie"
@@ -51,10 +51,10 @@ if ($null -eq $report.ai) {
   }
 }
 
-git add -- raports/raport.html raports/raport.json raports/raport.md
+git add -- reports/report.html reports/report.json reports/report.md
 git diff --cached --quiet
 if ($LASTEXITCODE -eq 0) {
-  Write-Host "raports bez zmian"
+  Write-Host "reports bez zmian"
   exit 0
 }
 if (-not (git config user.email)) {
