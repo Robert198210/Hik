@@ -36,6 +36,8 @@ from haca.security.egress import EgressPolicy
 from haca.security.redaction import install_redaction
 from haca.simulation.defaults import (
     build_simulation_network,
+    default_resolved_devices,
+    simulation_app_config,
     simulation_credential,
     simulation_registry,
     simulation_timeouts,
@@ -290,6 +292,66 @@ def _cmd_runs_list(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_simulated_audit(
+    scenario: str,
+    requirements_path: Path,
+    out_dir: Path,
+    db_path: Path | None,
+    manual_path: Path | None,
+    formats: set[str],
+) -> int:
+    from haca.audit import AuditOrchestrator, audit_exit_code
+    from haca.reports.json_report import write_report_json
+    from haca.reports.markdown import render_markdown
+
+    devices = list(default_resolved_devices())
+    device_ids = {d.id for d in devices}
+    orp = load_requirements(requirements_path, device_ids)
+    app = simulation_app_config()
+    manual = _load_manual_attestation(manual_path)
+    report = AuditOrchestrator().run_audit(
+        app,
+        devices,
+        orp,
+        simulate=True,
+        scenario=scenario,
+        manual_attestations=manual,
+        db_path=db_path,
+    )
+    out_dir.mkdir(parents=True, exist_ok=True)
+    base = out_dir / f"haca-audit-{report.meta.run_id}"
+    json_path = base.with_suffix(".json")
+    md_path = base.with_suffix(".md")
+    if "json" in formats:
+        write_report_json(report, str(json_path))
+    if "md" in formats:
+        md_path.write_text(render_markdown(report), encoding="utf-8")
+
+    print(f"findings={len(report.findings)}")
+    for path in (json_path, md_path):
+        if path.exists():
+            print(path)
+    return audit_exit_code(list(report.findings))
+
+
+def _cmd_audit(args: argparse.Namespace) -> int:
+    if not args.simulate:
+        print("live audit is not wired in this build; use --simulate", file=sys.stderr)
+        return 1
+    scenario = args.scenario or "clean"
+    default_req = _REPO_ROOT / "config" / "requirements.example.yaml"
+    requirements = Path(args.requirements) if args.requirements else default_req
+    out_dir = Path(args.out) if args.out else Path("reports")
+    db_path = Path(args.db) if args.db else None
+    manual_path = Path(args.manual) if args.manual else None
+    raw_formats = args.format or "json,md"
+    formats = {part.strip().lower() for part in raw_formats.split(",") if part.strip()}
+    print(_SIMULATED_BANNER)
+    return _run_simulated_audit(
+        scenario, requirements, out_dir, db_path, manual_path, formats
+    )
+
+
 def _cmd_diff(args: argparse.Namespace) -> int:
     from haca.store.db import open_db
     from haca.store.diff import diff_runs
@@ -380,6 +442,20 @@ def main(argv: list[str] | None = None) -> None:
     diff_parser.add_argument("--db", default=None)
     diff_parser.add_argument("--json", action="store_true")
     diff_parser.set_defaults(func=_cmd_diff)
+
+    audit_parser = subparsers.add_parser("audit", help="Run configuration audit")
+    audit_parser.add_argument("--simulate", action="store_true")
+    audit_parser.add_argument(
+        "--scenario",
+        choices=["clean", "conflicts", "unsupported"],
+        default="clean",
+    )
+    audit_parser.add_argument("--requirements", default=None)
+    audit_parser.add_argument("--manual", default=None)
+    audit_parser.add_argument("--out", default=None)
+    audit_parser.add_argument("--format", default="json,md")
+    audit_parser.add_argument("--db", default=None)
+    audit_parser.set_defaults(func=_cmd_audit)
 
     args = parser.parse_args(argv)
     if getattr(args, "func", None) is None:

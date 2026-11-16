@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import gzip
 import uuid
+from collections.abc import Sequence
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from haca import __version__
+from haca.analysis.models import Finding
 from haca.catalog.coverage import CoverageEntry
 from haca.collect.models import CollectionResult
 from haca.store.models import AuditRunRow, CoverageRow, RawResponseRow, RunDeviceRow, SettingRow
@@ -21,6 +23,7 @@ def save_collection(
     orp_hash: str | None,
     catalog_version: str,
     scenario: str | None,
+    kind: str = "collect",
 ) -> str:
     run_id = str(uuid.uuid4())
     session.add(
@@ -34,7 +37,7 @@ def save_collection(
             orp_hash=orp_hash,
             catalog_version=catalog_version,
             status="completed",
-            kind="collect",
+            kind=kind,
         )
     )
     for device in result.devices:
@@ -106,6 +109,27 @@ def list_runs(session: Session, limit: int = 20) -> list[AuditRunRow]:
 
 def load_run(session: Session, run_id: str) -> AuditRunRow | None:
     return session.get(AuditRunRow, run_id)
+
+
+def save_audit_findings(
+    session: Session,
+    run_id: str,
+    findings: Sequence[Finding],
+) -> None:
+    from haca.store.models import FindingRow
+
+    for finding in findings:
+        session.add(
+            FindingRow(
+                run_id=run_id,
+                finding_id=finding.id,
+                rule_id=finding.rule_id,
+                classification=finding.classification.value,
+                severity=finding.severity.value,
+                payload_json=finding.model_dump_json(),
+            )
+        )
+    session.commit()
 
 
 def load_settings(session: Session, run_id: str) -> dict[tuple[str, str], str]:
