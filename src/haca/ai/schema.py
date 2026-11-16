@@ -4,15 +4,13 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 AiClassification = Literal["POTENTIAL_CONFLICT", "OPTIMIZATION", "INFO"]
 AiSeverity = Literal["high", "medium", "low", "info"]
 
 
 class AiSuggestion(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
     device_id: str
     setting_id: str
     current_value: str | None
@@ -24,8 +22,6 @@ class AiSuggestion(BaseModel):
 
 
 class AiAnalysis(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
     summary: str
     suggestions: list[AiSuggestion] = Field(default_factory=list)
     cross_device_notes: list[str] = Field(default_factory=list)

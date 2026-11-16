@@ -82,3 +82,10 @@ def test_rejects_hallucinated_setting() -> None:
     assert "unknown_setting" in reasons
     assert "unknown_device" in reasons
     assert "wrong_current_value" in reasons
+
+
+def test_ai_schema_has_no_additional_properties_for_gemini() -> None:
+    from haca.ai.schema import AiAnalysis
+
+    schema = AiAnalysis.model_json_schema()
+    assert "additionalProperties" not in str(schema)
