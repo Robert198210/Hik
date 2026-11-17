@@ -17,7 +17,7 @@
 <body>
   
   <h1>HACA configuration audit</h1>
-  <p>Run 558c9277-9737-43c7-ae53-6d8c49fa2204 · catalog v1</p>
+  <p>Run f6007167-b7f6-418a-8f7a-ca48e5ca6a9f · catalog v1</p>
 
   <h2>Summary</h2>
   <p>Verified 72 of 129 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.</p>
@@ -38,25 +38,9 @@
       <tr>
         <td>ai</td>
         <td>POTENTIAL_CONFLICT</td>
-        <td class="severity-high">high</td>
-        <td>ptz01</td>
-        <td>The ORP mandates line_crossing events for ptz01, but setting_id analytics.line_engine_enabled is currently set to false.</td>
-      </tr>
-    
-      <tr>
-        <td>ai</td>
-        <td>POTENTIAL_CONFLICT</td>
-        <td class="severity-medium">medium</td>
-        <td>nvr01</td>
-        <td>The ORP specifies continuous_24_7 recording mode, but setting_id recording.track_enable is set to false on nvr01.</td>
-      </tr>
-    
-      <tr>
-        <td>ai</td>
-        <td>POTENTIAL_CONFLICT</td>
         <td class="severity-medium">medium</td>
         <td>ptz01</td>
-        <td>The ORP requires notify_center_required to be true for ptz01, but setting_id linkage.linedetection_notifications currently contains no notification targets.</td>
+        <td>The ORP explicitly requires notify_center_required=true for ptz01. Verified setting linkage.linedetection_notifications is currently empty (frozenset()), meaning line crossing events will not push alerts to the surveillance center or Hik-Connect.</td>
       </tr>
     
       <tr>
@@ -107,14 +91,6 @@
         <td>HTTP enabled and HTTPS disabled; https_required unspecified</td>
       </tr>
     
-      <tr>
-        <td>ai</td>
-        <td>INFO</td>
-        <td class="severity-info">info</td>
-        <td>nvr01</td>
-        <td>Setting_id platform.ezviz_enabled is set to true on nvr01 while the ORP hik_connect status remains undecided.</td>
-      </tr>
-    
     </tbody>
   </table>
 
@@ -122,7 +98,7 @@
   <h2>AI analysis</h2>
   <p>Status: ok</p>
   
-  <p>Configuration audit identified analytics and recording mismatches against the Operational Requirements Profile (ORP), notably disabled line detection on ptz01 and disabled recording tracks on nvr01, alongside undecided cloud platform integration.</p>
+  <p>Audit of NVR and camera configurations reveals an unfulfilled notification linkage requirement for PTZ line crossing, alongside manual checks required for timeline marker generation and camera log searches.</p>
   
   
   

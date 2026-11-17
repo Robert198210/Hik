@@ -1,7 +1,7 @@
 ## Summary
 
-- classifications: {'CONFIRMED_CONFLICT': 1, 'POTENTIAL_CONFLICT': 3, 'INFO': 7}
-- severities: {'high': 2, 'medium': 2, 'info': 7}
+- classifications: {'CONFIRMED_CONFLICT': 1, 'POTENTIAL_CONFLICT': 1, 'INFO': 6}
+- severities: {'high': 1, 'medium': 1, 'info': 6}
 
 ## Needs decision
 
@@ -17,21 +17,11 @@
   - Line crossing required but engine disabled
   - evidence: `smart.line_detection` `enabled` = `false`
   - ORP: devices.ptz01.required_events
-- **ai** POTENTIAL_CONFLICT
-  - devices: ptz01
-  - current → recommended: `false` → `true`
-  - The ORP mandates line_crossing events for ptz01, but setting_id analytics.line_engine_enabled is currently set to false.
-  - evidence: `smart.line_detection` `line_detection.engine_enabled` = `false`
 
 - **ai** POTENTIAL_CONFLICT
-  - devices: nvr01
-  - current → recommended: `false` → `true`
-  - The ORP specifies continuous_24_7 recording mode, but setting_id recording.track_enable is set to false on nvr01.
-  - evidence: `record.tracks` `tracks[101].enable` = `false`
-- **ai** POTENTIAL_CONFLICT
   - devices: ptz01
-  - current → recommended: `frozenset()` → `—`
-  - The ORP requires notify_center_required to be true for ptz01, but setting_id linkage.linedetection_notifications currently contains no notification targets.
+  - current → recommended: `frozenset()` → `frozenset({'center'})`
+  - The ORP explicitly requires notify_center_required=true for ptz01. Verified setting linkage.linedetection_notifications is currently empty (frozenset()), meaning line crossing events will not push alerts to the surveillance center or Hik-Connect.
   - evidence: `event.triggers` `triggers[linedetection].methods` = `frozenset()`
 
 - **R-HIKC-001** INFO
@@ -67,11 +57,6 @@
   - HTTP enabled and HTTPS disabled; https_required unspecified
   - evidence: `security.admin_accesses` `HTTPS.enabled` = `false`
   - ORP: system.https_required
-- **ai** INFO
-  - devices: nvr01
-  - current → recommended: `true` → `—`
-  - Setting_id platform.ezviz_enabled is set to true on nvr01 while the ORP hik_connect status remains undecided.
-  - evidence: `platform.ezviz` `platform.ezviz_enabled` = `true`
 
 ## Coverage matrix
 
