@@ -1,6 +1,8 @@
 # Project Status
 
-Last updated: 2026-11-16
+Last updated: 2026-11-17
+
+Live handoff for a new chat: [STATUS.md](../STATUS.md). Read it first. Update it when the session changes the live state.
 
 ## Phase 4 — Gemini analysis (v0.2)
 

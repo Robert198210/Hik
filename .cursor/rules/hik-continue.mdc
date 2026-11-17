@@ -1,0 +1,12 @@
+---
+description: Continue HACA from STATUS.md and refresh that file at the end of the session
+alwaysApply: true
+---
+
+# Kontynuacja HACA
+
+Gdy użytkownik kontynuuje ten projekt:
+
+1. Przeczytaj `STATUS.md` w katalogu głównym repozytorium, zanim cokolwiek zmienisz.
+2. Zrób `git fetch origin main` i opieraj się na `origin/main`, nie na zaległym lokalnym `HEAD`.
+3. Na końcu sesji, jeśli zmienił się kod, raport albo otwarta sprawa, zaktualizuj `STATUS.md`. Nie wpisuj haseł.
