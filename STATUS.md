@@ -21,8 +21,8 @@ Nowy czat: przeczytaj ten plik zanim cokolwiek zmienisz. Na końcu sesji, jeśli
 
 ## Kod i konfiguracja
 
-- Ostatni kod odczytu: `09b6bf8`. Komunikaty postępu `.\report` są w kodzie: git nie wypisuje listy plików.
-- Ostatni raport na GitHubie: `496e4c3` (2026-11-17, po odczycie logów i nagrań).
+- Ostatni kod: `3f27ba0` (komunikaty postępu, cichy git). Odczyt nagrań i dziennika: `09b6bf8`.
+- Ostatni raport na GitHubie: `126952a` (2026-11-17 14:52). Audyt trwał około 26 s. Gemini: `ok`.
 - Profil laptopa: `requirements.laptop.yaml`, `time_source: ntp` (hash `7a020e…`). Przykład w `config/requirements.example.yaml` zostaje przy `nvr_sync`.
 - Urządzenia: NVR `192.168.1.200` DS-7616NXI-K2(D), PTZ `192.168.1.201`, kamera stała `192.168.1.202`.
 - Gemini: `gemini-3.8-flash`, klucz w Windows Credential Manager (`haca` / `gemini_api_key`).
@@ -32,11 +32,11 @@ Nowy czat: przeczytaj ten plik zanim cokolwiek zmienisz. Na końcu sesji, jeśli
 Nie włączać logu debug. Odczyt nagrań potwierdzony na żywym NVR w `496e4c3`:
 
 - `POST /ISAPI/ContentMgmt/search` na torach 101 i 201 zwrócił odcinki (17 i 23 w ostatnich 24 h). `R-REC-002` jest informacją, nie „za mało danych”. Flaga `Enable` nadal `false`. Znaczniki człowiek/pojazd zostają ręczne.
-- `POST /ISAPI/ContentMgmt/logSearch` jest w kodzie (ostatnie 24 h, `metaId=log.std-cgi.com`).
+- `POST /ISAPI/ContentMgmt/logSearch` na NVR jest odczytany. Na PTZ i kamerze stałej odpowiedź przyszła, ale HACA jej nie sparsowała (`logs.search_matches`: `parse_error`).
 - Z odpowiedzi wypadają `userName`, adresy i `playbackURI`, zanim trafią do bazy.
 - Dual-VCA i „Save Camera VCA Data” nadal ręczne.
 
-## Ostatni raport (496e4c3)
+## Ostatni raport (126952a)
 
 - Gemini: `ok`.
 - Czas NTP: konfliktu `R-TIME-001` nie ma.
