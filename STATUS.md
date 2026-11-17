@@ -21,7 +21,7 @@ Nowy czat: przeczytaj ten plik zanim cokolwiek zmienisz. Na końcu sesji, jeśli
 
 ## Kod i konfiguracja
 
-- Ostatni kod: dziennik kamer — gdy NVR-owe zapytanie `log.std-cgi.com` kamera odrzuci, program pyta jeszcze raz bez znacznika strefy, a potem domeną `log.hikvision.com`. Odpowiedź w UTF-16 albo z gołym `&` jest poprawiana przed odczytem. Poprzedni kod postępu: `3f27ba0`. Odczyt nagrań: `09b6bf8`.
+- Ostatni kod: `d859779`. Gdy kamera odrzuci zapytanie NVR (`log.std-cgi.com`), program pyta jeszcze raz bez znacznika strefy, a potem domeną `log.hikvision.com`. Odpowiedź w UTF-16 albo z gołym `&` jest poprawiana przed odczytem. Kod postępu: `3f27ba0`. Odczyt nagrań: `09b6bf8`.
 - Ostatni raport na GitHubie: `126952a` (2026-11-17 14:52). Audyt trwał około 26 s. Gemini: `ok`.
 - Profil laptopa: `requirements.laptop.yaml`, `time_source: ntp` (hash `7a020e…`). Przykład w `config/requirements.example.yaml` zostaje przy `nvr_sync`.
 - Urządzenia: NVR `192.168.1.200` DS-7616NXI-K2(D), PTZ `192.168.1.201`, kamera stała `192.168.1.202`.
