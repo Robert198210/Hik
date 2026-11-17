@@ -21,7 +21,7 @@ Nowy czat: przeczytaj ten plik zanim cokolwiek zmienisz. Na końcu sesji, jeśli
 
 ## Kod i konfiguracja
 
-- Ostatni kod: `3f27ba0` (komunikaty postępu, cichy git). Odczyt nagrań i dziennika: `09b6bf8`.
+- Ostatni kod: dziennik kamer — gdy NVR-owe zapytanie `log.std-cgi.com` kamera odrzuci, program pyta jeszcze raz bez znacznika strefy, a potem domeną `log.hikvision.com`. Odpowiedź w UTF-16 albo z gołym `&` jest poprawiana przed odczytem. Poprzedni kod postępu: `3f27ba0`. Odczyt nagrań: `09b6bf8`.
 - Ostatni raport na GitHubie: `126952a` (2026-11-17 14:52). Audyt trwał około 26 s. Gemini: `ok`.
 - Profil laptopa: `requirements.laptop.yaml`, `time_source: ntp` (hash `7a020e…`). Przykład w `config/requirements.example.yaml` zostaje przy `nvr_sync`.
 - Urządzenia: NVR `192.168.1.200` DS-7616NXI-K2(D), PTZ `192.168.1.201`, kamera stała `192.168.1.202`.
@@ -32,7 +32,7 @@ Nowy czat: przeczytaj ten plik zanim cokolwiek zmienisz. Na końcu sesji, jeśli
 Nie włączać logu debug. Odczyt nagrań potwierdzony na żywym NVR w `496e4c3`:
 
 - `POST /ISAPI/ContentMgmt/search` na torach 101 i 201 zwrócił odcinki (17 i 23 w ostatnich 24 h). `R-REC-002` jest informacją, nie „za mało danych”. Flaga `Enable` nadal `false`. Znaczniki człowiek/pojazd zostają ręczne.
-- `POST /ISAPI/ContentMgmt/logSearch` na NVR jest odczytany. Na PTZ i kamerze stałej odpowiedź przyszła, ale HACA jej nie sparsowała (`logs.search_matches`: `parse_error`).
+- `POST /ISAPI/ContentMgmt/logSearch` na NVR jest odczytany (`126952a`). PTZ i kamera stała odpowiedziały, ale tamten kod zgłosił `logs.search_matches`: `parse_error`. Poprawka jest w kodzie i czeka na kolejny `.\report`.
 - Z odpowiedzi wypadają `userName`, adresy i `playbackURI`, zanim trafią do bazy.
 - Dual-VCA i „Save Camera VCA Data” nadal ręczne.
 

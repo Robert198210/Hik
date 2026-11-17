@@ -6,7 +6,7 @@ from defusedxml.ElementTree import fromstring  # type: ignore[import-untyped]
 
 from haca.collect.extract import extract_views
 from haca.isapi.search_body import read_post_body, redact_search_identifiers
-from haca.isapi.xml import parse_xml
+from haca.isapi.xml import parse_xml, repair_xml
 from haca.security.endpoint_policy import EndpointPolicy, EndpointRule
 
 
@@ -34,6 +34,38 @@ def test_record_search_body_asks_for_both_channel_one_tracks() -> None:
     assert "<trackID>101</trackID>" in text
     assert "<trackID>201</trackID>" in text
     assert "<contentType>video</contentType>" in text
+
+
+def test_camera_log_variants_drop_the_position_and_the_zone_suffix() -> None:
+    now = datetime(2026, 11, 17, 9, 0, tzinfo=UTC)
+    plain = read_post_body("content.log_search", now=now, variant="plain_time").decode()
+    hik = read_post_body("content.log_search", now=now, variant="hikvision").decode()
+    assert "log.std-cgi.com" in plain
+    assert "2026-11-17T09:00:00<" in plain
+    assert "searchResultPosition" not in plain
+    assert "log.hikvision.com" in hik
+    assert "Z" not in hik.split("metaId", 1)[0]
+    for body in (plain.encode(), hik.encode()):
+        assert _root(body) == "CMSearchDescription"
+
+
+def test_repair_reads_a_utf16_log_with_a_bare_ampersand() -> None:
+    raw = (
+        "<?xml version='1.0'?>"
+        "<CMSearchResult><numOfMatches>1</numOfMatches>"
+        "<searchMatchItem><metaId>log.hikvision.com/Alarm</metaId>"
+        "<minorType>line & zone</minorType>"
+        "<startDateTime>2026-11-16T12:00:00</startDateTime>"
+        "</searchMatchItem></CMSearchResult>"
+    ).encode("utf-16")
+    repaired = repair_xml(raw)
+    doc = parse_xml(repaired)
+    missing: list[str] = []
+    view = extract_views("content.log_search", doc, missing).log_search
+    assert view is not None
+    assert view.num_matches == 1
+    assert view.events[0].para_type == "line & zone"
+    assert view.events[0].started_at == "2026-11-16T12:00:00"
 
 
 def test_policy_accepts_the_generated_search_body() -> None:

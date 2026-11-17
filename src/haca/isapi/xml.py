@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from xml.etree.ElementTree import Element
 
@@ -11,6 +12,8 @@ from haca.isapi.errors import XmlParseError
 from haca.security.redaction import mask_device_identifiers
 
 _MAX_PREVIEW = 80
+_BARE_AMPERSAND = re.compile(r"&(?!(?:amp|lt|gt|apos|quot|#\d+|#x[0-9A-Fa-f]+);)")
+_ILLEGAL_XML = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
 
 
 @dataclass(frozen=True)
@@ -83,6 +86,30 @@ def _preview(body: bytes) -> str:
     if len(body) > _MAX_PREVIEW:
         text += "…"
     return mask_device_identifiers(text)
+
+
+def repair_xml(body: bytes) -> bytes:
+    """Turn a camera log document into XML a strict parser accepts.
+
+    IPC firmware often answers in UTF-16, or puts a raw ``&`` in a log line.
+    """
+    if body.startswith((b"\xff\xfe", b"\xfe\xff")):
+        text = body.decode("utf-16")
+    elif b"\x00" in body[:80]:
+        try:
+            text = body.decode("utf-16")
+        except UnicodeError:
+            text = body.decode("utf-8", errors="replace")
+    else:
+        data = body[3:] if body.startswith(b"\xef\xbb\xbf") else body
+        text = data.decode("utf-8", errors="replace")
+    start = text.find("<")
+    if start > 0:
+        text = text[start:]
+    cleaned = _ILLEGAL_XML.sub("", text)
+    cleaned = _BARE_AMPERSAND.sub("&amp;", cleaned)
+    repaired = cleaned.encode("utf-8")
+    return body if repaired == body else repaired
 
 
 def parse_xml(body: bytes, max_bytes: int = 5_000_000) -> XmlDocument:

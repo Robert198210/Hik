@@ -640,8 +640,14 @@ def _parse_log_search(doc: XmlDocument, missing: list[str]) -> LogSearchView:
         events.append(
             LogEventView(
                 meta_id=_first_text(elem, "metaId"),
-                para_type=_first_text(elem, "paraType"),
-                started_at=_first_text(elem, "StartDateTime"),
+                para_type=(
+                    _first_text(elem, "paraType")
+                    or _first_text(elem, "minorType")
+                    or _first_text(elem, "logMinorType")
+                ),
+                started_at=(
+                    _first_text(elem, "StartDateTime") or _first_text(elem, "startDateTime")
+                ),
             )
         )
     return LogSearchView(num_matches=_as_int(raw_count), events=tuple(events))

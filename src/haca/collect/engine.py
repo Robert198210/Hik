@@ -368,13 +368,14 @@ class CollectionEngine:
         else:
             outcome = EndpointOutcome.PARSE_ERROR
         path = self._render_path(request)
+        sub = exc.sub_status_code if isinstance(exc, DeviceReportedError) else None
         return RawEvidence(
             device_id=device.id,
             endpoint_id=request.endpoint_id,
             path=path,
             outcome=outcome,
             http_status=None,
-            sub_status_code=None,
+            sub_status_code=sub,
             sha256=None,
             body=None,
             collected_at=datetime.now(tz=UTC),

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
-from typing import cast
+from typing import Literal, cast
 from xml.etree.ElementTree import Element, tostring
 
 from defusedxml.ElementTree import ParseError, fromstring  # type: ignore[import-untyped]
@@ -15,7 +15,15 @@ _DROP_LOCALS = frozenset(
 )
 
 
-def read_post_body(endpoint_id: str, now: datetime | None = None) -> bytes:
+LogVariant = Literal["std", "plain_time", "hikvision"]
+
+
+def read_post_body(
+    endpoint_id: str,
+    now: datetime | None = None,
+    *,
+    variant: LogVariant = "std",
+) -> bytes:
     """Return the only POST body HACA may send for this endpoint."""
     moment = now or datetime.now(UTC)
     if moment.tzinfo is None:
@@ -27,7 +35,8 @@ def read_post_body(endpoint_id: str, now: datetime | None = None) -> bytes:
             search_id="{00000000-0000-0000-0000-000000000001}",
             start=start,
             end=moment,
-            extra=_log_extra(),
+            extra=_log_extra(variant),
+            with_zone=variant == "std",
         )
     if endpoint_id == "content.record_search":
         return _description(
@@ -65,13 +74,14 @@ def _description(
     start: datetime,
     end: datetime,
     extra: list[Element],
+    with_zone: bool = True,
 ) -> bytes:
     root = Element("CMSearchDescription", {"version": "1.0", "xmlns": _NS})
     _text(root, "searchID", search_id)
     span_list = Element("timeSpanList")
     span = Element("timeSpan")
-    _text(span, "startTime", _stamp(start))
-    _text(span, "endTime", _stamp(end))
+    _text(span, "startTime", _stamp(start, with_zone=with_zone))
+    _text(span, "endTime", _stamp(end, with_zone=with_zone))
     span_list.append(span)
     root.append(span_list)
     for node in extra:
@@ -79,13 +89,15 @@ def _description(
     return cast(bytes, tostring(root, encoding="utf-8", xml_declaration=True))
 
 
-def _log_extra() -> list[Element]:
+def _log_extra(variant: LogVariant) -> list[Element]:
     meta = Element("metaId")
-    meta.text = "log.std-cgi.com"
-    position = Element("searchResultPosition")
-    position.text = "0"
+    meta.text = "log.hikvision.com" if variant == "hikvision" else "log.std-cgi.com"
     limit = Element("maxResults")
     limit.text = "100"
+    if variant != "std":
+        return [meta, limit]
+    position = Element("searchResultPosition")
+    position.text = "0"
     return [meta, position, limit]
 
 
@@ -108,5 +120,6 @@ def _text(parent: Element, tag: str, value: str) -> None:
     parent.append(node)
 
 
-def _stamp(moment: datetime) -> str:
-    return moment.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+def _stamp(moment: datetime, *, with_zone: bool = True) -> str:
+    text = moment.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%S")
+    return f"{text}Z" if with_zone else text

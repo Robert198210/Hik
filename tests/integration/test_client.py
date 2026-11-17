@@ -253,6 +253,54 @@ def test_xxe_body_raises_xml_parse_error() -> None:
 
 
 @pytest.mark.simulation
+def test_log_search_retries_when_the_camera_rejects_the_nvr_query() -> None:
+    bodies: list[bytes] = []
+    result = (
+        b"<?xml version='1.0'?><CMSearchResult><numOfMatches>3</numOfMatches></CMSearchResult>"
+    )
+    rejected = (
+        b"<?xml version='1.0'?><ResponseStatus><statusCode>6</statusCode>"
+        b"<subStatusCode>badXmlContent</subStatusCode></ResponseStatus>"
+    )
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        bodies.append(request.content)
+        if b"searchResultPosition" in request.content:
+            return httpx.Response(
+                200, content=rejected, headers={"Content-Type": "application/xml"}
+            )
+        return httpx.Response(200, content=result, headers={"Content-Type": "application/xml"})
+
+    with _client(httpx.MockTransport(handler)) as client:
+        response = client.read("content.log_search")
+    assert response.document is not None
+    assert response.document.text("numOfMatches") == "3"
+    assert len(bodies) == 2
+    assert b"log.std-cgi.com" in bodies[1]
+    assert b"log.hikvision.com" not in bodies[1]
+
+
+@pytest.mark.simulation
+def test_log_search_repairs_utf16_without_a_second_query() -> None:
+    calls = {"n": 0}
+    payload = (
+        "<?xml version='1.0'?><CMSearchResult><numOfMatches>4</numOfMatches>"
+        "<userName>synthetic</userName></CMSearchResult>"
+    ).encode("utf-16")
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        calls["n"] += 1
+        return httpx.Response(200, content=payload, headers={"Content-Type": "application/xml"})
+
+    with _client(httpx.MockTransport(handler)) as client:
+        response = client.read("content.log_search")
+    assert calls["n"] == 1
+    assert response.document is not None
+    assert response.document.text("numOfMatches") == "4"
+    assert b"synthetic" not in response.body
+
+
+@pytest.mark.simulation
 def test_unknown_endpoint_and_denied_raise_before_transport() -> None:
     calls: list[str] = []
 

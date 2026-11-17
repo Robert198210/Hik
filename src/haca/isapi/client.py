@@ -24,8 +24,8 @@ from haca.isapi.errors import (
     XmlParseError,
 )
 from haca.isapi.response_status import parse_response_status
-from haca.isapi.search_body import read_post_body, redact_search_identifiers
-from haca.isapi.xml import XmlDocument, parse_xml
+from haca.isapi.search_body import LogVariant, read_post_body, redact_search_identifiers
+from haca.isapi.xml import XmlDocument, parse_xml, repair_xml
 from haca.security.credentials import Credential
 from haca.security.egress import EgressPolicy
 from haca.security.endpoint_policy import EndpointPolicy
@@ -34,6 +34,7 @@ from haca.security.transport_guard import ReadOnlyTransport
 
 _RETRYABLE_HTTP = frozenset({502, 503, 504})
 _SEARCH_ENDPOINTS = frozenset({"content.log_search", "content.record_search"})
+_LOG_VARIANTS: tuple[LogVariant, ...] = ("std", "plain_time", "hikvision")
 _BACKOFF_SECONDS = (0.5, 1.0)
 _XML_CONTENT_TYPES = (
     "application/xml",
@@ -106,12 +107,40 @@ class IsapiClient:
         path = self._policy.render(endpoint_id, **params)
         url = f"{self._device.scheme}://{self._device.host}:{self._device.port}{path}"
         method = rule.method.upper()
-        content: bytes | None = None
-        headers: dict[str, str] | None = None
         if rule.read_post:
-            content = read_post_body(endpoint_id)
-            headers = {"Content-Type": "application/xml"}
+            variants: tuple[LogVariant, ...] = (
+                _LOG_VARIANTS if endpoint_id == "content.log_search" else ("std",)
+            )
+            last_query: IsapiError = IsapiError(
+                self._device.id,
+                endpoint_id,
+                "log search was not attempted",
+            )
+            for variant in variants:
+                content = read_post_body(endpoint_id, variant=variant)
+                try:
+                    return self._exchange(
+                        endpoint_id,
+                        path,
+                        url,
+                        method,
+                        content,
+                        {"Content-Type": "application/xml"},
+                    )
+                except (DeviceReportedError, XmlParseError) as exc:
+                    last_query = exc
+            raise last_query
+        return self._exchange(endpoint_id, path, url, method, None, None)
 
+    def _exchange(
+        self,
+        endpoint_id: str,
+        path: str,
+        url: str,
+        method: str,
+        content: bytes | None,
+        headers: dict[str, str] | None,
+    ) -> IsapiResponse:
         last_error: Exception | None = None
         attempts = 1 + len(_BACKOFF_SECONDS)
         for attempt in range(attempts):
@@ -184,7 +213,7 @@ class IsapiClient:
     ) -> IsapiResponse:
         body = response.content
         if endpoint_id in _SEARCH_ENDPOINTS and body:
-            body = redact_search_identifiers(body)
+            body = _prepare_search_body(body)
         content_type = response.headers.get("Content-Type")
         document: XmlDocument | None = None
         response_status = None
@@ -264,3 +293,21 @@ class IsapiClient:
                 return True
         stripped = body.lstrip()
         return stripped.startswith(b"<")
+
+
+def _prepare_search_body(body: bytes) -> bytes:
+    """Repair a broken search document, then drop local identifiers."""
+    candidate = body
+    if not _parses(candidate):
+        repaired = repair_xml(candidate)
+        if repaired != candidate and _parses(repaired):
+            candidate = repaired
+    return redact_search_identifiers(candidate)
+
+
+def _parses(body: bytes) -> bool:
+    try:
+        parse_xml(body)
+    except XmlParseError:
+        return False
+    return True
