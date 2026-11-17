@@ -21,7 +21,7 @@ Nowy czat: przeczytaj ten plik zanim cokolwiek zmienisz. Na końcu sesji, jeśli
 
 ## Kod i konfiguracja
 
-- Ostatni kod: paczka do Gemini zawiera rodzaje wpisów dziennika, nagrania per tor, braki z powodem i uzasadnienia reguł. Polecenie tłumaczy tylko odczytane wartości i nie dopowiada ścieżek z pamięci. Poprzedni odczyt dziennika kamer: `d859779`. Kod postępu: `3f27ba0`. Odczyt nagrań: `09b6bf8`.
+- Ostatni kod: `d965971`. Paczka do Gemini zawiera rodzaje wpisów dziennika, nagrania per tor, braki z powodem i uzasadnienia reguł. Polecenie tłumaczy tylko odczytane wartości i nie dopowiada ścieżek z pamięci. Odczyt dziennika kamer: `d859779` (w `8780c51` nadal `parse_error`). Kod postępu: `3f27ba0`. Odczyt nagrań: `09b6bf8`.
 - Ostatni raport na GitHubie: `8780c51` (2026-11-17 15:10). Audyt trwał około 26 s. Gemini: `ok`, polecenie `2026-11-16-v1`, 3728 tokenów wejścia.
 - Profil laptopa: `requirements.laptop.yaml`, `time_source: ntp` (hash `7a020e…`). Przykład w `config/requirements.example.yaml` zostaje przy `nvr_sync`.
 - Urządzenia: NVR `192.168.1.200` DS-7616NXI-K2(D), PTZ `192.168.1.201`, kamera stała `192.168.1.202`.
