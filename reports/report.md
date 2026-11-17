@@ -1,7 +1,7 @@
 ## Summary
 
-- classifications: {'CONFIRMED_CONFLICT': 1, 'POTENTIAL_CONFLICT': 2, 'INFO': 6, 'INSUFFICIENT_DATA': 2}
-- severities: {'high': 3, 'info': 8}
+- classifications: {'CONFIRMED_CONFLICT': 1, 'POTENTIAL_CONFLICT': 2, 'INFO': 9}
+- severities: {'high': 2, 'medium': 1, 'info': 9}
 
 ## Needs decision
 
@@ -18,15 +18,16 @@
   - evidence: `smart.line_detection` `enabled` = `false`
   - ORP: devices.ptz01.required_events
 - **ai** POTENTIAL_CONFLICT
-  - devices: nvr01
-  - current → recommended: `false` → `true`
-  - ORP specifies continuous_24_7 recording_mode, but recording.track_enable is currently false on nvr01.
-  - evidence: `record.tracks` `tracks[101].enable` = `false`
-- **ai** POTENTIAL_CONFLICT
   - devices: ptz01
   - current → recommended: `false` → `true`
-  - ORP requires line_crossing event detection for ptz01, but analytics.line_engine_enabled is currently set to false.
+  - ORP requires line_crossing detection for ptz01, but setting_id analytics.line_engine_enabled is currently false.
   - evidence: `smart.line_detection` `line_detection.engine_enabled` = `false`
+
+- **ai** POTENTIAL_CONFLICT
+  - devices: nvr01
+  - current → recommended: `false` → `—`
+  - ORP specifies continuous_24_7 recording mode, but setting_id recording.track_enable is false.
+  - evidence: `record.tracks` `tracks[101].enable` = `false`
 
 - **R-HIKC-001** INFO
   - devices: nvr01
@@ -44,68 +45,77 @@
   - PTZ mode undecided in ORP
   - evidence: `ptz.park_action` `enabled` = `False`
   - ORP: devices.ptz01.ptz_mode
-- **R-REC-002** INSUFFICIENT_DATA
+- **R-REC-002** INFO
   - devices: nvr01
-  - Track disabled but schedule exists; verify playback markers manually
+  - current → recommended: `17` → `—`
+  - Track flag is false and a schedule is present. Recording search returned 17 video segment(s) on this track in the last 24 hours. Human/vehicle timeline markers stay a manual check.
   - evidence: `record.tracks` `Enable` = `false`
-- **R-REC-002** INSUFFICIENT_DATA
+  - evidence: `content.record_search` `track[101].segments` = `17`
+- **R-REC-002** INFO
   - devices: nvr01
-  - Track disabled but schedule exists; verify playback markers manually
+  - current → recommended: `23` → `—`
+  - Track flag is false and a schedule is present. Recording search returned 23 video segment(s) on this track in the last 24 hours. Human/vehicle timeline markers stay a manual check.
   - evidence: `record.tracks` `Enable` = `false`
+  - evidence: `content.record_search` `track[201].segments` = `23`
 - **R-SEC-001** INFO
   - devices: nvr01
   - HTTP enabled and HTTPS disabled; https_required unspecified
   - evidence: `security.admin_accesses` `HTTPS.enabled` = `false`
   - ORP: system.https_required
 - **ai** INFO
+  - devices: cam01
+  - current → recommended: `frozenset({'center', 'record'})` → `—`
+  - ORP marks notify_center_required as undecided/null for cam01, while setting_id linkage.linedetection_notifications includes center notification.
+  - evidence: `event.triggers` `triggers[linedetection].methods` = `frozenset({'center', 'record'})`
+- **ai** INFO
   - devices: nvr01
   - current → recommended: `true` → `—`
-  - ORP specifies hik_connect as undecided while platform.ezviz_enabled is set to true on nvr01.
+  - ORP specifies remote_access as lan_vpn_only with hik_connect undecided, but setting_id platform.ezviz_enabled is enabled as true.
   - evidence: `platform.ezviz` `platform.ezviz_enabled` = `true`
 - **ai** INFO
   - devices: nvr01
   - current → recommended: `false` → `—`
-  - ORP specifies https_required as unspecified while security.https_enabled is currently false on nvr01.
+  - ORP leaves https_required unspecified while setting_id security.https_enabled is currently false.
   - evidence: `security.admin_accesses` `admin_access.protocols.HTTPS.enabled` = `false`
 
 ## Coverage matrix
 
-Verified 70 of 123 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.
+Verified 72 of 129 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.
 
 ### nvr01
-- analytics: {'NOT_APPLICABLE': 6, 'NOT_IMPLEMENTED_IN_HACA': 3}
+- analytics: {'VERIFIED_ISAPI': 1, 'NOT_APPLICABLE': 6, 'NOT_IMPLEMENTED_IN_HACA': 3}
 - identity: {'VERIFIED_ISAPI': 2}
 - linkage: {'VERIFIED_ISAPI': 1}
 - network: {'VERIFIED_ISAPI': 1}
 - platform: {'VERIFIED_ISAPI': 1}
 - ptz: {'NOT_APPLICABLE': 4}
-- recording: {'VERIFIED_ISAPI': 3, 'INACCESSIBLE': 1, 'NOT_IMPLEMENTED_IN_HACA': 1}
+- recording: {'VERIFIED_ISAPI': 4, 'INACCESSIBLE': 1, 'NOT_IMPLEMENTED_IN_HACA': 1}
 - security: {'VERIFIED_ISAPI': 6}
 - storage: {'INACCESSIBLE': 3, 'NOT_IMPLEMENTED_IN_HACA': 1}
 - streaming: {'VERIFIED_ISAPI': 5, 'INACCESSIBLE': 1}
 - time: {'VERIFIED_ISAPI': 2}
 
 ### ptz01
-- analytics: {'VERIFIED_ISAPI': 5, 'INACCESSIBLE': 1, 'NOT_IMPLEMENTED_IN_HACA': 1, 'NOT_APPLICABLE': 2}
+- analytics: {'INACCESSIBLE': 2, 'VERIFIED_ISAPI': 5, 'NOT_IMPLEMENTED_IN_HACA': 1, 'NOT_APPLICABLE': 2}
 - identity: {'VERIFIED_ISAPI': 2}
 - linkage: {'VERIFIED_ISAPI': 1}
 - network: {'VERIFIED_ISAPI': 1}
 - platform: {'VERIFIED_ISAPI': 1}
 - ptz: {'VERIFIED_ISAPI': 4}
-- recording: {'NOT_APPLICABLE': 5}
+- recording: {'NOT_APPLICABLE': 6}
 - security: {'VERIFIED_ISAPI': 4, 'NOT_APPLICABLE': 2}
 - storage: {'NOT_APPLICABLE': 4}
 - streaming: {'VERIFIED_ISAPI': 6}
 - time: {'VERIFIED_ISAPI': 2}
 
 ### cam01
-- analytics: {'VERIFIED_ISAPI': 6, 'NOT_IMPLEMENTED_IN_HACA': 1, 'NOT_APPLICABLE': 2}
+- analytics: {'INACCESSIBLE': 1, 'VERIFIED_ISAPI': 6, 'NOT_IMPLEMENTED_IN_HACA': 1, 'NOT_APPLICABLE': 2}
 - identity: {'VERIFIED_ISAPI': 2}
 - linkage: {'VERIFIED_ISAPI': 1}
 - network: {'VERIFIED_ISAPI': 1}
 - platform: {'VERIFIED_ISAPI': 1}
 - ptz: {'NOT_APPLICABLE': 4}
-- recording: {'NOT_APPLICABLE': 5}
+- recording: {'NOT_APPLICABLE': 6}
 - security: {'VERIFIED_ISAPI': 4, 'NOT_APPLICABLE': 2}
 - storage: {'NOT_APPLICABLE': 4}
 - streaming: {'VERIFIED_ISAPI': 6}
@@ -126,7 +136,9 @@ Verified 70 of 123 settings in HACA catalog v1. The catalog does not cover every
 - nvr01 `storage.hdd_status` — field_absent
 - nvr01 `storage.hdd_capacity` — field_absent
 - nvr01 `storage.hdd_free_space` — field_absent
+- ptz01 `logs.search_matches` — parse_error
 - ptz01 `analytics.detection_targets` — field_absent
+- cam01 `logs.search_matches` — parse_error
 
 ## Method and limitations
 

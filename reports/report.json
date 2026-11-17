@@ -1,16 +1,16 @@
 {
   "meta": {
     "haca_version": "0.1.0.dev0",
-    "run_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
-    "started_at": "2026-11-16T19:56:30.254726Z",
-    "finished_at": "2026-11-16T19:56:45.023209Z",
+    "run_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
+    "started_at": "2026-11-17T13:36:17.120318Z",
+    "finished_at": "2026-11-17T13:36:45.787469Z",
     "simulated": false,
     "scenario": null,
     "orp_hash": "7a020e0408e6be7bcd63565d3dcce7eef718a94e5ca3a75a670080348a669c5b",
     "catalog_version": "1",
     "registry_verification_counts": {
       "documented": 1,
-      "candidate_unverified": 20
+      "candidate_unverified": 22
     }
   },
   "devices": [
@@ -90,17 +90,18 @@
           "INACCESSIBLE": 1
         },
         "recording": {
-          "VERIFIED_ISAPI": 3,
+          "VERIFIED_ISAPI": 4,
           "INACCESSIBLE": 1,
           "NOT_IMPLEMENTED_IN_HACA": 1
+        },
+        "analytics": {
+          "VERIFIED_ISAPI": 1,
+          "NOT_APPLICABLE": 6,
+          "NOT_IMPLEMENTED_IN_HACA": 3
         },
         "storage": {
           "INACCESSIBLE": 3,
           "NOT_IMPLEMENTED_IN_HACA": 1
-        },
-        "analytics": {
-          "NOT_APPLICABLE": 6,
-          "NOT_IMPLEMENTED_IN_HACA": 3
         },
         "linkage": {
           "VERIFIED_ISAPI": 1
@@ -130,16 +131,16 @@
           "VERIFIED_ISAPI": 6
         },
         "recording": {
-          "NOT_APPLICABLE": 5
+          "NOT_APPLICABLE": 6
+        },
+        "analytics": {
+          "INACCESSIBLE": 2,
+          "VERIFIED_ISAPI": 5,
+          "NOT_IMPLEMENTED_IN_HACA": 1,
+          "NOT_APPLICABLE": 2
         },
         "storage": {
           "NOT_APPLICABLE": 4
-        },
-        "analytics": {
-          "VERIFIED_ISAPI": 5,
-          "INACCESSIBLE": 1,
-          "NOT_IMPLEMENTED_IN_HACA": 1,
-          "NOT_APPLICABLE": 2
         },
         "linkage": {
           "VERIFIED_ISAPI": 1
@@ -169,15 +170,16 @@
           "VERIFIED_ISAPI": 6
         },
         "recording": {
-          "NOT_APPLICABLE": 5
-        },
-        "storage": {
-          "NOT_APPLICABLE": 4
+          "NOT_APPLICABLE": 6
         },
         "analytics": {
+          "INACCESSIBLE": 1,
           "VERIFIED_ISAPI": 6,
           "NOT_IMPLEMENTED_IN_HACA": 1,
           "NOT_APPLICABLE": 2
+        },
+        "storage": {
+          "NOT_APPLICABLE": 4
         },
         "linkage": {
           "VERIFIED_ISAPI": 1
@@ -191,12 +193,12 @@
       }
     },
     "totals": {
-      "VERIFIED_ISAPI": 70,
-      "INACCESSIBLE": 6,
-      "NOT_APPLICABLE": 40,
+      "VERIFIED_ISAPI": 72,
+      "INACCESSIBLE": 8,
+      "NOT_APPLICABLE": 42,
       "NOT_IMPLEMENTED_IN_HACA": 7
     },
-    "observed_uncataloged": 2331
+    "observed_uncataloged": 2818
   },
   "coverage_entries": [
     {
@@ -350,6 +352,22 @@
       "reason": null,
       "evidence_tier": "isapi",
       "endpoint_id": "record.tracks"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "recording.search_segments",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "content.record_search"
+    },
+    {
+      "device_id": "nvr01",
+      "setting_id": "logs.search_matches",
+      "status": "VERIFIED_ISAPI",
+      "reason": null,
+      "evidence_tier": "isapi",
+      "endpoint_id": "content.log_search"
     },
     {
       "device_id": "nvr01",
@@ -681,6 +699,22 @@
     },
     {
       "device_id": "ptz01",
+      "setting_id": "recording.search_segments",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "ptz01",
+      "setting_id": "logs.search_matches",
+      "status": "INACCESSIBLE",
+      "reason": "parse_error",
+      "evidence_tier": "isapi",
+      "endpoint_id": "content.log_search"
+    },
+    {
+      "device_id": "ptz01",
       "setting_id": "storage.hdd_status",
       "status": "NOT_APPLICABLE",
       "reason": "role",
@@ -1009,6 +1043,22 @@
     },
     {
       "device_id": "cam01",
+      "setting_id": "recording.search_segments",
+      "status": "NOT_APPLICABLE",
+      "reason": "role",
+      "evidence_tier": "isapi",
+      "endpoint_id": null
+    },
+    {
+      "device_id": "cam01",
+      "setting_id": "logs.search_matches",
+      "status": "INACCESSIBLE",
+      "reason": "parse_error",
+      "evidence_tier": "isapi",
+      "endpoint_id": "content.log_search"
+    },
+    {
+      "device_id": "cam01",
       "setting_id": "storage.hdd_status",
       "status": "NOT_APPLICABLE",
       "reason": "role",
@@ -1184,7 +1234,7 @@
       "endpoint_id": null
     }
   ],
-  "coverage_statement": "Verified 70 of 123 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.",
+  "coverage_statement": "Verified 72 of 129 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.",
   "findings": [
     {
       "id": "R-VCA-001:ptz01:line-engine-off",
@@ -1198,7 +1248,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
           "device_id": "ptz01",
           "endpoint_id": "smart.line_detection",
           "xpath": "enabled",
@@ -1225,40 +1275,6 @@
       "subject": "line-engine-off"
     },
     {
-      "id": "ai:nvr01:recording.track_enable:true",
-      "rule_id": "ai",
-      "category": "ai",
-      "classification": "POTENTIAL_CONFLICT",
-      "severity": "high",
-      "basis": "technical",
-      "devices": [
-        "nvr01"
-      ],
-      "evidence": [
-        {
-          "snapshot_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
-          "device_id": "nvr01",
-          "endpoint_id": "record.tracks",
-          "xpath": "tracks[101].enable",
-          "observed_value": "false",
-          "raw_sha256": "456b6948432fe9e490d226ffb9adb3c7720054a89c96f4fd87e16257ad87eb1a",
-          "tier": "isapi"
-        }
-      ],
-      "evidence_tier": "isapi",
-      "orp_refs": [],
-      "needs_decision": false,
-      "current_value": "false",
-      "recommended_value": "true",
-      "rationale": "ORP specifies continuous_24_7 recording_mode, but recording.track_enable is currently false on nvr01.",
-      "source_refs": [],
-      "source": "ai_validated",
-      "simulated_confirmed": false,
-      "rule_error": false,
-      "recommendation": null,
-      "subject": "recording.track_enable"
-    },
-    {
       "id": "ai:ptz01:analytics.line_engine_enabled:true",
       "rule_id": "ai",
       "category": "ai",
@@ -1270,7 +1286,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
           "device_id": "ptz01",
           "endpoint_id": "smart.line_detection",
           "xpath": "line_detection.engine_enabled",
@@ -1284,13 +1300,47 @@
       "needs_decision": false,
       "current_value": "false",
       "recommended_value": "true",
-      "rationale": "ORP requires line_crossing event detection for ptz01, but analytics.line_engine_enabled is currently set to false.",
+      "rationale": "ORP requires line_crossing detection for ptz01, but setting_id analytics.line_engine_enabled is currently false.",
       "source_refs": [],
       "source": "ai_validated",
       "simulated_confirmed": false,
       "rule_error": false,
       "recommendation": null,
       "subject": "analytics.line_engine_enabled"
+    },
+    {
+      "id": "ai:nvr01:recording.track_enable:",
+      "rule_id": "ai",
+      "category": "ai",
+      "classification": "POTENTIAL_CONFLICT",
+      "severity": "medium",
+      "basis": "technical",
+      "devices": [
+        "nvr01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
+          "device_id": "nvr01",
+          "endpoint_id": "record.tracks",
+          "xpath": "tracks[101].enable",
+          "observed_value": "false",
+          "raw_sha256": "456b6948432fe9e490d226ffb9adb3c7720054a89c96f4fd87e16257ad87eb1a",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [],
+      "needs_decision": false,
+      "current_value": "false",
+      "recommended_value": null,
+      "rationale": "ORP specifies continuous_24_7 recording mode, but setting_id recording.track_enable is false.",
+      "source_refs": [],
+      "source": "ai_validated",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "recording.track_enable"
     },
     {
       "id": "R-HIKC-001:nvr01:hikc-undecided",
@@ -1304,7 +1354,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
           "device_id": "nvr01",
           "endpoint_id": "platform.ezviz",
           "xpath": "enabled",
@@ -1343,7 +1393,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
           "device_id": "nvr01",
           "endpoint_id": "event.triggers",
           "xpath": "notificationMethod",
@@ -1381,7 +1431,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
           "device_id": "ptz01",
           "endpoint_id": "ptz.park_action",
           "xpath": "enabled",
@@ -1411,7 +1461,7 @@
       "id": "R-REC-002:nvr01:track-101-disabled",
       "rule_id": "R-REC-002",
       "category": "recording",
-      "classification": "INSUFFICIENT_DATA",
+      "classification": "INFO",
       "severity": "info",
       "basis": "technical",
       "devices": [
@@ -1419,21 +1469,30 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "Enable",
           "observed_value": "false",
           "raw_sha256": "456b6948432fe9e490d226ffb9adb3c7720054a89c96f4fd87e16257ad87eb1a",
           "tier": "isapi"
+        },
+        {
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
+          "device_id": "nvr01",
+          "endpoint_id": "content.record_search",
+          "xpath": "track[101].segments",
+          "observed_value": "17",
+          "raw_sha256": "5f4e490b2d3c802c82d55fb93d495bbb02cff0ada55d3ef02514da3acc003586",
+          "tier": "isapi"
         }
       ],
       "evidence_tier": "isapi",
       "orp_refs": [],
       "needs_decision": false,
-      "current_value": null,
+      "current_value": "17",
       "recommended_value": null,
-      "rationale": "Track disabled but schedule exists; verify playback markers manually",
+      "rationale": "Track flag is false and a schedule is present. Recording search returned 17 video segment(s) on this track in the last 24 hours. Human/vehicle timeline markers stay a manual check.",
       "source_refs": [
         "manual.playback_markers"
       ],
@@ -1447,7 +1506,7 @@
       "id": "R-REC-002:nvr01:track-201-disabled",
       "rule_id": "R-REC-002",
       "category": "recording",
-      "classification": "INSUFFICIENT_DATA",
+      "classification": "INFO",
       "severity": "info",
       "basis": "technical",
       "devices": [
@@ -1455,21 +1514,30 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
           "device_id": "nvr01",
           "endpoint_id": "record.tracks",
           "xpath": "Enable",
           "observed_value": "false",
           "raw_sha256": "456b6948432fe9e490d226ffb9adb3c7720054a89c96f4fd87e16257ad87eb1a",
           "tier": "isapi"
+        },
+        {
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
+          "device_id": "nvr01",
+          "endpoint_id": "content.record_search",
+          "xpath": "track[201].segments",
+          "observed_value": "23",
+          "raw_sha256": "5f4e490b2d3c802c82d55fb93d495bbb02cff0ada55d3ef02514da3acc003586",
+          "tier": "isapi"
         }
       ],
       "evidence_tier": "isapi",
       "orp_refs": [],
       "needs_decision": false,
-      "current_value": null,
+      "current_value": "23",
       "recommended_value": null,
-      "rationale": "Track disabled but schedule exists; verify playback markers manually",
+      "rationale": "Track flag is false and a schedule is present. Recording search returned 23 video segment(s) on this track in the last 24 hours. Human/vehicle timeline markers stay a manual check.",
       "source_refs": [
         "manual.playback_markers"
       ],
@@ -1491,7 +1559,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
           "device_id": "nvr01",
           "endpoint_id": "security.admin_accesses",
           "xpath": "HTTPS.enabled",
@@ -1518,6 +1586,40 @@
       "subject": "https-undecided"
     },
     {
+      "id": "ai:cam01:linkage.linedetection_notifications:",
+      "rule_id": "ai",
+      "category": "ai",
+      "classification": "INFO",
+      "severity": "info",
+      "basis": "technical",
+      "devices": [
+        "cam01"
+      ],
+      "evidence": [
+        {
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
+          "device_id": "cam01",
+          "endpoint_id": "event.triggers",
+          "xpath": "triggers[linedetection].methods",
+          "observed_value": "frozenset({'center', 'record'})",
+          "raw_sha256": "5e14a02ac47e8e8fbed90deb5f2103951d43e8c5492b13aaee14a5202b29eff1",
+          "tier": "isapi"
+        }
+      ],
+      "evidence_tier": "isapi",
+      "orp_refs": [],
+      "needs_decision": false,
+      "current_value": "frozenset({'center', 'record'})",
+      "recommended_value": null,
+      "rationale": "ORP marks notify_center_required as undecided/null for cam01, while setting_id linkage.linedetection_notifications includes center notification.",
+      "source_refs": [],
+      "source": "ai_validated",
+      "simulated_confirmed": false,
+      "rule_error": false,
+      "recommendation": null,
+      "subject": "linkage.linedetection_notifications"
+    },
+    {
       "id": "ai:nvr01:platform.ezviz_enabled:",
       "rule_id": "ai",
       "category": "ai",
@@ -1529,7 +1631,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
           "device_id": "nvr01",
           "endpoint_id": "platform.ezviz",
           "xpath": "platform.ezviz_enabled",
@@ -1543,7 +1645,7 @@
       "needs_decision": false,
       "current_value": "true",
       "recommended_value": null,
-      "rationale": "ORP specifies hik_connect as undecided while platform.ezviz_enabled is set to true on nvr01.",
+      "rationale": "ORP specifies remote_access as lan_vpn_only with hik_connect undecided, but setting_id platform.ezviz_enabled is enabled as true.",
       "source_refs": [],
       "source": "ai_validated",
       "simulated_confirmed": false,
@@ -1563,7 +1665,7 @@
       ],
       "evidence": [
         {
-          "snapshot_id": "90010731-2a35-47e2-bc7c-84e9e553d6d0",
+          "snapshot_id": "2eb24315-520b-41d9-bd03-7fffbb7cf337",
           "device_id": "nvr01",
           "endpoint_id": "security.admin_accesses",
           "xpath": "admin_access.protocols.HTTPS.enabled",
@@ -1577,7 +1679,7 @@
       "needs_decision": false,
       "current_value": "false",
       "recommended_value": null,
-      "rationale": "ORP specifies https_required as unspecified while security.https_enabled is currently false on nvr01.",
+      "rationale": "ORP leaves https_required unspecified while setting_id security.https_enabled is currently false.",
       "source_refs": [],
       "source": "ai_validated",
       "simulated_confirmed": false,
@@ -1619,18 +1721,19 @@
     "status": "ok",
     "reason": null,
     "detail": null,
-    "summary": "Audit identified potential conflicts regarding disabled line crossing analytics on ptz01 and disabled recording tracks on nvr01 against the Operational Requirements Profile, as well as unconfirmed parameters for cloud platform and HTTPS connectivity.",
+    "summary": "The configuration analysis identified potential conflicts and areas needing clarification against the Operational Requirements Profile (ORP). Notably, camera ptz01 has its line detection engine disabled despite line crossing events being required by ORP, and nvr01 has recording tracks disabled while continuous 24/7 recording is mandated. Several settings (Hik-Connect/Ezviz platform access, HTTPS, and PTZ mode) require policy resolution since ORP lists them as undecided or unspecified.",
     "cross_device_notes": [
-      "ptz01 has analytics.line_engine_enabled disabled despite camera-side analytics and line crossing requirements in the ORP.",
-      "nvr01 is connected via HIKVISION input proxy protocol with online status true, but recording.track_enable is set to false."
+      "NVR nvr01 connects using HIKVISION protocol via input_proxy.protocol, aligning with the camera_protocol requirement for ptz01.",
+      "Both cameras utilize NTP time synchronization pointing to tempus1.gum.gov.pl in alignment with ORP time_source ntp.",
+      "Continuous recording schedule mode CMR is configured on nvr01, but recording.track_enable indicates recording tracks are disabled."
     ],
     "rejected": [],
     "corroborations": [],
     "model": "gemini-3.8-flash",
     "prompt_version": "2026-11-16-v1",
     "cached": false,
-    "input_tokens": 3727,
-    "output_tokens": 398,
-    "total_tokens": 7295
+    "input_tokens": 3728,
+    "output_tokens": 564,
+    "total_tokens": 7259
   }
 }

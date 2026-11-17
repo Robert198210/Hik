@@ -17,10 +17,10 @@
 <body>
   
   <h1>HACA configuration audit</h1>
-  <p>Run 90010731-2a35-47e2-bc7c-84e9e553d6d0 · catalog v1</p>
+  <p>Run 2eb24315-520b-41d9-bd03-7fffbb7cf337 · catalog v1</p>
 
   <h2>Summary</h2>
-  <p>Verified 70 of 123 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.</p>
+  <p>Verified 72 of 129 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.</p>
 
   <h2>Findings</h2>
   <table>
@@ -39,16 +39,16 @@
         <td>ai</td>
         <td>POTENTIAL_CONFLICT</td>
         <td class="severity-high">high</td>
-        <td>nvr01</td>
-        <td>ORP specifies continuous_24_7 recording_mode, but recording.track_enable is currently false on nvr01.</td>
+        <td>ptz01</td>
+        <td>ORP requires line_crossing detection for ptz01, but setting_id analytics.line_engine_enabled is currently false.</td>
       </tr>
     
       <tr>
         <td>ai</td>
         <td>POTENTIAL_CONFLICT</td>
-        <td class="severity-high">high</td>
-        <td>ptz01</td>
-        <td>ORP requires line_crossing event detection for ptz01, but analytics.line_engine_enabled is currently set to false.</td>
+        <td class="severity-medium">medium</td>
+        <td>nvr01</td>
+        <td>ORP specifies continuous_24_7 recording mode, but setting_id recording.track_enable is false.</td>
       </tr>
     
       <tr>
@@ -77,18 +77,18 @@
     
       <tr>
         <td>R-REC-002</td>
-        <td>INSUFFICIENT_DATA</td>
+        <td>INFO</td>
         <td class="severity-info">info</td>
         <td>nvr01</td>
-        <td>Track disabled but schedule exists; verify playback markers manually</td>
+        <td>Track flag is false and a schedule is present. Recording search returned 17 video segment(s) on this track in the last 24 hours. Human/vehicle timeline markers stay a manual check.</td>
       </tr>
     
       <tr>
         <td>R-REC-002</td>
-        <td>INSUFFICIENT_DATA</td>
+        <td>INFO</td>
         <td class="severity-info">info</td>
         <td>nvr01</td>
-        <td>Track disabled but schedule exists; verify playback markers manually</td>
+        <td>Track flag is false and a schedule is present. Recording search returned 23 video segment(s) on this track in the last 24 hours. Human/vehicle timeline markers stay a manual check.</td>
       </tr>
     
       <tr>
@@ -103,8 +103,8 @@
         <td>ai</td>
         <td>INFO</td>
         <td class="severity-info">info</td>
-        <td>nvr01</td>
-        <td>ORP specifies hik_connect as undecided while platform.ezviz_enabled is set to true on nvr01.</td>
+        <td>cam01</td>
+        <td>ORP marks notify_center_required as undecided/null for cam01, while setting_id linkage.linedetection_notifications includes center notification.</td>
       </tr>
     
       <tr>
@@ -112,7 +112,15 @@
         <td>INFO</td>
         <td class="severity-info">info</td>
         <td>nvr01</td>
-        <td>ORP specifies https_required as unspecified while security.https_enabled is currently false on nvr01.</td>
+        <td>ORP specifies remote_access as lan_vpn_only with hik_connect undecided, but setting_id platform.ezviz_enabled is enabled as true.</td>
+      </tr>
+    
+      <tr>
+        <td>ai</td>
+        <td>INFO</td>
+        <td class="severity-info">info</td>
+        <td>nvr01</td>
+        <td>ORP leaves https_required unspecified while setting_id security.https_enabled is currently false.</td>
       </tr>
     
     </tbody>
@@ -122,7 +130,7 @@
   <h2>AI analysis</h2>
   <p>Status: ok</p>
   
-  <p>Audit identified potential conflicts regarding disabled line crossing analytics on ptz01 and disabled recording tracks on nvr01 against the Operational Requirements Profile, as well as unconfirmed parameters for cloud platform and HTTPS connectivity.</p>
+  <p>The configuration analysis identified potential conflicts and areas needing clarification against the Operational Requirements Profile (ORP). Notably, camera ptz01 has its line detection engine disabled despite line crossing events being required by ORP, and nvr01 has recording tracks disabled while continuous 24/7 recording is mandated. Several settings (Hik-Connect/Ezviz platform access, HTTPS, and PTZ mode) require policy resolution since ORP lists them as undecided or unspecified.</p>
   
   
   
