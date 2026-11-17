@@ -1,33 +1,26 @@
-# Hikvision analytics and recording (generic reference)
+# Hikvision analytics and recording (checked reference)
 
-Each point below is curated public-domain knowledge for audit reasoning only — not device-specific data.
+Each point is a checked public fact for this audit. It is not a device reading. A menu path that is not written here must not be invented.
 
-## Camera-side analytics vs NVR analytics
+## What puts human and vehicle marks on the NVR timeline
 
-- Many installations run VCA on cameras and send metadata to the NVR, or use NVR "by camera" smart modes.
-  (Public: Hikvision product documentation describes local vs remote VCA deployment patterns.)
+- The camera rule needs its human/vehicle target filter, the stream needs Dual-VCA (VCA information carried on the video), and the NVR needs the option usually named "Save Camera VCA Data". That NVR option ships off. Public descriptions place it under Storage, Advanced, but the exact page depends on firmware.
+- When those items are listed under evidence.gaps as manual_check, they were not read. Do not state that they are on or off.
+- "Notify Surveillance Center" pushes an alarm to Hik-Connect or an alarm host. It does not draw marks on the local timeline.
 
-## Hikvision protocol vs ONVIF for smart metadata
+## Logs
 
-- Native Hikvision ISAPI often exposes richer event and VCA linkage than ONVIF event profiles alone.
-  (Public: ONVIF Core specification vs vendor ISAPI guides.)
+- The ordinary system log (alarm, exception, operation, information) is what log search reads. Do not recommend a debug log.
+- Recorders commonly accept a log search for `log.std-cgi.com`. Many cameras expect the domain `log.hikvision.com` and reject a timestamp that ends in `Z`.
+- A gap on `logs.search_matches` means the reply was not read. It does not mean the camera has an empty log.
 
-## Dual-VCA and timeline markers
+## Recordings
 
-- "Save VCA data" / similar options affect whether search and playback show analytic markers on the timeline.
-  (Public: NVR user manuals — smart search / VCA playback sections.)
+- Video presence is a search of tracks 101 (main) and 201 (sub). `Enable=false` on a track does not mean the disk has no video; the search can still return segments.
+- Human and vehicle marks on the playback timeline stay a manual check even when segments exist.
+- Continuous recording fills the disk. Event recording exists only when the camera emits the event and the recorder stores it.
 
-## Continuous vs event recording
+## Detection and PTZ
 
-- Continuous recording increases storage load; event-only recording depends on reliable event generation and linkage.
-  (Public: generic CCTV storage planning guides.)
-
-## SMR disks and intelligent search
-
-- SMR/CMR class affects sustained write patterns; intelligent video search assumes indexed event metadata.
-  (Public: storage vendor SMR documentation; Hikvision HDD compatibility notes.)
-
-## VCA rules and PTZ movement
-
-- Line crossing / field detection rules may interact with PTZ patrol or tracking — rule coordinates can become
-  invalid after preset moves. (Public: PTZ VCA deployment best-practice articles.)
+- A line-crossing or field engine that is off produces no events for that rule, even when a line or zone is drawn.
+- A PTZ patrol or park action can move the camera off the coordinates of a line or field rule.

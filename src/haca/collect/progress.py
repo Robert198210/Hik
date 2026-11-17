@@ -38,7 +38,7 @@ _PHASES: tuple[tuple[str, frozenset[str]], ...] = (
 
 BEGIN = "Kod aktualny, zaczynam audyt"
 COMPARE = "Porównuję odczyt z profilem"
-AI_SEND = "Wysyłam skrót do Gemini"
+AI_SEND = "Wysyłam odczyt do Gemini"
 AI_DONE = "Gemini odpowiedziało"
 SAVING = "Zapisuję raport"
 PUSHING = "Wysyłam raport na GitHub"

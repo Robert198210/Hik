@@ -47,7 +47,9 @@ def test_conflicts_payload_has_no_identifier_leaks() -> None:
     assert "deviceID" not in text
     assert "userName" not in text
     assert "<?xml" not in text
+    assert "playbackURI" not in text
     parsed = json.loads(text)
+    assert "evidence" in parsed
     blob = json.dumps(parsed)
     assert re.search(r"192\.168\.250\.\d+", blob) is None
     assert "<subnet>." in blob
