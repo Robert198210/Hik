@@ -21,7 +21,7 @@ Nowy czat: przeczytaj ten plik zanim cokolwiek zmienisz. Na końcu sesji, jeśli
 
 ## Kod i konfiguracja
 
-- Ostatni kod na `origin/main`: odczyt logów (`logSearch`) i nagrań torów 101/201 (`ContentMgmt/search`), okno 24 h.
+- Ostatni kod na `origin/main`: `09b6bf8` (odczyt logów `logSearch` i nagrań torów 101/201, okno 24 h).
 - Ostatni raport na GitHubie: `dfab218` (2026-11-16 20:57), pliki `reports/report.html`, `report.json`, `report.md`.
 - Profil laptopa: `requirements.laptop.yaml`, `time_source: ntp` (hash `7a020e…`). Przykład w `config/requirements.example.yaml` zostaje przy `nvr_sync`.
 - Urządzenia: NVR `192.168.1.200` DS-7616NXI-K2(D), PTZ `192.168.1.201`, kamera stała `192.168.1.202`.
