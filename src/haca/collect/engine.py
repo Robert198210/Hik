@@ -50,6 +50,11 @@ from haca.security.errors import PolicyViolation
 _LOGGER = logging.getLogger("haca.collect")
 
 ProgressCallback = Callable[[str, str, EndpointOutcome], None]
+BeforeRead = Callable[[str, str], None]
+DeviceReady = Callable[[str], None]
+_ANSWERED = frozenset(
+    {IdentificationStatus.IDENTIFIED, IdentificationStatus.MODEL_MISMATCH}
+)
 
 _SIM_SUBNET = IPv4Network("192.168.250.0/24")
 
@@ -84,10 +89,18 @@ class CollectionEngine:
         *,
         simulated: bool = False,
         on_progress: ProgressCallback | None = None,
+        on_device_ready: DeviceReady | None = None,
+        on_before_read: BeforeRead | None = None,
     ) -> CollectionResult:
         started = datetime.now(tz=UTC)
         collections = [
-            self._collect_device(device, simulated=simulated, on_progress=on_progress)
+            self._collect_device(
+                device,
+                simulated=simulated,
+                on_progress=on_progress,
+                on_device_ready=on_device_ready,
+                on_before_read=on_before_read,
+            )
             for device in devices
         ]
         return CollectionResult(
@@ -103,6 +116,8 @@ class CollectionEngine:
         *,
         simulated: bool,
         on_progress: ProgressCallback | None,
+        on_device_ready: DeviceReady | None,
+        on_before_read: BeforeRead | None,
     ) -> DeviceCollection:
         cred = self._credential_store.get(device.credential_ref)
         transport = self._transport_factory(device)
@@ -128,6 +143,8 @@ class CollectionEngine:
         ) as client:
             id_result = identify(client, device, simulated=simulated)
             identity = id_result.identity
+            if id_result.status in _ANSWERED and on_device_ready is not None:
+                on_device_ready(device.id)
 
             for request in plan(device, self._registry):
                 if offline:
@@ -169,6 +186,8 @@ class CollectionEngine:
                     self._notify(on_progress, device.id, request.endpoint_id, gate.outcome)
                     continue
 
+                if on_before_read is not None:
+                    on_before_read(device.id, request.endpoint_id)
                 ev = self._read_planned(client, device, request, entry)
                 evidence[request.endpoint_id] = ev
                 self._notify(on_progress, device.id, request.endpoint_id, ev.outcome)

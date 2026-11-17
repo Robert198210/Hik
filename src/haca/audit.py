@@ -25,6 +25,7 @@ from haca.catalog.loader import load_catalog_entries
 from haca.catalog.models import CatalogEntry, ManualSource
 from haca.collect.identify import IdentificationResult, IdentificationStatus, identify_devices
 from haca.collect.models import CollectionResult
+from haca.collect.progress import AuditAnnouncer
 from haca.collect.runner import run_live_collection, run_simulated_collection
 from haca.config.models import AppConfig
 from haca.devices.models import ResolvedDevice
@@ -62,6 +63,7 @@ class AuditOrchestrator:
         use_ai: bool = False,
         ai_client: AiClient | None = None,
         credential_store: CredentialStore | None = None,
+        progress: AuditAnnouncer | None = None,
     ) -> AuditReport:
         started = datetime.now(UTC)
         catalog = load_catalog_entries()
@@ -83,7 +85,11 @@ class AuditOrchestrator:
 
                 credential_store = EnvCredentialStore()
             collection, coverage = run_live_collection(
-                app_config, devices, credential_store
+                app_config,
+                devices,
+                credential_store,
+                on_device_ready=None if progress is None else progress.device_ready,
+                on_before_read=None if progress is None else progress.before_endpoint,
             )
             if manual_attestations:
                 coverage = compute_coverage(
@@ -92,6 +98,8 @@ class AuditOrchestrator:
             id_results = _identify_from_collection(collection)
 
         run_id = str(uuid.uuid4())
+        if progress is not None:
+            progress.compare()
         engine = RuleEngine()
         findings, _corr = engine.run(
             collection, devices, orp, coverage, run_id=run_id
@@ -136,6 +144,8 @@ class AuditOrchestrator:
                     client=ai_client,
                     session=session,
                     force_enable=True,
+                    on_sending=None if progress is None else progress.sending_summary,
+                    on_replied=None if progress is None else progress.gemini_replied,
                 )
                 findings = list(enriched.findings)
                 ai_section = enriched.ai

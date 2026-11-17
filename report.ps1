@@ -7,8 +7,9 @@
 param([switch]$Updated)
 
 Set-Location $PSScriptRoot
+$env:PYTHONIOENCODING = "utf-8"
 if (-not $Updated) {
-  git pull --ff-only
+  git pull --ff-only --quiet
   if ($LASTEXITCODE -ne 0) {
     Write-Host "git pull nie doszedl. Audyt i tak startuje."
   } else {
@@ -66,11 +67,12 @@ if ($LASTEXITCODE -eq 0) {
   Write-Host "reports bez zmian"
   exit 0
 }
+Write-Host "Wysyłam raport na GitHub"
 if (-not (git config user.email)) {
   git config user.email "Robert198210@users.noreply.github.com"
   git config user.name "Robert198210"
 }
-git commit -m "Update live audit report"
+git commit -q -m "Update live audit report"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-git push
+git push --quiet
 exit $LASTEXITCODE

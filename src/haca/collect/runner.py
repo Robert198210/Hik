@@ -13,7 +13,7 @@ from haca.catalog.coverage import (
     observed_uncataloged_count,
 )
 from haca.catalog.loader import load_catalog_entries
-from haca.collect.engine import CollectionEngine
+from haca.collect.engine import BeforeRead, CollectionEngine, DeviceReady
 from haca.collect.models import CollectionResult
 from haca.config.models import AppConfig
 from haca.devices.models import ResolvedDevice
@@ -56,6 +56,9 @@ def run_live_collection(
     app: AppConfig,
     devices: list[ResolvedDevice],
     credentials: CredentialStore,
+    *,
+    on_device_ready: DeviceReady | None = None,
+    on_before_read: BeforeRead | None = None,
 ) -> tuple[CollectionResult, list[CoverageEntry]]:
     """Read configuration from real devices. No simulation transport."""
     registry = load_registry_entries()
@@ -74,7 +77,12 @@ def run_live_collection(
         network_policy=NetworkPolicy(app.network.subnet, simulation=False),
         retry_sleep=time.sleep,
     )
-    result = engine.collect(devices, simulated=False)
+    result = engine.collect(
+        devices,
+        simulated=False,
+        on_device_ready=on_device_ready,
+        on_before_read=on_before_read,
+    )
     coverage = compute_coverage(catalog, result, None)
     return result, coverage
 

@@ -465,6 +465,10 @@ def _run_live_audit(args: argparse.Namespace) -> int:
     manual_path = Path(args.manual) if args.manual else None
     raw_formats = args.format or "json,md"
     formats = {part.strip().lower() for part in raw_formats.split(",") if part.strip()}
+    from haca.collect.progress import AuditAnnouncer
+
+    progress = AuditAnnouncer({device.id: device.role for device in devices})
+    progress.begin()
     report = AuditOrchestrator().run_audit(
         app,
         devices,
@@ -475,17 +479,10 @@ def _run_live_audit(args: argparse.Namespace) -> int:
         db_path=db_path,
         use_ai=bool(getattr(args, "ai", False)),
         credential_store=EnvCredentialStore(),
+        progress=progress,
     )
-    written = _write_audit_files(
-        report, out_dir, formats, getattr(args, "basename", None)
-    )
-    print(f"findings={len(report.findings)}")
-    if report.ai is not None:
-        print(f"ai_status={report.ai.status} reason={report.ai.reason or '-'}")
-        if report.ai.detail:
-            print(f"ai_detail={report.ai.detail}")
-    for path in written:
-        print(path)
+    progress.saving_report()
+    _write_audit_files(report, out_dir, formats, getattr(args, "basename", None))
     return audit_exit_code(list(report.findings))
 
 

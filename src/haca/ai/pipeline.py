@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
 
 from sqlalchemy.orm import Session
@@ -65,6 +66,8 @@ def enrich_findings(
     client: AiClient | None,
     session: Session | None,
     force_enable: bool,
+    on_sending: Callable[[], None] | None = None,
+    on_replied: Callable[[], None] | None = None,
 ) -> AiEnrichmentResult:
     if not force_enable:
         return AiEnrichmentResult(
@@ -140,6 +143,8 @@ def enrich_findings(
             if analysis is not None:
                 cached = True
         if analysis is None:
+            if on_sending is not None:
+                on_sending()
             call_result = client.generate(prompt, payload.json_text)
             analysis = call_result.parsed
             if analysis is None:
@@ -224,6 +229,8 @@ def enrich_findings(
         for item in validation.rejected
     )
 
+    if on_replied is not None:
+        on_replied()
     ai_section = ReportAiSection(
         status="cached" if cached else "ok",
         reason=None,
