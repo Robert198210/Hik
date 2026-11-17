@@ -17,7 +17,7 @@
 <body>
   
   <h1>HACA configuration audit</h1>
-  <p>Run de6846eb-e8d1-439c-abbe-079bdfed09e3 · catalog v1</p>
+  <p>Run 558c9277-9737-43c7-ae53-6d8c49fa2204 · catalog v1</p>
 
   <h2>Summary</h2>
   <p>Verified 72 of 129 settings in HACA catalog v1. The catalog does not cover every Hikvision setting.</p>
@@ -40,7 +40,7 @@
         <td>POTENTIAL_CONFLICT</td>
         <td class="severity-high">high</td>
         <td>ptz01</td>
-        <td>Setting analytics.line_engine_enabled is &#39;false&#39; on ptz01, which conflicts with the ORP requirement for line_crossing detection.</td>
+        <td>The ORP mandates line_crossing events for ptz01, but setting_id analytics.line_engine_enabled is currently set to false.</td>
       </tr>
     
       <tr>
@@ -48,7 +48,15 @@
         <td>POTENTIAL_CONFLICT</td>
         <td class="severity-medium">medium</td>
         <td>nvr01</td>
-        <td>Setting recording.track_enable is set to &#39;false&#39; on nvr01, preventing continuous recording tracks required by the ORP recording_mode.</td>
+        <td>The ORP specifies continuous_24_7 recording mode, but setting_id recording.track_enable is set to false on nvr01.</td>
+      </tr>
+    
+      <tr>
+        <td>ai</td>
+        <td>POTENTIAL_CONFLICT</td>
+        <td class="severity-medium">medium</td>
+        <td>ptz01</td>
+        <td>The ORP requires notify_center_required to be true for ptz01, but setting_id linkage.linedetection_notifications currently contains no notification targets.</td>
       </tr>
     
       <tr>
@@ -104,7 +112,7 @@
         <td>INFO</td>
         <td class="severity-info">info</td>
         <td>nvr01</td>
-        <td>Setting platform.ezviz_enabled is &#39;true&#39; on nvr01 while ORP remote_access specifies lan_vpn_only and hik_connect is undecided.</td>
+        <td>Setting_id platform.ezviz_enabled is set to true on nvr01 while the ORP hik_connect status remains undecided.</td>
       </tr>
     
     </tbody>
@@ -114,7 +122,7 @@
   <h2>AI analysis</h2>
   <p>Status: ok</p>
   
-  <p>Configuration audit completed. Analytics engine is disabled on ptz01 despite line crossing requirements in the ORP, and track recording is disabled on nvr01.</p>
+  <p>Configuration audit identified analytics and recording mismatches against the Operational Requirements Profile (ORP), notably disabled line detection on ptz01 and disabled recording tracks on nvr01, alongside undecided cloud platform integration.</p>
   
   
   

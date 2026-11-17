@@ -1,7 +1,7 @@
 ## Summary
 
-- classifications: {'CONFIRMED_CONFLICT': 1, 'POTENTIAL_CONFLICT': 2, 'INFO': 7}
-- severities: {'high': 2, 'medium': 1, 'info': 7}
+- classifications: {'CONFIRMED_CONFLICT': 1, 'POTENTIAL_CONFLICT': 3, 'INFO': 7}
+- severities: {'high': 2, 'medium': 2, 'info': 7}
 
 ## Needs decision
 
@@ -20,14 +20,19 @@
 - **ai** POTENTIAL_CONFLICT
   - devices: ptz01
   - current → recommended: `false` → `true`
-  - Setting analytics.line_engine_enabled is 'false' on ptz01, which conflicts with the ORP requirement for line_crossing detection.
+  - The ORP mandates line_crossing events for ptz01, but setting_id analytics.line_engine_enabled is currently set to false.
   - evidence: `smart.line_detection` `line_detection.engine_enabled` = `false`
 
 - **ai** POTENTIAL_CONFLICT
   - devices: nvr01
   - current → recommended: `false` → `true`
-  - Setting recording.track_enable is set to 'false' on nvr01, preventing continuous recording tracks required by the ORP recording_mode.
+  - The ORP specifies continuous_24_7 recording mode, but setting_id recording.track_enable is set to false on nvr01.
   - evidence: `record.tracks` `tracks[101].enable` = `false`
+- **ai** POTENTIAL_CONFLICT
+  - devices: ptz01
+  - current → recommended: `frozenset()` → `—`
+  - The ORP requires notify_center_required to be true for ptz01, but setting_id linkage.linedetection_notifications currently contains no notification targets.
+  - evidence: `event.triggers` `triggers[linedetection].methods` = `frozenset()`
 
 - **R-HIKC-001** INFO
   - devices: nvr01
@@ -65,7 +70,7 @@
 - **ai** INFO
   - devices: nvr01
   - current → recommended: `true` → `—`
-  - Setting platform.ezviz_enabled is 'true' on nvr01 while ORP remote_access specifies lan_vpn_only and hik_connect is undecided.
+  - Setting_id platform.ezviz_enabled is set to true on nvr01 while the ORP hik_connect status remains undecided.
   - evidence: `platform.ezviz` `platform.ezviz_enabled` = `true`
 
 ## Coverage matrix
