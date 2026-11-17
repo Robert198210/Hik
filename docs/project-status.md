@@ -23,7 +23,7 @@ Live handoff for a new chat: [STATUS.md](../STATUS.md). Read it first. Update it
 
 | Task | Status | Notes |
 |---|---|---|
-| T2.01 Endpoint registry, Setting Catalog, scenario profiles | Done | `endpoints.yaml` (21), `settings.yaml` (41), scenarios `scenario-clean` / `scenario-conflicts` / `scenario-unsupported` for nvr01/ptz01/cam01 |
+| T2.01 Endpoint registry, Setting Catalog, scenario profiles | Done | `endpoints.yaml` (23), `settings.yaml` (43), scenarios `scenario-clean` / `scenario-conflicts` / `scenario-unsupported` for nvr01/ptz01/cam01 |
 
 ## Phase 0 — Setup
 

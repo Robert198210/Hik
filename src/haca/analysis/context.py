@@ -142,6 +142,8 @@ _VIEW_ENDPOINTS: dict[str, str] = {
     "region_entrance": "smart.region_entrance",
     "triggers": "event.triggers",
     "tracks": "record.tracks",
+    "record_search": "content.record_search",
+    "log_search": "content.log_search",
     "hdds": "storage.hdd",
     "proxy_channels": "input_proxy.channels",
     "park_action": "ptz.park_action",

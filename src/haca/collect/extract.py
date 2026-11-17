@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from xml.etree.ElementTree import Element
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from haca.isapi.xml import XmlDocument
@@ -142,6 +144,37 @@ class PlatformView(BaseModel):
     ezviz_enabled: bool | None = None
 
 
+class LogEventView(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    meta_id: str | None = None
+    para_type: str | None = None
+    started_at: str | None = None
+
+
+class LogSearchView(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    num_matches: int | None = None
+    events: tuple[LogEventView, ...] = ()
+
+
+class RecordSegmentView(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    track_id: str | None = None
+    start_time: str | None = None
+    end_time: str | None = None
+    record_type: str | None = None
+
+
+class RecordSearchView(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    num_matches: int | None = None
+    segments: tuple[RecordSegmentView, ...] = ()
+
+
 class DeviceViews(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -161,6 +194,8 @@ class DeviceViews(BaseModel):
     patrols: PatrolView | None = None
     presets: PresetView | None = None
     platform: PlatformView | None = None
+    log_search: LogSearchView | None = None
+    record_search: RecordSearchView | None = None
     identity_model: str | None = None
     identity_firmware: str | None = None
 
@@ -454,6 +489,12 @@ def extract_views(
             missing.append("EZVIZ.enabled")
         return DeviceViews(platform=PlatformView(ezviz_enabled=enabled))
 
+    if endpoint_id == "content.log_search":
+        return DeviceViews(log_search=_parse_log_search(doc, missing))
+
+    if endpoint_id == "content.record_search":
+        return DeviceViews(record_search=_parse_record_search(doc, missing))
+
     return DeviceViews()
 
 
@@ -575,6 +616,55 @@ def _parse_tracks(doc: XmlDocument) -> tuple[TrackView, ...]:
             )
         )
     return tuple(tracks)
+
+
+def _local(tag: str) -> str:
+    return tag.split("}")[-1]
+
+
+def _first_text(elem: Element, name: str) -> str | None:
+    for child in elem.iter():
+        if _local(child.tag) == name and child.text and child.text.strip():
+            return child.text.strip()
+    return None
+
+
+def _parse_log_search(doc: XmlDocument, missing: list[str]) -> LogSearchView:
+    raw_count = _first_text(doc._root, "numOfMatches")  # noqa: SLF001
+    if raw_count is None:
+        missing.append("numOfMatches")
+    events: list[LogEventView] = []
+    for elem in doc._root.iter():  # noqa: SLF001
+        if _local(elem.tag) != "searchMatchItem":
+            continue
+        events.append(
+            LogEventView(
+                meta_id=_first_text(elem, "metaId"),
+                para_type=_first_text(elem, "paraType"),
+                started_at=_first_text(elem, "StartDateTime"),
+            )
+        )
+    return LogSearchView(num_matches=_as_int(raw_count), events=tuple(events))
+
+
+def _parse_record_search(doc: XmlDocument, missing: list[str]) -> RecordSearchView:
+    raw_count = _first_text(doc._root, "numOfMatches")  # noqa: SLF001
+    if raw_count is None:
+        missing.append("numOfMatches")
+    segments: list[RecordSegmentView] = []
+    for elem in doc._root.iter():  # noqa: SLF001
+        if _local(elem.tag) != "searchMatchItem":
+            continue
+        record_type = _first_text(elem, "metadataDescriptor")
+        segments.append(
+            RecordSegmentView(
+                track_id=_first_text(elem, "trackID"),
+                start_time=_first_text(elem, "startTime"),
+                end_time=_first_text(elem, "endTime"),
+                record_type=record_type,
+            )
+        )
+    return RecordSearchView(num_matches=_as_int(raw_count), segments=tuple(segments))
 
 
 def _parse_named_items(doc: XmlDocument, local_name: str) -> tuple[dict[str, object], ...]:

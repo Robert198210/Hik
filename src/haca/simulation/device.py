@@ -41,10 +41,18 @@ class SimulatedDevice:
         method = request.method.upper()
         raw_path = request.url.raw_path.split(b"?", 1)[0].decode("ascii")
 
-        if method != "GET":
+        if method not in {"GET", "POST"}:
             return httpx.Response(
                 405,
-                headers={"Allow": "GET"},
+                headers={"Allow": "GET, POST"},
+                content=b"",
+            )
+
+        registered = self._paths.get(raw_path)
+        if registered is not None and method != registered.method:
+            return httpx.Response(
+                405,
+                headers={"Allow": registered.method},
                 content=b"",
             )
 
@@ -98,6 +106,13 @@ class SimulatedDevice:
                 404,
                 headers={"Content-Type": _CONTENT_XML},
                 content=shared_url_not_found_body(),
+            )
+
+        if method != entry.method:
+            return httpx.Response(
+                405,
+                headers={"Allow": entry.method},
+                content=b"",
             )
 
         return httpx.Response(

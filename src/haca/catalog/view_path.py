@@ -30,6 +30,8 @@ _VIEW_ROOTS = frozenset(
         "patrols",
         "presets",
         "platform",
+        "log_search",
+        "record_search",
     }
 )
 

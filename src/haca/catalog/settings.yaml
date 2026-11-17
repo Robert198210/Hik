@@ -173,6 +173,24 @@
   sources:
     - {kind: isapi, endpoint_id: record.tracks, view_path: "tracks[101].enable"}
 
+- id: recording.search_segments
+  category: recording
+  title: Video segments found on tracks 101 and 201
+  device_roles: [nvr]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: content.record_search, view_path: "record_search.num_matches"}
+
+- id: logs.search_matches
+  category: analytics
+  title: System log entries in the search window
+  device_roles: [nvr, ptz, camera]
+  scope: device
+  verification: candidate_unverified
+  sources:
+    - {kind: isapi, endpoint_id: content.log_search, view_path: "log_search.num_matches"}
+
 - id: storage.hdd_status
   category: storage
   title: HDD status

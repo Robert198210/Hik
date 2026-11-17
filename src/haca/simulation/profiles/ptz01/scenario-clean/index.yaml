@@ -44,3 +44,7 @@ paths:
   /ISAPI/System/Network/EZVIZ:
     file: platform_ezviz.xml
     status: 200
+  /ISAPI/ContentMgmt/logSearch:
+    file: ../../shared/log_search.xml
+    status: 200
+    method: POST

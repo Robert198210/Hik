@@ -140,6 +140,26 @@
   verification: candidate_unverified
   source: "Hikvision ISAPI generic resource; HACA candidate list v1; verify live"
 
+- id: content.log_search
+  path: /ISAPI/ContentMgmt/logSearch
+  method: POST
+  read_post: true
+  post_root_elements: [CMSearchDescription]
+  device_roles: [nvr, ptz, camera]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI ContentMgmt logSearch; metaId log.std-cgi.com; RaCM and public ISAPI guides; verify live"
+  notes: "Read-only log query. Body is built by haca.isapi.search_body for the last 24 hours. Not a debug-log export."
+
+- id: content.record_search
+  path: /ISAPI/ContentMgmt/search
+  method: POST
+  read_post: true
+  post_root_elements: [CMSearchDescription]
+  device_roles: [nvr]
+  verification: candidate_unverified
+  source: "Hikvision ISAPI ContentMgmt search for recorded video segments; public ISAPI guides; verify live"
+  notes: "Read-only search of tracks 101 and 201 over the last 24 hours. Body is built by haca.isapi.search_body."
+
 - id: system.configuration_data
   path: /ISAPI/System/configurationData
   method: GET

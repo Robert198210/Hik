@@ -135,4 +135,4 @@ def save_audit_findings(
 def load_settings(session: Session, run_id: str) -> dict[tuple[str, str], str]:
     stmt = select(SettingRow).where(SettingRow.run_id == run_id)
     rows = session.scalars(stmt)
-    return {(row.device_id, row.path): row.value for row in rows}
+    return {(row.device_id, f"{row.endpoint_id}:{row.path}"): row.value for row in rows}

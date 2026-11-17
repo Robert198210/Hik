@@ -17,6 +17,7 @@ _SHARED_EDGE = files("haca.simulation") / "profiles" / "shared" / "edge-cases"
 class PathResponse:
     status: int
     body: bytes
+    method: str = "GET"
 
 
 def simulation_profiles_root() -> Traversable:
@@ -88,11 +89,15 @@ def load_path_responses(profile_dir: Traversable | Path) -> dict[str, PathRespon
             continue
         file_name = entry.get("file")
         status = int(entry.get("status", 200))
+        method = str(entry.get("method", "GET")).upper()
+        if method not in {"GET", "POST"}:
+            msg = f"profile path {path!r} has unsupported method {method!r}"
+            raise ValueError(msg)
         if not isinstance(file_name, str):
             continue
         target = _resolve_fixture_node(profile_dir, file_name)
         body = target.read_bytes() if isinstance(target, Path) else _read_node_bytes(target)
-        responses[str(path)] = PathResponse(status=status, body=body)
+        responses[str(path)] = PathResponse(status=status, body=body, method=method)
     return responses
 
 

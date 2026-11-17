@@ -24,6 +24,7 @@ from haca.isapi.errors import (
     XmlParseError,
 )
 from haca.isapi.response_status import parse_response_status
+from haca.isapi.search_body import read_post_body, redact_search_identifiers
 from haca.isapi.xml import XmlDocument, parse_xml
 from haca.security.credentials import Credential
 from haca.security.egress import EgressPolicy
@@ -32,6 +33,7 @@ from haca.security.errors import PolicyViolation
 from haca.security.transport_guard import ReadOnlyTransport
 
 _RETRYABLE_HTTP = frozenset({502, 503, 504})
+_SEARCH_ENDPOINTS = frozenset({"content.log_search", "content.record_search"})
 _BACKOFF_SECONDS = (0.5, 1.0)
 _XML_CONTENT_TYPES = (
     "application/xml",
@@ -104,12 +106,17 @@ class IsapiClient:
         path = self._policy.render(endpoint_id, **params)
         url = f"{self._device.scheme}://{self._device.host}:{self._device.port}{path}"
         method = rule.method.upper()
+        content: bytes | None = None
+        headers: dict[str, str] | None = None
+        if rule.read_post:
+            content = read_post_body(endpoint_id)
+            headers = {"Content-Type": "application/xml"}
 
         last_error: Exception | None = None
         attempts = 1 + len(_BACKOFF_SECONDS)
         for attempt in range(attempts):
             try:
-                response = self._client.request(method, url)
+                response = self._client.request(method, url, content=content, headers=headers)
             except PolicyViolation:
                 raise
             except KeyError as exc:
@@ -176,6 +183,8 @@ class IsapiClient:
         response: httpx.Response,
     ) -> IsapiResponse:
         body = response.content
+        if endpoint_id in _SEARCH_ENDPOINTS and body:
+            body = redact_search_identifiers(body)
         content_type = response.headers.get("Content-Type")
         document: XmlDocument | None = None
         response_status = None

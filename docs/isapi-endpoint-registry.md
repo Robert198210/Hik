@@ -32,8 +32,8 @@ This document describes the schema and policy. From T2.02 on, the endpoint table
 - `sensitivity: denied` entries are never requested. They are listed so the policy can refuse them explicitly:
   - full configuration export: `/ISAPI/System/configurationData`
   - snapshot images: `/ISAPI/Streaming/channels/{id}/picture` (denied by default; privacy)
-- The only POST permitted is a log/content search with a fixed body template (`read_post: true`), and
-  it is disabled by default.
+- The only POST permitted is a log or recording search (`read_post: true`). The body is a fixed
+  `CMSearchDescription` for the last 24 hours, built in code, not taken from the device.
 
 ## Denylist (path patterns, method-independent)
 
@@ -78,10 +78,12 @@ it is read from. Coverage statuses: see [architecture.md §7](architecture.md).
 | `input_proxy.channels` | `/ISAPI/ContentMgmt/InputProxy/channels` | nvr | — | candidate_unverified | normal |
 | `input_proxy.channels_status` | `/ISAPI/ContentMgmt/InputProxy/channels/status` | nvr | — | candidate_unverified | normal |
 | `platform.ezviz` | `/ISAPI/System/Network/EZVIZ` | nvr, ptz, camera | — | candidate_unverified | normal |
+| `content.log_search` | `/ISAPI/ContentMgmt/logSearch` | nvr, ptz, camera | — | candidate_unverified | normal |
+| `content.record_search` | `/ISAPI/ContentMgmt/search` | nvr | — | candidate_unverified | normal |
 | `system.configuration_data` | `/ISAPI/System/configurationData` | nvr, ptz, camera | — | candidate_unverified | denied |
 | `streaming.picture` | `/ISAPI/Streaming/channels/{id}/picture` | nvr, ptz, camera | — | candidate_unverified | denied |
 
-_Total endpoints: 21._
+_Total endpoints: 23._
 
 Variant paths: `/ISAPI/Smart/RegionEntrance/{channel}`; `/ISAPI/PTZCtrl/channels/{channel}/ParkAction`.<!-- registry:end -->
 _Generated from T2.02 on._

@@ -166,7 +166,7 @@ Detailed gates and checklists: [security-review.md](security-review.md).
 | Layer | Control |
 |---|---|
 | L1 | `IsapiClient.read(endpoint_id, **params)` — no arbitrary URL or method API. |
-| L2 | `EndpointPolicy`: registry allowlist + denylist (denylist wins). Only POST: `ContentMgmt/logSearch` with templated body. `configurationData` denied; `picture` denied by default. |
+| L2 | `EndpointPolicy`: registry allowlist + denylist (denylist wins). Only POST: `ContentMgmt/logSearch` and `ContentMgmt/search`, each with a fixed `CMSearchDescription` body. `configurationData` denied; `picture` denied by default. |
 | L3 | `ReadOnlyTransport` (httpx transport wrapper): checks method, exact registered IP (RFC1918), port, path on **every** request including Digest retries; `follow_redirects=False`. |
 | L4 | Browser (v0.4): HAR-derived policy, enforcing proxy, Playwright routing, session state machine, minimum-privilege account. |
 | L5 | Egress guard: only device IPs and `generativelanguage.googleapis.com`. |

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CMSearchResult version="2.0" xmlns="http://www.hikvision.com/ver20/XMLSchema">
+  <searchID>{00000000-0000-0000-0000-000000000001}</searchID>
+  <responseStatus>true</responseStatus>
+  <responseStatusStrg>OK</responseStatusStrg>
+  <numOfMatches>1</numOfMatches>
+  <matchList>
+    <searchMatchItem>
+      <logDescriptor>
+        <metaId>log.std-cgi.com/Alarm</metaId>
+        <StartDateTime>2026-11-16T12:00:00Z</StartDateTime>
+        <paraType>lineDetectionStart</paraType>
+        <userName>synthetic</userName>
+        <ipAddress>192.168.250.50</ipAddress>
+      </logDescriptor>
+    </searchMatchItem>
+  </matchList>
+</CMSearchResult>

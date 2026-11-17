@@ -5,7 +5,7 @@ from __future__ import annotations
 from haca.analysis.context import RuleContext
 from haca.analysis.models import Classification, Finding, Severity
 from haca.analysis.rules.base import parse_local_ts, parse_targets, schedule_has_cmr_full_week
-from haca.collect.extract import DeviceViews, ProxyChannelView, TriggerView
+from haca.collect.extract import DeviceViews, ProxyChannelView, RecordSearchView, TriggerView
 
 
 class RInv001:
@@ -318,6 +318,12 @@ class RRec001:
         return findings
 
 
+def _segments_on_track(search: RecordSearchView | None, track_id: str) -> int:
+    if search is None:
+        return 0
+    return sum(1 for segment in search.segments if segment.track_id == track_id)
+
+
 class RRec002:
     id = "R-REC-002"
     title = "Track disabled with schedule present"
@@ -332,8 +338,15 @@ class RRec002:
         nvr = next((d for d in ctx.result.devices if d.role == "nvr"), None)
         if nvr is None or not nvr.views.tracks:
             return findings
+        searched = ctx.view_accessible(nvr.device_id, "record_search")
         for track in nvr.views.tracks:
-            if track.enable is False and track.schedule:
+            if track.enable is not False or not track.schedule:
+                continue
+            track_id = track.track_id or "unknown"
+            evidence = [
+                ctx.evidence(nvr.device_id, "record.tracks", "Enable", "false")
+            ]
+            if not searched:
                 findings.append(
                     ctx.build_finding(
                         rule_id=self.id,
@@ -343,19 +356,53 @@ class RRec002:
                         default_severity=self.default_severity,
                         devices=(nvr.device_id,),
                         classification=Classification.INSUFFICIENT_DATA,
-                        subject=f"track-{track.track_id}-disabled",
+                        subject=f"track-{track_id}-disabled",
                         rationale=(
                             "Track disabled but schedule exists; "
                             "verify playback markers manually"
                         ),
-                        evidence=[
-                            ctx.evidence(
-                                nvr.device_id, "record.tracks", "Enable", "false"
-                            )
-                        ],
+                        evidence=evidence,
                         source_refs=("manual.playback_markers",),
                     )
                 )
+                continue
+            count = _segments_on_track(nvr.views.record_search, track_id)
+            evidence.append(
+                ctx.evidence(
+                    nvr.device_id,
+                    "content.record_search",
+                    f"track[{track_id}].segments",
+                    str(count),
+                )
+            )
+            if count:
+                rationale = (
+                    f"Track flag is false and a schedule is present. "
+                    f"Recording search returned {count} video segment(s) on this track "
+                    "in the last 24 hours. Human/vehicle timeline markers stay a manual check."
+                )
+            else:
+                rationale = (
+                    "Track flag is false and a schedule is present. "
+                    "Recording search returned no video segments on this track "
+                    "in the last 24 hours."
+                )
+            findings.append(
+                ctx.build_finding(
+                    rule_id=self.id,
+                    title=self.title,
+                    category=self.category,
+                    basis=self.basis,
+                    default_severity=self.default_severity,
+                    devices=(nvr.device_id,),
+                    classification=Classification.INFO,
+                    subject=f"track-{track_id}-disabled",
+                    rationale=rationale,
+                    evidence=evidence,
+                    current_value=str(count),
+                    source_refs=("manual.playback_markers",),
+                )
+            )
         return findings
 
 

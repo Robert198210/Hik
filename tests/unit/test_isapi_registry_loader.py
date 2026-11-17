@@ -12,7 +12,7 @@ from haca.security.errors import PolicyViolation
 
 def test_registry_loads_expected_entry_count() -> None:
     entries = load_registry_entries()
-    assert len(entries) == 21
+    assert len(entries) == 23
     assert sum(1 for e in entries if e.sensitivity == "denied") == 2
 
 
