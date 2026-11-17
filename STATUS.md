@@ -21,8 +21,8 @@ Nowy czat: przeczytaj ten plik zanim cokolwiek zmienisz. Na końcu sesji, jeśli
 
 ## Kod i konfiguracja
 
-- Ostatni kod: `d965971`. Paczka do Gemini zawiera rodzaje wpisów dziennika, nagrania per tor, braki z powodem i uzasadnienia reguł. Polecenie tłumaczy tylko odczytane wartości i nie dopowiada ścieżek z pamięci. Odczyt dziennika kamer: `d859779` (w `8780c51` nadal `parse_error`). Kod postępu: `3f27ba0`. Odczyt nagrań: `09b6bf8`.
-- Ostatni raport na GitHubie: `8780c51` (2026-11-17 15:10). Audyt trwał około 26 s. Gemini: `ok`, polecenie `2026-11-16-v1`, 3728 tokenów wejścia.
+- Ostatni kod: `d965971`. Paczka do Gemini zawiera rodzaje wpisów dziennika, nagrania per tor, braki z powodem i uzasadnienia reguł. Polecenie tłumaczy tylko odczytane wartości i nie dopowiada ścieżek z pamięci. Odczyt dziennika kamer: `d859779` (w `ef01df4` nadal `parse_error`). Kod postępu: `3f27ba0`. Odczyt nagrań: `09b6bf8`.
+- Ostatni raport na GitHubie: `ef01df4` (2026-11-17 15:27). Audyt trwał około 27 s. Gemini: `ok`, polecenie `2026-11-17-v2`, 5260 tokenów wejścia, 373 wyjścia, bez cache.
 - Profil laptopa: `requirements.laptop.yaml`, `time_source: ntp` (hash `7a020e…`). Przykład w `config/requirements.example.yaml` zostaje przy `nvr_sync`.
 - Urządzenia: NVR `192.168.1.200` DS-7616NXI-K2(D), PTZ `192.168.1.201`, kamera stała `192.168.1.202`.
 - Gemini: `gemini-3.8-flash`, klucz w Windows Credential Manager (`haca` / `gemini_api_key`).
@@ -32,15 +32,17 @@ Nowy czat: przeczytaj ten plik zanim cokolwiek zmienisz. Na końcu sesji, jeśli
 Nie włączać logu debug. Odczyt nagrań potwierdzony na żywym NVR w `496e4c3`:
 
 - `POST /ISAPI/ContentMgmt/search` na torach 101 i 201 zwrócił odcinki (17 i 23 w ostatnich 24 h). `R-REC-002` jest informacją, nie „za mało danych”. Flaga `Enable` nadal `false`. Znaczniki człowiek/pojazd zostają ręczne.
-- `POST /ISAPI/ContentMgmt/logSearch` na NVR jest odczytany. W `8780c51` PTZ i kamera stała nadal mają `logs.search_matches`: `parse_error`, już po poprawce `d859779` (drugie i trzecie zapytanie oraz naprawa UTF-16). Sprawa otwarta.
+- `POST /ISAPI/ContentMgmt/logSearch` na NVR jest odczytany. W `ef01df4` PTZ i kamera stała nadal mają `logs.search_matches`: `parse_error`, już po poprawce `d859779`. Sprawa otwarta. Gemini opisało to jako nieudany odczyt, nie jako pusty dziennik.
 - Z odpowiedzi wypadają `userName`, adresy i `playbackURI`, zanim trafią do bazy.
 - Dual-VCA i „Save Camera VCA Data” nadal ręczne.
 
-## Ostatni raport (8780c51)
+## Ostatni raport (ef01df4)
 
-- Gemini: `ok`.
+- Gemini: `ok`, polecenie `2026-11-17-v2`. Nie wymyśliło stanu Dual-VCA ani „Save Camera VCA Data”: oba są na liście braków do ręcznego sprawdzenia. Nie kazało włączać nagrywania mimo `Enable=false`, bo widzi 17 i 23 odcinki.
 - Czas NTP: konfliktu `R-TIME-001` nie ma.
 - Fałszywy `R-REC-001` (harmonogram CMR) nie wrócił.
-- Ścieżki NVR **101** i **201** nadal `Enable=false`. Wyszukanie nagrań znalazło 17 odcinków na 101 i 23 na 201 w ostatnich 24 h (`R-REC-002`, informacja). Drugiej kamery ten alarm nie dotyczy.
+- Ścieżki NVR **101** i **201** nadal `Enable=false`. Wyszukanie nagrań: 17 odcinków na 101 i 23 na 201 (`R-REC-002`, informacja).
 - Jedyny `CONFIRMED`: `R-VCA-001`, PTZ, silnik przekroczenia linii wyłączony.
+- Nowa propozycja Gemini, `POTENTIAL`: na PTZ powiadomienie linii jest puste, a profil wymaga powiadomienia centrum (`notify_center_required: true`). Wartość w raporcie wygląda jak `frozenset()`.
+- Gemini: park i patrole PTZ są wyłączone, więc kamera nie zjeżdża z linii. Tryb PTZ w profilu nadal `undecided`.
 - Do decyzji w profilu: Hik-Connect, tryb PTZ, HTTPS, notify center dla `cam01`.
